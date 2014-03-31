@@ -21,6 +21,9 @@ $( document ).ready(function() {
     var x = d3.scale.linear().domain([0,data.length]).range([0,width]);
     var y = d3.scale.linear().domain([0,d3.max(data)]).range([height,0]);
 
+    var xAxis = d3.svg.axis().scale(x).tickSize(-height).tickSubdivide(true);
+    var yAxis = d3.svg.axis().scale(y).ticks(4).orient("right");
+
     var line = d3.svg.line()
                 .x(function(d,i) { return x(i); })
                 .y(function(d) { return y(d); });
@@ -34,6 +37,12 @@ $( document ).ready(function() {
     svg.append("path")
         .attr("class", "line")
         .attr("d", line);
+
+    svg.append("g")
+        .call(yAxis);
+    svg.append("g")
+        .call(xAxis);
+
 
 });
 
