@@ -10,7 +10,30 @@
 //http://nvd3.org/
 //http://dimplejs.org/
 
+//http://jsfiddle.net/GyWpN/
+
 $( document ).ready(function() {
-	d3.select("body").append("span").text("Hello, world!");
+
+    var data = [10,2,15,20,41,25,30];
+    var width = 600;
+    var height = 400;
+
+    var x = d3.scale.linear().domain([0,data.length]).range([0,width]);
+    var y = d3.scale.linear().domain([0,d3.max(data)]).range([height,0]);
+
+    var line = d3.svg.line()
+                .x(function(d,i) { return x(i); })
+                .y(function(d) { return y(d); });
+
+    var svg = d3.select('#chart')
+        .datum(data)
+        .attr('width', width)
+        .attr('height', height)
+        .append("g");
+
+    svg.append("path")
+        .attr("class", "line")
+        .attr("d", line);
+
 });
 
