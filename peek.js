@@ -1,19 +1,5 @@
 
-//http://mikemcdearmon.com/portfolio/techposts/charting-libraries-using-d3
-//http://www.recursion.org/d3-for-mere-mortals/
-//http://exposedata.com/tutorial/d3/
-//http://chimera.labs.oreilly.com/books/1230000000345/index.html
-
-//http://techslides.com/over-1000-d3-js-examples-and-demos/
-
-//http://code.shutterstock.com/rickshaw/
-//http://nvd3.org/
-//http://dimplejs.org/
-
-//http://jsfiddle.net/GyWpN/
-
-
-//http://alignedleft.com/tutorials/d3 **************************
+//For D3 help: https://leanpub.com/D3-Tips-and-Tricks/read#leanpub-auto-starting-with-a-basic-graph
 
 $( document ).ready(function() {
 
@@ -22,44 +8,53 @@ $( document ).ready(function() {
     var width = 600 - margin.left - margin.right;
     var height = 400 - margin.top - margin.bottom;
 
-    var data = [10,2,15,20,41,25,30];
+    var parseDate = d3.time.format("%d-%b-%y").parse;
 
-    var x = d3.scale.linear().domain([0,data.length]).range([0,width]);
-    var y = d3.scale.linear().domain([0,d3.max(data)]).range([height,0]);
+    var x = d3.time.scale().range([0, width]);
+    var y = d3.scale.linear().range([height, 0]);
 
     var xAxis = d3.svg.axis()
         .scale(x)
-        .orient("bottom");
+        .orient("bottom").ticks(5);
 
     var yAxis = d3.svg.axis()
         .scale(y)
-        .orient("left");
+        .orient("left").ticks(5);
 
     var line = d3.svg.line()
                 .interpolate('cardinal') 
-                .x(function(d,i) { return x(i); })
-                .y(function(d) { return y(d); });
+                .x(function(d) { return x(d.date); })
+                .y(function(d) { return y(d.value); });
 
     var svg = d3.select('#chart')
-        .datum(data)
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); //make space for axes
 
-    //build chart
-    svg.append("path")
-        .attr("class", "line")
-        .attr("d", line);
+    //fetch the data
+    d3.json("data.json", function(data) {
+        data.forEach(function(d) {
+            d.date = parseDate(d.date);
+            d.value = +d.value;
+        });
 
-    //build axes
-    svg.append('g')
-        .attr('class', 'axis')
-        .call(yAxis);
-    svg.append('g')
-        .attr('class', 'axis')
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
+        // Scale the range of the data
+        x.domain(d3.extent(data, function(d) { return d.date; }));
+        y.domain([0, d3.max(data, function(d) { return d.value; })]);
 
+        svg.append("path")
+            .attr("class", "line")
+            .attr("d", line(data)); //before - .attr("d", line);
+
+        //build axes
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
+    })
 });
 

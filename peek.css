@@ -1,13 +1,14 @@
 .line {
   fill: none;
-  stroke: blue;
-  stroke-width: 1px;
+  stroke: steelblue;
+  stroke-width: 2;
 }
 
 .axis path, .axis line{
   fill: none;
-  stroke: black;
-  shape-rendering: crispEdges;  
+  stroke: grey;
+  stroke-width: 1;
+  shape-rendering: crispEdges; 
 }
 
 .axis text {
