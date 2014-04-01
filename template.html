@@ -1,13 +1,53 @@
 <!doctype html>
+<!-- MOTW-DISABLEDsaved from url=(0014)about:internet -->
+<!-- delete MOTW-DISABLED to enable Mark of the Web (http://msdn.microsoft.com/en-us/library/ms537628%28VS.85%29.aspx)-->
 <html>
  <head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" ><!--Prevent IE using compatibility mode on local or intranet pages. Do not put scripts before this line.-->
+  <meta name="viewport" content="initial-scale=1.0" ><!--Prevent iOS scaling-->
+  <meta charset="UTF-8">
   <title>Template</title>
+
+  <!--load stylesheets first (rationale: https://developers.google.com/speed/docs/best-practices/rtt#PutStylesBeforeScripts)-->
+  <link rel="stylesheet" href="framework.min.css" type="text/css" />
   <link rel="stylesheet" href="peek.css" type="text/css" />
+
+  <!--load scripts second-->
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
+  <script src="framework.min.js"></script>
   <script src="peek.js"></script>
+
+  <!--inline scripts last-->
  </head>
+
  <body>
-	<svg id="chart"></svg>
+
+ <header>
+ <div class="w-fixed-width">
+	<a href="#">
+		<div style="padding-left:0;">
+			D3 Demo
+		</div>
+	</a>
+	<div>
+	</div>
+ </div>
+ </header>
+
+ <section>
+ <div class="w-fixed-width">
+
+  <svg id="chart"></svg>
+
+ </div>
+ </section>
+
+ <footer>
+	<div><p class="w-fixed-width">&nbsp;</p></div>
+	<div class="w-fixed-width">
+	</div>
+ </footer>
+ 
  </body>
 </html>
