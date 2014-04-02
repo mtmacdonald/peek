@@ -42,6 +42,38 @@ function Chart() {
             .attr("d", this.line(metric.values));
     }
 
+    this.render_x_axis = function() {
+        this.svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + this.height + ")")
+            .call(this.xAxis);
+    }
+
+    this.render_y_axis = function() {
+        this.svg.append("g")
+            .attr("class", "y axis")
+            .call(this.yAxis);
+    }
+
+    this.render_x_ticks = function() {
+        this.svg.append("g")
+            .attr("class", "grid")
+            .attr("transform", "translate(0," + this.height + ")")
+            .call(this.xAxis
+                .tickSize(-this.height, 0, 0)
+                .tickFormat("")
+            );
+    }
+
+    this.render_y_ticks = function () {
+        this.svg.append("g")         
+            .attr("class", "grid")
+            .call(this.yAxis
+                .tickSize(-this.width, 0, 0)
+                .tickFormat("")
+            );
+    }
+
     this.render = function (data) {
 
         this.svg();
@@ -61,29 +93,11 @@ function Chart() {
 
         }, this);
   
-        //axes
-        this.svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + this.height + ")")
-            .call(this.xAxis);
-        this.svg.append("g")
-            .attr("class", "y axis")
-            .call(this.yAxis);
+        this.render_x_axis();
+        this.render_y_axis();
 
-        //ticks
-        this.svg.append("g")         
-            .attr("class", "grid")
-            .attr("transform", "translate(0," + this.height + ")")
-            .call(this.xAxis
-                .tickSize(-this.height, 0, 0)
-                .tickFormat("")
-            );
-        this.svg.append("g")         
-            .attr("class", "grid")
-            .call(this.yAxis
-                .tickSize(-this.width, 0, 0)
-                .tickFormat("")
-            );
+        this.render_x_ticks();
+        this.render_y_ticks();
     }
 
     this.load = function() {
