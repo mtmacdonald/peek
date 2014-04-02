@@ -1,98 +1,115 @@
 
 //For D3 help: https://leanpub.com/D3-Tips-and-Tricks/read#leanpub-auto-starting-with-a-basic-graph
 
+function Chart() {
 
+    this.margin = {top: 50, right: 50, bottom: 50, left: 50};
+    this.width = 600 - this.margin.left - this.margin.right;
+    this.height = 400 - this.margin.top - this.margin.bottom;
+    this.svg;
 
+    this.parseDate = d3.time.format("%d-%b-%y").parse;
 
-$( document ).ready(function() {
+    this.x = d3.time.scale().range([0, this.width]);
+    this.y = d3.scale.linear().range([this.height, 0]);
 
-    //chart dimensions
-    var margin = {top: 50, right: 50, bottom: 50, left: 50};
-    var width = 600 - margin.left - margin.right;
-    var height = 400 - margin.top - margin.bottom;
-
-    var parseDate = d3.time.format("%d-%b-%y").parse;
-
-    var x = d3.time.scale().range([0, width]);
-    var y = d3.scale.linear().range([height, 0]);
-
-    var xAxis = d3.svg.axis()
-        .scale(x)
+    this.xAxis = d3.svg.axis()
+        .scale(this.x)
         .orient("bottom").ticks(5);
 
-    var yAxis = d3.svg.axis()
-        .scale(y)
+    this.yAxis = d3.svg.axis()
+        .scale(this.y)
         .orient("left").ticks(5);
 
-    var line = d3.svg.line()
+    this.line = d3.svg.line()
                 .interpolate('cardinal') 
-                .x(function(d) { return x(d.date); })
-                .y(function(d) { return y(d.value); });
+                .x(function(d) { return this.x(d.date); })
+                .y(function(d) { return this.y(d.value); });
 
-    var svg = d3.select('#chart')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); //make space for axes
+    this.svg = function () {
+        this.svg = d3.select('#chart')
+            .attr('width', this.width + this.margin.left + this.margin.right)
+            .attr('height', this.height + this.margin.top + this.margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+    };
 
     //grid generator
-    function make_x_axis() {        
+    this.make_x_axis = function() {        
         return d3.svg.axis()
-            .scale(x)
+            .scale(this.x)
             .orient("bottom")
             .ticks(5)
     };
-    function make_y_axis() {        
+    this.make_y_axis = function() {        
         return d3.svg.axis()
-            .scale(y)
+            .scale(this.y)
             .orient("left")
             .ticks(5)
     };
 
-    //fetch the data
-    d3.json("data.json", function(data) {
+    this.render = function (data) {
 
+        this.svg();
 
         data.forEach(function(metric) {
 
             //convert the date format for each metric
             metric.values.forEach(function(value) {
-                value.date = parseDate(value.date);
-            });
+                value.date = this.parseDate(value.date);
+            }, this);
 
             //scale for each metric
-            x.domain(d3.extent(metric.values, function(d) { return d.date; }));
-            y.domain([0, d3.max(metric.values, function(d) { return d.value; })]);
+            this.x.domain(d3.extent(metric.values, function(d) { return d.date; }));
+            this.y.domain([0, d3.max(metric.values, function(d) { return d.value; })]);
 
             //draw each metric
-            svg.append("path")
+            this.svg.append("path")
                 .attr("class", "line")
                 .style("stroke", metric.color)
-                .attr("d", line(metric.values));
-        });
+                .attr("d", this.line(metric.values));
 
+        }, this);
+  
         //axes
-        svg.append("g")
+        this.svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
-        svg.append("g")
+            .attr("transform", "translate(0," + this.height + ")")
+            .call(this.xAxis);
+        this.svg.append("g")
             .attr("class", "y axis")
-            .call(yAxis);
+            .call(this.yAxis);
 
         //ticks
-        svg.append("g")         
+        this.svg.append("g")         
             .attr("class", "grid")
-            .attr("transform", "translate(0," + height + ")")
-            .call(make_x_axis()
-                .tickSize(-height, 0, 0)
+            .attr("transform", "translate(0," + this.height + ")")
+            .call(this.make_x_axis()
+                .tickSize(-this.height, 0, 0)
                 .tickFormat("")
             );
-        svg.append("g")         
+        this.svg.append("g")         
             .attr("class", "grid")
-            .call(make_y_axis()
-                .tickSize(-width, 0, 0)
+            .call(this.make_y_axis()
+                .tickSize(-this.width, 0, 0)
                 .tickFormat("")
             );
-    });
+    }
+
+    this.load = function() {
+        d3.json("data.json", function (data) {
+            this.render(data);
+        }.bind(this));
+    };
+
+    this.draw = function () {
+        this.load();
+    };
+}
+
+$( document ).ready(function() {
+
+    chart = new Chart();
+    chart.draw();
+
 });
