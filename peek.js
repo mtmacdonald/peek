@@ -34,18 +34,24 @@ $( document ).ready(function() {
 
     //fetch the data
     d3.json("data.json", function(data) {
-        data.forEach(function(d) {
-            d.date = parseDate(d.date);
-            d.value = +d.value;
+
+
+        data.forEach(function(metric) {
+
+            //convert the date format for each metric
+            metric.values.forEach(function(value) {
+                value.date = parseDate(value.date);
+            });
+
+            //scale for each metric
+            x.domain(d3.extent(metric.values, function(d) { return d.date; }));
+            y.domain([0, d3.max(metric.values, function(d) { return d.value; })]);
+
+            //draw each metric
+            svg.append("path")
+                .attr("class", "line")
+                .attr("d", line(metric.values)); //before - .attr("d", line);
         });
-
-        // Scale the range of the data
-        x.domain(d3.extent(data, function(d) { return d.date; }));
-        y.domain([0, d3.max(data, function(d) { return d.value; })]);
-
-        svg.append("path")
-            .attr("class", "line")
-            .attr("d", line(data)); //before - .attr("d", line);
 
         //build axes
         svg.append("g")
@@ -55,6 +61,8 @@ $( document ).ready(function() {
         svg.append("g")
             .attr("class", "y axis")
             .call(yAxis);
-    })
+
+    });
+
 });
 

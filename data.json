@@ -1,18 +1,48 @@
 [
     {
-        "date": "26-Apr-12",
-        "value": "-0.21"
+        "metric": "Fuel",
+        "units": "tonnes",
+        "color": "blue",
+        "values": [
+            {
+                "date": "25-Apr-12",
+                "value": "5.2"
+            },
+            {
+                "date": "27-Apr-12",
+                "value": "1.43"
+            },
+            {
+                "date": "30-Apr-12",
+                "value": "1.38"
+            },
+            {
+                "date": "1-May-12",
+                "value": "4.14"
+            }
+        ]
     },
     {
-        "date": "27-Apr-12",
-        "value": "1.43"
-    },
-    {
-        "date": "30-Apr-12",
-        "value": "1.38"
-    },
-    {
-        "date": "1-May-12",
-        "value": "4.14"
+        "metric": "Urea",
+        "units": "litres",
+        "color": "red",
+        "values": [
+            {
+                "date": "25-Apr-12",
+                "value": "1.14"
+            },
+            {
+                "date": "27-Apr-12",
+                "value": "0.43"
+            },
+            {
+                "date": "30-Apr-12",
+                "value": "0.38"
+            },
+            {
+                "date": "1-May-12",
+                "value": "3.14"
+            }
+        ]
     }
 ]
