@@ -15,3 +15,11 @@
   font-family: sans-serif;
   font-size: 11px;
 }
+
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.grid path {
+    stroke-width: 0;
+}
