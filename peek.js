@@ -7,7 +7,7 @@
 $( document ).ready(function() {
 
     //chart dimensions
-    var margin = {top: 20, right: 20, bottom: 20, left: 20};
+    var margin = {top: 50, right: 50, bottom: 50, left: 50};
     var width = 600 - margin.left - margin.right;
     var height = 400 - margin.top - margin.bottom;
 

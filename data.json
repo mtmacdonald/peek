@@ -2,11 +2,11 @@
     {
         "metric": "Fuel",
         "units": "tonnes",
-        "color": "blue",
+        "color": "steelblue",
         "values": [
             {
                 "date": "25-Apr-12",
-                "value": "5.2"
+                "value": "6"
             },
             {
                 "date": "27-Apr-12",
@@ -25,7 +25,7 @@
     {
         "metric": "Urea",
         "units": "litres",
-        "color": "red",
+        "color": "firebrick",
         "values": [
             {
                 "date": "25-Apr-12",
