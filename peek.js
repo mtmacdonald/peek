@@ -68,7 +68,7 @@ $( document ).ready(function() {
             svg.append("path")
                 .attr("class", "line")
                 .style("stroke", metric.color)
-                .attr("d", line(metric.values)); //before - .attr("d", line);
+                .attr("d", line(metric.values));
         });
 
         //axes
