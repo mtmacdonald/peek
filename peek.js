@@ -34,19 +34,13 @@ function Chart() {
             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     };
 
-    //grid generator
-    this.make_x_axis = function() {        
-        return d3.svg.axis()
-            .scale(this.x)
-            .orient("bottom")
-            .ticks(5)
-    };
-    this.make_y_axis = function() {        
-        return d3.svg.axis()
-            .scale(this.y)
-            .orient("left")
-            .ticks(5)
-    };
+    this.render_line = function(metric) {
+        //draw each metric
+        this.svg.append("path")
+            .attr("class", "line")
+            .style("stroke", metric.color)
+            .attr("d", this.line(metric.values));
+    }
 
     this.render = function (data) {
 
@@ -63,11 +57,7 @@ function Chart() {
             this.x.domain(d3.extent(metric.values, function(d) { return d.date; }));
             this.y.domain([0, d3.max(metric.values, function(d) { return d.value; })]);
 
-            //draw each metric
-            this.svg.append("path")
-                .attr("class", "line")
-                .style("stroke", metric.color)
-                .attr("d", this.line(metric.values));
+            this.render_line(metric);
 
         }, this);
   
@@ -84,13 +74,13 @@ function Chart() {
         this.svg.append("g")         
             .attr("class", "grid")
             .attr("transform", "translate(0," + this.height + ")")
-            .call(this.make_x_axis()
+            .call(this.xAxis
                 .tickSize(-this.height, 0, 0)
                 .tickFormat("")
             );
         this.svg.append("g")         
             .attr("class", "grid")
-            .call(this.make_y_axis()
+            .call(this.yAxis
                 .tickSize(-this.width, 0, 0)
                 .tickFormat("")
             );
