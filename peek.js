@@ -1,12 +1,21 @@
 
 //For D3 help: https://leanpub.com/D3-Tips-and-Tricks/read#leanpub-auto-starting-with-a-basic-graph
 
-function Chart() {
+function Chart(container) {
 
-    this.margin = {top: 50, right: 50, bottom: 50, left: 50};
+    this.container = container;
+
+    this.controls;
+
+    this.legend;
+
+    this.plot;
+    this.svg;
+
+    this.margin = {top: 0, right: 20, bottom: 50, left: 50};
     this.width = 600 - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
-    this.svg;
+
 
     this.parseDate = d3.time.format("%d-%b-%y").parse;
 
@@ -26,16 +35,31 @@ function Chart() {
                 .x(function(d) { return this.x(d.date); })
                 .y(function(d) { return this.y(d.value); });
 
-    this.svg = function () {
-        this.svg = d3.select('#chart')
+
+    this.layout = function () {
+
+        this.plot = d3.select(this.container)
+                        .append("div")
+                        .attr("id", "plot");
+
+        this.legend = d3.select(this.container)
+                        .append("div")
+                        .attr("id", "legend")
+
+        this.controls = d3.select(this.container)
+                        .append("div")
+                        .attr("id", "controls");
+
+        this.svg = this.plot
+            .append("svg")
             .attr('width', this.width + this.margin.left + this.margin.right)
             .attr('height', this.height + this.margin.top + this.margin.bottom)
             .append("g")
             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
     };
 
     this.render_line = function(metric) {
-        //draw each metric
         this.svg.append("path")
             .attr("class", "line")
             .style("stroke", metric.color)
@@ -74,9 +98,18 @@ function Chart() {
             );
     }
 
+    this.append_to_legend = function(metric) {
+        var row = this.legend
+            .append("div");
+
+        row.append("span").attr("class", "key").style('background-color', metric.color);
+
+        row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
+    }
+
     this.render = function (data) {
 
-        this.svg();
+        this.layout();
 
         data.forEach(function(metric) {
 
@@ -91,8 +124,10 @@ function Chart() {
 
             this.render_line(metric);
 
+            this.append_to_legend(metric);
+
         }, this);
-  
+
         this.render_x_axis();
         this.render_y_axis();
 
@@ -113,7 +148,7 @@ function Chart() {
 
 $( document ).ready(function() {
 
-    chart = new Chart();
+    chart = new Chart("#chart");
     chart.draw();
 
 });
