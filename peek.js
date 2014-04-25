@@ -3,6 +3,8 @@
 
 function Chart(container) {
 
+    this.url;
+
     this.container = container;
 
     this.controls;
@@ -17,7 +19,7 @@ function Chart(container) {
     this.height = 400 - this.margin.top - this.margin.bottom;
 
 
-    this.parseDate = d3.time.format("%d-%b-%y").parse;
+    this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     this.x = d3.time.scale().range([0, this.width]);
     this.y = d3.scale.linear().range([this.height, 0]);
@@ -31,7 +33,7 @@ function Chart(container) {
         .orient("left").ticks(5);
 
     this.line = d3.svg.line()
-                .interpolate('cardinal') 
+                //.interpolate('cardinal') 
                 .x(function(d) { return this.x(d.date); })
                 .y(function(d) { return this.y(d.value); });
 
@@ -136,7 +138,7 @@ function Chart(container) {
     }
 
     this.load = function() {
-        d3.json("data.json", function (data) {
+        d3.json(this.url, function (data) {
             this.render(data);
         }.bind(this));
     };
@@ -149,6 +151,7 @@ function Chart(container) {
 $( document ).ready(function() {
 
     chart = new Chart("#chart");
+    chart.url = 'data.json';
     chart.draw();
 
 });
