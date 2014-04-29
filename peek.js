@@ -7,7 +7,7 @@ function Pie() {
     this.height = 300;
     this.radius = 150;
     this.innerRadius = 60;
-
+    this.labelRadius = 155;
     this.color = d3.scale.category20c();
 
     this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
@@ -21,7 +21,7 @@ function Pie() {
 
             row.append("span").attr("class", "key").style('background-color', this.color(i));
 
-            row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
+            row.append("span").text(metric.label).attr('class', 'key-text');
         }, this);
 
 
@@ -49,10 +49,10 @@ function Pie() {
             .data(this.pie)
             .enter()
             .append("g")
-            .attr("class", "slice")  
+            .attr("class", "slice")
             .append("path")
             .attr("fill", function(d, i) { return that.color(i); } ) 
-            .attr("d", this.arc);                              
+            .attr("d", this.arc);
      };
 
     this.load = function() {
@@ -226,26 +226,22 @@ $( document ).ready(function() {
 
     data_one = [
         {
-            "metric": "Fuel",
-            "units": "tonnes",
+            "label": "Fuel",
             "value": "55"
         },
         {
-            "metric": "Urea",
-            "units": "litres",
+            "label": "Urea",
             "value": "10"
         }
     ];
 
     data_two = [
         {
-            "metric": "Fuel",
-            "units": "tonnes",
+            "label": "Fuel",
             "value": "30"
         },
         {
-            "metric": "Urea",
-            "units": "litres",
+            "label": "Urea",
             "value": "30"
         }
     ];
