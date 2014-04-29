@@ -1,0 +1,14 @@
+[
+    {
+        "metric": "Fuel",
+        "units": "tonnes",
+        "color": "steelblue",
+        "value": "55"
+    },
+    {
+        "metric": "Urea",
+        "units": "litres",
+        "color": "firebrick",
+        "value": "10"
+    }
+]
