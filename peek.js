@@ -6,8 +6,7 @@ function Pie() {
     this.width = 300;
     this.height = 300;
     this.radius = 150;
-    this.innerRadius = 0;//60;
-    //this.labelRadius = 155;
+    this.innerRadius = 60;
     this.color = d3.scale.category20c();
 
     this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
@@ -23,8 +22,6 @@ function Pie() {
 
             row.append("span").text(metric.label).attr('class', 'key-text');
         }, this);
-
-
 
     }
 
@@ -62,7 +59,12 @@ function Pie() {
                 return "translate(" + self.arc.centroid(d) + ")";
             })
             .attr("text-anchor", "middle")
-            .text(function(d, i) { return data[i].label; });
+            .text(function(d, i) { 
+                var value = data[i].value;
+                if (value > 10.0) {
+                   return data[i].value+'%';
+                }
+            });
     };
 
     this.load = function() {
