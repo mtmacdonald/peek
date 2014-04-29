@@ -223,17 +223,15 @@ $( document ).ready(function() {
 
     //in the pie charts we don't fetch the data directly from JSON
 
-    data = [
+    data_one = [
         {
             "metric": "Fuel",
             "units": "tonnes",
-            "color": "steelblue",
             "value": "55"
         },
         {
             "metric": "Urea",
             "units": "litres",
-            "color": "firebrick",
             "value": "10"
         }
     ];
@@ -242,20 +240,18 @@ $( document ).ready(function() {
         {
             "metric": "Fuel",
             "units": "tonnes",
-            "color": "steelblue",
             "value": "30"
         },
         {
             "metric": "Urea",
             "units": "litres",
-            "color": "firebrick",
             "value": "30"
         }
     ];
 
     chart = new Pie;
-    chart.render("#pie-one", data);
+    chart.render("#pie-one", data_one);
     chart.render("#pie-two", data_two);
-    chart.legend("#pie-legend", data);
+    chart.legend("#pie-legend", data_one);
 
 });
