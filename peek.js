@@ -6,10 +6,11 @@ function Pie() {
     this.width = 300;
     this.height = 300;
     this.radius = 150;
+    this.innerRadius = 60;
 
     this.color = d3.scale.category20c();
 
-    this.arc = d3.svg.arc().outerRadius(this.radius);
+    this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
     this.pie = d3.layout.pie().value(function(d) { return d.value; });
 
     this.legend = function(container, data) {
