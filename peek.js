@@ -61,8 +61,8 @@ function Pie() {
             .attr("text-anchor", "middle")
             .text(function(d, i) { 
                 var value = data[i].value;
-                if (value > 10.0) {
-                   return data[i].value+'%';
+                if (value > 3.0) {
+                   return Math.round(data[i].value)+'%';
                 }
             });
     };
