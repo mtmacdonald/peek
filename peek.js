@@ -14,11 +14,11 @@ function Pie() {
 
     this.legend = function(container, data) {
 
-        data.forEach(function(metric) {
+        data.forEach(function(metric, i) {
 
             var row = d3.select(container).append("div");
 
-            row.append("span").attr("class", "key").style('background-color', metric.color);
+            row.append("span").attr("class", "key").style('background-color', this.color(i));
 
             row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
         }, this);
