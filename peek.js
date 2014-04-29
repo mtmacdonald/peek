@@ -1,43 +1,39 @@
 
 //For D3 help: https://leanpub.com/D3-Tips-and-Tricks/read#leanpub-auto-starting-with-a-basic-graph
 
-function Pie(container) {
+function Pie() {
 
-    this.url;
-
-    this.container = container;
-
-    this.controls;
-
-    this.legend;
-
-    this.plot;
-    this.svg;
-
-    this.width = 600;
-    this.height = 400;
+    this.width = 300;
+    this.height = 300;
     this.radius = 150;
-
-
 
     this.color = d3.scale.category20c();
 
     this.arc = d3.svg.arc().outerRadius(this.radius);
     this.pie = d3.layout.pie().value(function(d) { return d.value; });
 
+    this.legend = function(container, data) {
 
-    this.layout = function () {
-        this.plot = d3.select(this.container)
-                        .append("div")
-                        .attr("id", "plot");
+        data.forEach(function(metric) {
 
-        this.legend = d3.select(this.container)
-                        .append("div")
-                        .attr("id", "legend")
+            var row = d3.select(container).append("div");
 
-        this.controls = d3.select(this.container)
+            row.append("span").attr("class", "key").style('background-color', metric.color);
+
+            row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
+        }, this);
+
+
+
+    }
+
+    this.render = function (container, data) {
+
+        var that = this;
+
+        this.plot = d3.select(container)
                         .append("div")
-                        .attr("id", "controls");
+                        .attr("class", "plotbox");
 
         this.svg = this.plot
             .append("svg")
@@ -45,28 +41,6 @@ function Pie(container) {
             .attr("height", this.height)
             .append("g")
             .attr("transform", "translate(" + this.radius + "," + this.radius + ")");
-    };
-
-    this.append_to_legend = function(metric) {
-
-        var row = this.legend
-            .append("div");
-
-        row.append("span").attr("class", "key").style('background-color', metric.color);
-
-        row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
-
-    }
-
-    this.render = function (data) {
-
-        var that = this;
-        this.layout();
-
-        data.forEach(function(metric) {
-        //    this.render_pie(metric);
-            this.append_to_legend(metric);
-        }, this);
 
         this.svg.data([data]);
      
@@ -243,11 +217,45 @@ function Trend(container) {
 $( document ).ready(function() {
 
     chart = new Trend("#trend-chart");
-    chart.url = 'data.json';
+    chart.url = 'trend.json';
     chart.draw();
 
-    chart = new Pie("#pie-chart");
-    chart.url = 'pie.json';
-    chart.draw();
+
+    //in the pie charts we don't fetch the data directly from JSON
+
+    data = [
+        {
+            "metric": "Fuel",
+            "units": "tonnes",
+            "color": "steelblue",
+            "value": "55"
+        },
+        {
+            "metric": "Urea",
+            "units": "litres",
+            "color": "firebrick",
+            "value": "10"
+        }
+    ];
+
+    data_two = [
+        {
+            "metric": "Fuel",
+            "units": "tonnes",
+            "color": "steelblue",
+            "value": "30"
+        },
+        {
+            "metric": "Urea",
+            "units": "litres",
+            "color": "firebrick",
+            "value": "30"
+        }
+    ];
+
+    chart = new Pie;
+    chart.render("#pie-one", data);
+    chart.render("#pie-two", data_two);
+    chart.legend("#pie-legend", data);
 
 });

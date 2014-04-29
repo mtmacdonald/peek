@@ -42,3 +42,9 @@
 .key-text {
 	padding-left: 5px;
 }
+
+/*pie charts*/
+.piebox, .legendbox {
+  padding: 20px;
+  float: left;
+}
