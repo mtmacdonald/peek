@@ -6,8 +6,8 @@ function Pie() {
     this.width = 300;
     this.height = 300;
     this.radius = 150;
-    this.innerRadius = 60;
-    this.labelRadius = 155;
+    this.innerRadius = 0;//60;
+    //this.labelRadius = 155;
     this.color = d3.scale.category20c();
 
     this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
@@ -30,7 +30,7 @@ function Pie() {
 
     this.render = function (container, data) {
 
-        var that = this;
+        var self = this;
 
         this.plot = d3.select(container)
                         .append("div")
@@ -38,22 +38,32 @@ function Pie() {
 
         this.svg = this.plot
             .append("svg")
-            .attr("width", this.width)
-            .attr("height", this.height)
+                .attr("width", this.width)
+                .attr("height", this.height)
             .append("g")
-            .attr("transform", "translate(" + this.radius + "," + this.radius + ")");
+                .attr("transform", "translate(" + this.radius + "," + this.radius + ")")
 
         this.svg.data([data]);
-     
+
         var arcs = this.svg.selectAll("g.slice")
-            .data(this.pie)
+            .data(self.pie)
             .enter()
-            .append("g")
-            .attr("class", "slice")
-            .append("path")
-            .attr("fill", function(d, i) { return that.color(i); } ) 
-            .attr("d", this.arc);
-     };
+                .append("svg:g")
+                    .attr("class", "slice");
+
+        arcs.append("svg:path")
+                .attr("fill", function(d, i) { return self.color(i); } ) 
+                .attr("d", self.arc);
+
+        arcs.append("svg:text")
+                .attr("transform", function(d) { 
+                d.innerRadius = 0;
+                d.outerRadius = self.radius;
+                return "translate(" + self.arc.centroid(d) + ")";
+            })
+            .attr("text-anchor", "middle")
+            .text(function(d, i) { return data[i].label; });
+    };
 
     this.load = function() {
         d3.json(this.url, function (data) {
