@@ -227,15 +227,92 @@ function Trend(container) {
     };
 }
 
+function Compare(container) {
+
+    this.width = 800;
+    this.rightPadding = 300;
+    this.height = 300;
+    this.bottomPadding = 100;
+    this.url;
+    this.color = d3.scale.category20c();
+
+    this.x = d3.scale.linear().range([this.width-this.rightPadding, 0]);
+
+    this.xAxis = d3.svg.axis()
+        .scale(this.x)
+        .orient("bottom").ticks(5);
+
+    this.render = function (data) {
+            var self = this;
+
+            var max = d3.max(data, function(d) { return d.value;} );
+
+            var spacing = 10;
+            var dx = (this.width - this.rightPadding) / max;
+            var dy = ((this.height-this.bottomPadding) / data.length) - spacing;
+
+            this.plot = d3.select(container)
+                            .append("div")
+                            .attr("class", "plotbox");
+
+            this.svg = this.plot
+                .append("svg")
+                    .attr("width", this.width)
+                    .attr("height", this.height)
+    
+            //bars
+            var bars = this.svg.selectAll(".bar")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr("x", function(d, i) {return 0;})
+                .attr("y", function(d, i) {return dy*i + spacing*i;})
+                .attr("width", function(d, i) {return dx*d.value})
+                .attr("height", dy)
+                .attr("fill", this.color(1) );
+
+            //labels
+            var text = this.svg.selectAll("text")
+                .data(data)
+                .enter()
+                .append("text")
+                .attr("class", function(d, i) {return "label " + d.label;})
+                .attr("x", function(d, i) {return (dx*d.value)+5})
+                .attr("y", function(d, i) {return dy*i + spacing*i + 15;})
+                .text( function(d) {return d.label + " (" + d.value  + ")";})
+                .attr("font-size", "15px")
+                .style("font-weight", "bold");
+
+            //xaxis
+            this.svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + (this.height-this.bottomPadding) + ")")
+                .call(this.xAxis);
+
+    };
+
+    this.load = function() {
+        d3.json(this.url, function (data) {
+            this.render(data);
+        }.bind(this));
+    };  
+
+    this.draw = function () {
+        this.load();
+    };
+}
+
 $( document ).ready(function() {
 
     chart = new Trend("#trend-chart");
     chart.url = 'trend.json';
     chart.draw();
 
+    chart = new Compare('#compare-chart');
+    chart.url = 'bar.json';
+    chart.draw();
 
     //in the pie charts we don't fetch the data directly from JSON
-
     data_one = [
         {
             "label": "Fuel",
