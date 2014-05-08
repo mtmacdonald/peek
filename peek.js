@@ -229,18 +229,14 @@ function Trend(container) {
 
 function Compare(container) {
 
-    this.width = 800;
-    this.rightPadding = 300;
+    this.width = 950;
+    this.rightPadding = 100;
     this.height = 300;
-    this.bottomPadding = 100;
+    this.bottomPadding = 0; //only meeded when displaying x-axis
     this.url;
     this.color = d3.scale.category20c();
 
     this.x = d3.scale.linear().range([this.width-this.rightPadding, 0]);
-
-    this.xAxis = d3.svg.axis()
-        .scale(this.x)
-        .orient("bottom").ticks(5);
 
     this.render = function (data) {
             var self = this;
@@ -276,19 +272,35 @@ function Compare(container) {
                 .data(data)
                 .enter()
                 .append("text")
-                .attr("class", function(d, i) {return "label " + d.label;})
-                .attr("x", function(d, i) {return (dx*d.value)+5})
-                .attr("y", function(d, i) {return dy*i + spacing*i + 15;})
-                .text( function(d) {return d.label + " (" + d.value  + ")";})
-                .attr("font-size", "15px")
-                .style("font-weight", "bold");
+                    .attr('class', 'label')
+                    .attr("x", function(d, i) {return (dx*d.value)+5})
+                    .attr("y", function(d, i) {return dy*i + spacing*i + (dy/2) + 4;}) //4 accounts for text height
+                    .text( function(d) {return d.label;});
 
-            //xaxis
-            this.svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + (this.height-this.bottomPadding) + ")")
-                .call(this.xAxis);
-
+            //text values
+            var text = this.svg.selectAll(".compare-chart-values")
+                .data(data)
+                .enter()
+                .append("text")
+                    .attr('class', 'compare-chart-values')
+                    .text( function(d) { return d.value.toFixed(2); })
+                    .attr("x", function(d, i) {
+                        //position the values just left of the end of the bars
+                        var width = this.getComputedTextLength() + 10;
+                        return (dx*d.value)-(width);
+                    })
+                    .attr("y", function(d, i) {return dy*i + spacing*i + (dy/2) + 4;}) //4 accounts for text height
+                    .style("display", function(d, i){
+                        //only display the values when there is space inside the bar
+                        var width = this.getComputedTextLength() + 10;
+                        if (dx*d.value < width) {
+                            return "none";
+                        } else {
+                            return "initial";
+                        }
+                    })
+                    .style("font-weight", "bold")
+                    .attr("fill", "white");
     };
 
     this.load = function() {
@@ -301,7 +313,6 @@ function Compare(container) {
         this.load();
     };
 }
-
 $( document ).ready(function() {
 
     chart = new Trend("#trend-chart");
@@ -316,22 +327,22 @@ $( document ).ready(function() {
     data_one = [
         {
             "label": "Fuel",
-            "value": "55"
+            "value": 55.05
         },
         {
             "label": "Urea",
-            "value": "10"
+            "value": 10.07
         }
     ];
 
     data_two = [
         {
             "label": "Fuel",
-            "value": "30"
+            "value": 30.05
         },
         {
             "label": "Urea",
-            "value": "30"
+            "value": 30.07
         }
     ];
 

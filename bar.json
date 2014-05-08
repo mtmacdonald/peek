@@ -1,10 +1,10 @@
 [
     {
         "label": "Fuel",
-        "value": "55"
+        "value": 55
     },
     {
         "label": "Urea",
-        "value": "10"
+        "value": 10
     }
 ]
