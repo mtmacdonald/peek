@@ -79,7 +79,6 @@ function Pie() {
 
 }
 
-
 function Trend(container) {
 
     this.url;
@@ -236,7 +235,7 @@ function Compare(container) {
     this.url;
     this.color = d3.scale.category20c();
 
-    this.x = d3.scale.linear().range([this.width-this.rightPadding, 0]);
+    //this.x = d3.scale.linear().range([this.width-this.rightPadding, 0]);
 
     this.render = function (data) {
             var self = this;
@@ -313,10 +312,161 @@ function Compare(container) {
         this.load();
     };
 }
+
+function Stacked(container) {
+
+    this.url;
+
+    this.container = container;
+
+    this.controls;
+
+    this.legend;
+
+    this.plot;
+    this.svg;
+
+    this.margin = {top: 0, right: 20, bottom: 50, left: 50};
+    this.width = 600 - this.margin.left - this.margin.right;
+    this.height = 400 - this.margin.top - this.margin.bottom;
+
+    this.color = d3.scale.category20c();
+
+    this.heightCounter = {};
+
+    this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
+
+    this.x = d3.time.scale().range([0, this.width]);
+    this.y = d3.scale.linear().range([0, this.height]);
+
+    this.xAxis = d3.svg.axis()
+        .scale(this.x)
+        .orient("bottom").ticks(5);
+
+    this.yAxis = d3.svg.axis()
+        .scale(this.y)
+        .orient("left").ticks(5);
+
+    this.layout = function () {
+
+        this.plot = d3.select(this.container)
+                        .append("div")
+                        .attr("id", "plot");
+
+        this.legend = d3.select(this.container)
+                        .append("div")
+                        .attr("id", "legend")
+
+        this.controls = d3.select(this.container)
+                        .append("div")
+                        .attr("id", "controls");
+
+        this.svg = this.plot
+            .append("svg")
+            .attr('width', this.width + this.margin.left + this.margin.right)
+            .attr('height', this.height + this.margin.top + this.margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+    };
+
+    this.render_x_axis = function() {
+        this.svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + this.height + ")")
+            .call(this.xAxis);
+    }
+
+    this.render_y_axis = function() {
+        this.svg.append("g")
+            .attr("class", "y axis")
+            .call(this.yAxis);
+    }
+
+    this.append_to_legend = function(metric) {
+        var row = this.legend
+            .append("div");
+
+        row.append("span").attr("class", "key").style('background-color', metric.color);
+
+        row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
+    }
+
+    this.render = function (data) {
+
+        this.layout();
+
+        //for y-axis scale, get the sum of the maximum of each dataset (because we stack datasets)
+        var yMax = [];
+        data.forEach(function(metric){
+            var metricMax = d3.max(metric.values, function(d) { return d.value; }); //local maximum
+            yMax.push(metricMax);
+        }, this);
+        yMax = d3.sum(yMax); //global maximum
+        this.y.domain([0, yMax]);
+
+        //for x-axis, merge all datasets and get the extent of the dates
+        var merged = [];
+        data.forEach(function(metric) {
+            //first parse dates
+            metric.values.forEach(function(value) {
+                value.date = this.parseDate(value.date);
+            }, this);
+            //then merge into one array
+            merged = merged.concat(metric.values);
+        }, this);
+        this.x.domain(d3.extent(merged, function(d) { return d.date; }));
+
+        data.forEach(function(metric, i) {
+
+            //render bar
+            metric.values.forEach(function(value) {
+
+                //accumulate the heights over each metric
+                //if (this.heightCounter.hasOwnProperty(value.date)) {
+                //    this.heightCounter[value.date] += value.value;
+                //} else {
+                //    this.heightCounter[value.date] = value.value;
+                //}
+
+                var heightShift = this.height - this.y(value.value)/* - this.heightCounter[value.date]*/;
+                console.log(this.heightCounter[value.date]);
+                this.svg.append("rect")
+                    .attr("x", this.x(value.date))
+                    .attr("width", 10)
+                    .attr("y", 0) //this.heightCounter[value.date]
+                    .attr("height", this.y(value.value))
+                    .attr("fill", metric.color)
+                    .attr("transform", "translate(" + 0 + "," + heightShift + ")")
+
+            }, this);
+            this.append_to_legend(metric);
+
+        }, this);
+
+        this.render_x_axis();
+        this.render_y_axis();
+    }
+
+    this.load = function() {
+        d3.json(this.url, function (data) {
+            this.render(data);
+        }.bind(this));
+    };
+
+    this.draw = function () {
+        this.load();
+    };
+}
+
 $( document ).ready(function() {
 
     chart = new Trend("#trend-chart");
     chart.url = 'trend.json';
+    chart.draw();
+
+    chart = new Stacked("#stacked-bar-chart");
+    chart.url = 'stacked.json';
     chart.draw();
 
     chart = new Compare('#compare-chart');
@@ -350,5 +500,4 @@ $( document ).ready(function() {
     chart.render("#pie-one", data_one);
     chart.render("#pie-two", data_two);
     chart.legend("#pie-legend", data_one);
-
 });
