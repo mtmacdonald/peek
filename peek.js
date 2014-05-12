@@ -337,14 +337,15 @@ function Stacked(container) {
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     this.x = d3.time.scale().range([0, this.width]);
-    this.y = d3.scale.linear().range([0, this.height]);
+    this.y = d3.scale.linear().range([this.height, 0]);
+    this.yAxisScale = d3.scale.linear().range([0, this.height]);
 
     this.xAxis = d3.svg.axis()
         .scale(this.x)
         .orient("bottom").ticks(5);
 
     this.yAxis = d3.svg.axis()
-        .scale(this.y)
+        .scale(this.yAxisScale)
         .orient("left").ticks(5);
 
     this.layout = function () {
@@ -403,7 +404,8 @@ function Stacked(container) {
             yMax.push(metricMax);
         }, this);
         yMax = d3.sum(yMax); //global maximum
-        this.y.domain([0, yMax]);
+        this.y.domain([yMax, 0]);
+        this.yAxisScale.domain([yMax, 0]);
 
         //for x-axis, merge all datasets and get the extent of the dates
         var merged = [];
@@ -428,9 +430,8 @@ function Stacked(container) {
                 //} else {
                 //    this.heightCounter[value.date] = value.value;
                 //}
-
+                console.log(this.y(value.value));
                 var heightShift = this.height - this.y(value.value)/* - this.heightCounter[value.date]*/;
-                console.log(this.heightCounter[value.date]);
                 this.svg.append("rect")
                     .attr("x", this.x(value.date))
                     .attr("width", 10)
