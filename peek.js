@@ -96,7 +96,6 @@ function Trend(container) {
     this.width = 600 - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
 
-
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     this.x = d3.time.scale().range([0, this.width]);
@@ -313,7 +312,10 @@ function Compare(container) {
     };
 }
 
-function Stacked(container) {
+function Stacked(container, width, height) {
+
+    width = typeof width !== 'undefined' ? width : 600; //default
+    height = typeof height !== 'undefined' ? height : 400; //default
 
     this.url;
 
@@ -327,8 +329,8 @@ function Stacked(container) {
     this.svg;
 
     this.margin = {top: 0, right: 20, bottom: 50, left: 50};
-    this.width = 600 - this.margin.left - this.margin.right;
-    this.height = 400 - this.margin.top - this.margin.bottom;
+    this.width = width - this.margin.left - this.margin.right;
+    this.height = height - this.margin.top - this.margin.bottom;
 
     this.color = d3.scale.category20c();
 
@@ -392,7 +394,7 @@ function Stacked(container) {
     }
 
     this.render = function (data) {
-
+        console.log(this.width);
         this.layout();
 
         //for y-axis scale, iterate the all values and find the total for the biggest stack
