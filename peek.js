@@ -397,13 +397,17 @@ function Stacked(container) {
 
         this.layout();
 
-        //for y-axis scale, get the sum of the maximum of each dataset (because we stack datasets)
-        var yMax = [];
-        data.forEach(function(metric){
-            var metricMax = d3.max(metric.values, function(d) { return d.value; }); //local maximum
-            yMax.push(metricMax);
+        //for y-axis scale, iterate the all values and the total for the biggest stack
+        var maximums = {};
+        data.forEach(function(metric) {
+            metric.values.forEach(function(value) {
+                if (!maximums.hasOwnProperty(value.date)) {
+                    maximums[value.date] = 0;
+                }
+                maximums[value.date] += value.value;
+            }, this);
         }, this);
-        yMax = d3.sum(yMax); //global maximum
+        var yMax = d3.max(d3.values(maximums));
         this.y.domain([yMax, 0]);
         this.yAxisScale.domain([yMax, 0]);
 
