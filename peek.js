@@ -421,25 +421,24 @@ function Stacked(container) {
 
         data.forEach(function(metric, i) {
 
-            //render bar
             metric.values.forEach(function(value) {
 
-                //accumulate the heights over each metric
-                //if (this.heightCounter.hasOwnProperty(value.date)) {
-                //    this.heightCounter[value.date] += value.value;
-                //} else {
-                //    this.heightCounter[value.date] = value.value;
-                //}
-                console.log(this.y(value.value));
-                var heightShift = this.height - this.y(value.value)/* - this.heightCounter[value.date]*/;
+                if (!this.heightCounter.hasOwnProperty(value.date)) {
+                    this.heightCounter[value.date] = 0;
+                }
+
+                var heightShift = this.height - this.y(value.value)
                 this.svg.append("rect")
                     .attr("x", this.x(value.date))
                     .attr("width", 10)
-                    .attr("y", 0) //this.heightCounter[value.date]
+                    .attr("y", this.heightCounter[value.date])
                     .attr("height", this.y(value.value))
                     .attr("fill", metric.color)
                     .attr("transform", "translate(" + 0 + "," + heightShift + ")")
 
+                if (this.heightCounter.hasOwnProperty(value.date)) {
+                    this.heightCounter[value.date] -= this.y(value.value);
+                }
             }, this);
             this.append_to_legend(metric);
 
