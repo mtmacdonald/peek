@@ -332,8 +332,6 @@ function Stacked(container) {
 
     this.color = d3.scale.category20c();
 
-    this.heightCounter = {};
-
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     this.x = d3.time.scale().range([0, this.width]);
@@ -397,7 +395,7 @@ function Stacked(container) {
 
         this.layout();
 
-        //for y-axis scale, iterate the all values and the total for the biggest stack
+        //for y-axis scale, iterate the all values and find the total for the biggest stack
         var maximums = {};
         data.forEach(function(metric) {
             metric.values.forEach(function(value) {
@@ -411,7 +409,7 @@ function Stacked(container) {
         this.y.domain([yMax, 0]);
         this.yAxisScale.domain([yMax, 0]);
 
-        //for x-axis, merge all datasets and get the extent of the dates
+        //for x-axis scale, merge all datasets and get the extent of the dates
         var merged = [];
         data.forEach(function(metric) {
             //first parse dates
@@ -423,25 +421,27 @@ function Stacked(container) {
         }, this);
         this.x.domain(d3.extent(merged, function(d) { return d.date; }));
 
+        //iterate and plot each value, keeping track of the accumalated stack height
+        var heightCounter = {};
         data.forEach(function(metric, i) {
 
             metric.values.forEach(function(value) {
 
-                if (!this.heightCounter.hasOwnProperty(value.date)) {
-                    this.heightCounter[value.date] = 0;
+                if (!heightCounter.hasOwnProperty(value.date)) {
+                    heightCounter[value.date] = 0;
                 }
 
                 var heightShift = this.height - this.y(value.value)
                 this.svg.append("rect")
                     .attr("x", this.x(value.date))
                     .attr("width", 10)
-                    .attr("y", this.heightCounter[value.date])
+                    .attr("y", heightCounter[value.date])
                     .attr("height", this.y(value.value))
                     .attr("fill", metric.color)
                     .attr("transform", "translate(" + 0 + "," + heightShift + ")")
 
-                if (this.heightCounter.hasOwnProperty(value.date)) {
-                    this.heightCounter[value.date] -= this.y(value.value);
+                if (heightCounter.hasOwnProperty(value.date)) {
+                    heightCounter[value.date] -= this.y(value.value);
                 }
             }, this);
             this.append_to_legend(metric);
