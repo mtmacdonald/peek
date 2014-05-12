@@ -328,7 +328,7 @@ function Stacked(container, width, height) {
     this.plot;
     this.svg;
 
-    this.margin = {top: 0, right: 20, bottom: 50, left: 50};
+    this.margin = {top: 5, right: 20, bottom: 20, left: 50};
     this.width = width - this.margin.left - this.margin.right;
     this.height = height - this.margin.top - this.margin.bottom;
 
