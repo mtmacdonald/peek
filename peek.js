@@ -394,7 +394,6 @@ function Stacked(container, width, height) {
     }
 
     this.render = function (data) {
-        console.log(this.width);
         this.layout();
 
         //for y-axis scale, iterate the all values and find the total for the biggest stack
@@ -435,8 +434,8 @@ function Stacked(container, width, height) {
 
                 var heightShift = this.height - this.y(value.value)
                 this.svg.append("rect")
-                    .attr("x", this.x(value.date))
-                    .attr("width", 10)
+                    .attr("x", this.x(value.date) - 2)
+                    .attr("width", 5)
                     .attr("y", heightCounter[value.date])
                     .attr("height", this.y(value.value))
                     .attr("fill", metric.color)
