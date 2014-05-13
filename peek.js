@@ -79,7 +79,10 @@ function Pie() {
 
 }
 
-function Trend(container) {
+function Trend(container, width, height) {
+
+    width = typeof width !== 'undefined' ? width : 600; //default
+    height = typeof height !== 'undefined' ? height : 400; //default
 
     this.url;
 
@@ -92,9 +95,11 @@ function Trend(container) {
     this.plot;
     this.svg;
 
+    this.color = d3.scale.category20c();
+
     this.margin = {top: 0, right: 20, bottom: 50, left: 50};
-    this.width = 600 - this.margin.left - this.margin.right;
-    this.height = 400 - this.margin.top - this.margin.bottom;
+    this.width = width - this.margin.left - this.margin.right;
+    this.height = height - this.margin.top - this.margin.bottom;
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
@@ -110,7 +115,7 @@ function Trend(container) {
         .orient("left").ticks(5);
 
     this.line = d3.svg.line()
-                //.interpolate('cardinal') 
+                .interpolate('basis') 
                 .x(function(d) { return this.x(d.date); })
                 .y(function(d) { return this.y(d.value); });
 
@@ -138,10 +143,10 @@ function Trend(container) {
 
     };
 
-    this.render_line = function(metric) {
+    this.render_line = function(metric, i) {
         this.svg.append("path")
             .attr("class", "line")
-            .style("stroke", metric.color)
+            .style("stroke", this.color(i))
             .attr("d", this.line(metric.values));
     }
 
@@ -177,11 +182,11 @@ function Trend(container) {
             );
     }
 
-    this.append_to_legend = function(metric) {
+    this.append_to_legend = function(metric, i) {
         var row = this.legend
             .append("div");
 
-        row.append("span").attr("class", "key").style('background-color', metric.color);
+        row.append("span").attr("class", "key").style('background-color', this.color(i));
 
         row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
     }
@@ -190,7 +195,7 @@ function Trend(container) {
 
         this.layout();
 
-        data.forEach(function(metric) {
+        data.forEach(function(metric, i) {
 
             //convert the date format for each metric
             metric.values.forEach(function(value) {
@@ -201,9 +206,9 @@ function Trend(container) {
             this.x.domain(d3.extent(metric.values, function(d) { return d.date; }));
             this.y.domain([0, d3.max(metric.values, function(d) { return d.value; })]);
 
-            this.render_line(metric);
+            this.render_line(metric, i);
 
-            this.append_to_legend(metric);
+            this.append_to_legend(metric, i);
 
         }, this);
 
@@ -463,6 +468,7 @@ function Stacked(container, width, height) {
         this.load();
     };
 }
+
 
 $( document ).ready(function() {
 
