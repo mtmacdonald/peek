@@ -188,21 +188,32 @@ function Trend(container, width, height) {
 
     this.render = function (data) {
 
-        data.forEach(function(metric, i) {
-
-            //convert the date format for each metric
+        //for x-axis scale, merge all datasets and get the extent of the dates
+        var merged = [];
+        data.forEach(function(metric) {
+            //first parse dates
             metric.values.forEach(function(value) {
                 value.date = this.parseDate(value.date);
             }, this);
+            //then merge into one array
+            merged = merged.concat(metric.values);
+        }, this);
+        this.x.domain(d3.extent(merged, function(d) { return d.date; }));
 
-            //scale for each metric
-            this.x.domain(d3.extent(metric.values, function(d) { return d.date; }));
-            this.y.domain([0, d3.max(metric.values, function(d) { return d.value; })]);
+        //for y-axis scale, get the minimum and maximum for each metric
+        var max = 0;
+        data.forEach(function(metric, i) {
+            var localMax = d3.max(metric.values, function(d) { return d.value; });
+            if (localMax > max) {
+                max = localMax;
+            }
+        }, this);
+        this.y.domain([0, max]);
 
+        //plot values
+        data.forEach(function(metric, i) {
             this.render_line(metric, i);
-
             this.append_to_legend(metric, i);
-
         }, this);
 
         this.render_x_axis();
