@@ -1,7 +1,7 @@
 
 //For D3 help: https://leanpub.com/D3-Tips-and-Tricks/read#leanpub-auto-starting-with-a-basic-graph
 
-function Pie() {
+function Pie(container) {
 
     this.width = 300;
     this.height = 300;
@@ -11,6 +11,17 @@ function Pie() {
 
     this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
     this.pie = d3.layout.pie().value(function(d) { return d.value; });
+
+        this.plot = d3.select(container)
+                        .append("div")
+                        .attr("class", "plotbox");
+
+        this.svg = this.plot
+            .append("svg")
+                .attr("width", this.width)
+                .attr("height", this.height)
+            .append("g")
+                .attr("transform", "translate(" + this.radius + "," + this.radius + ")");
 
     this.legend = function(container, data) {
 
@@ -25,20 +36,9 @@ function Pie() {
 
     }
 
-    this.render = function (container, data) {
+    this.render = function (data) {
 
         var self = this;
-
-        this.plot = d3.select(container)
-                        .append("div")
-                        .attr("class", "plotbox");
-
-        this.svg = this.plot
-            .append("svg")
-                .attr("width", this.width)
-                .attr("height", this.height)
-            .append("g")
-                .attr("transform", "translate(" + this.radius + "," + this.radius + ")")
 
         this.svg.data([data]);
 
@@ -119,29 +119,24 @@ function Trend(container, width, height) {
                 .x(function(d) { return this.x(d.date); })
                 .y(function(d) { return this.y(d.value); });
 
+    this.plot = d3.select(this.container)
+                    .append("div")
+                    .attr("id", "plot");
 
-    this.layout = function () {
+    this.legend = d3.select(this.container)
+                    .append("div")
+                    .attr("id", "legend")
 
-        this.plot = d3.select(this.container)
-                        .append("div")
-                        .attr("id", "plot");
+    this.controls = d3.select(this.container)
+                    .append("div")
+                    .attr("id", "controls");
 
-        this.legend = d3.select(this.container)
-                        .append("div")
-                        .attr("id", "legend")
-
-        this.controls = d3.select(this.container)
-                        .append("div")
-                        .attr("id", "controls");
-
-        this.svg = this.plot
-            .append("svg")
-            .attr('width', this.width + this.margin.left + this.margin.right)
-            .attr('height', this.height + this.margin.top + this.margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-
-    };
+    this.svg = this.plot
+        .append("svg")
+        .attr('width', this.width + this.margin.left + this.margin.right)
+        .attr('height', this.height + this.margin.top + this.margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     this.render_line = function(metric, i) {
         this.svg.append("path")
@@ -193,8 +188,6 @@ function Trend(container, width, height) {
 
     this.render = function (data) {
 
-        this.layout();
-
         data.forEach(function(metric, i) {
 
             //convert the date format for each metric
@@ -239,25 +232,25 @@ function Compare(container) {
     this.url;
     this.color = d3.scale.category20c();
 
-    //this.x = d3.scale.linear().range([this.width-this.rightPadding, 0]);
+    this.plot = d3.select(container)
+                    .append("div")
+                    .attr("class", "plotbox");
+
+    this.svg = this.plot
+                .append("svg")
+                    .attr("width", this.width)
+                    .attr("height", this.height);
 
     this.render = function (data) {
             var self = this;
+
+            this.svg.attr("width", this.width).attr("height", this.height); //dynamically update width and height
 
             var max = d3.max(data, function(d) { return d.value;} );
 
             var spacing = 10;
             var dx = (this.width - this.rightPadding) / max;
             var dy = ((this.height-this.bottomPadding) / data.length) - spacing;
-
-            this.plot = d3.select(container)
-                            .append("div")
-                            .attr("class", "plotbox");
-
-            this.svg = this.plot
-                .append("svg")
-                    .attr("width", this.width)
-                    .attr("height", this.height)
     
             //bars
             var bars = this.svg.selectAll(".bar")
@@ -469,7 +462,6 @@ function Stacked(container, width, height) {
     };
 }
 
-
 $( document ).ready(function() {
 
     chart = new Trend("#trend-chart");
@@ -507,8 +499,9 @@ $( document ).ready(function() {
         }
     ];
 
-    chart = new Pie;
-    chart.render("#pie-one", data_one);
-    chart.render("#pie-two", data_two);
-    chart.legend("#pie-legend", data_one);
+    var pie_one = new Pie("#pie-one");
+    var pie_two = new Pie("#pie-two");
+    pie_one.render(data_one);
+    pie_two.render(data_two);
+    pie_one.legend("#pie-legend", data_one);
 });
