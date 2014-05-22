@@ -95,6 +95,8 @@ function Trend(container, width, height) {
     this.plot;
     this.svg;
 
+    this.interpolate = 'basis';
+
     this.color = d3.scale.category20c();
 
     this.margin = {top: 0, right: 20, bottom: 50, left: 50};
@@ -115,7 +117,7 @@ function Trend(container, width, height) {
         .orient("left").ticks(5);
 
     this.line = d3.svg.line()
-                .interpolate('basis') 
+                .interpolate(this.interpolate) 
                 .x(function(d) { return this.x(d.date); })
                 .y(function(d) { return this.y(d.value); });
 
@@ -139,6 +141,7 @@ function Trend(container, width, height) {
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     this.render_line = function(metric, i) {
+        this.line.interpolate(this.interpolate);
         this.svg.append("path")
             .attr("class", "line")
             .style("stroke", this.color(i))
