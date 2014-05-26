@@ -38,6 +38,7 @@
 	width: 15px;
 	height: 10px;
 	display: inline-block;
+  box-sizing:border-box;
 }
 .key-text {
 	padding-left: 5px;

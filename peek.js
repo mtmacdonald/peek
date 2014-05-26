@@ -29,7 +29,10 @@ function Pie(container) {
 
             var row = d3.select(container).append("div");
 
-            row.append("span").attr("class", "key").style('background-color', this.color(i));
+            row.append("span").attr("class", "key")
+                .style('border-style', 'solid')
+                .style('border-width', '5px')
+                .style('border-color', this.color(i));
 
             row.append("span").text(metric.label).attr('class', 'key-text');
         }, this);
@@ -184,7 +187,10 @@ function Trend(container, width, height) {
         var row = this.legend
             .append("div");
 
-        row.append("span").attr("class", "key").style('background-color', this.color(i));
+        row.append("span").attr("class", "key")
+            .style('border-style', 'solid')
+            .style('border-width', '5px')
+            .style('border-color', this.color(i));
 
         row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
     }
@@ -400,7 +406,10 @@ function Stacked(container, width, height) {
         var row = this.legend
             .append("div");
 
-        row.append("span").attr("class", "key").style('background-color', metric.color);
+        row.append("span").attr("class", "key")
+            .style('border-style', 'solid')
+            .style('border-width', '5px')
+            .style('border-color', metric.color);
 
         row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
     }
