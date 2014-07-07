@@ -219,17 +219,19 @@ function Trend(container, width, height) {
         }, this);
         this.y.domain([0, max]);
 
+        this.render_x_axis();
+        this.render_y_axis();
+
+        this.render_x_ticks();
+        this.render_y_ticks();
+
         //plot values
         data.forEach(function(metric, i) {
             this.render_line(metric, i);
             this.append_to_legend(metric, i);
         }, this);
 
-        this.render_x_axis();
-        this.render_y_axis();
 
-        this.render_x_ticks();
-        this.render_y_ticks();
     }
 
     this.load = function() {
@@ -484,47 +486,3 @@ function Stacked(container, width, height) {
         this.load();
     };
 }
-
-$( document ).ready(function() {
-
-    chart = new Trend("#trend-chart");
-    chart.url = 'trend.json';
-    chart.draw();
-
-    chart = new Stacked("#stacked-bar-chart");
-    chart.url = 'stacked.json';
-    chart.draw();
-
-    chart = new Compare('#compare-chart');
-    chart.url = 'bar.json';
-    chart.draw();
-
-    //in the pie charts we don't fetch the data directly from JSON
-    data_one = [
-        {
-            "label": "Fuel",
-            "value": 55.05
-        },
-        {
-            "label": "Urea",
-            "value": 10.07
-        }
-    ];
-
-    data_two = [
-        {
-            "label": "Fuel",
-            "value": 30.05
-        },
-        {
-            "label": "Urea",
-            "value": 30.07
-        }
-    ];
-
-    var pie_one = new Pie("#pie-one");
-    var pie_two = new Pie("#pie-two");
-    pie_one.render(data_one);
-    pie_two.render(data_two);
-    pie_one.legend("#pie-legend", data_one);
-});
