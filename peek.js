@@ -192,7 +192,7 @@ function Trend(container, width, height) {
             .style('border-width', '5px')
             .style('border-color', this.color(i));
 
-        row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
+        row.append("span").text(metric.legend).attr('class', 'key-text');
     }
 
     this.render = function (data) {
