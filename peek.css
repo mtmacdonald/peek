@@ -24,14 +24,10 @@
     stroke-width: 0;
 }
 
-#legend, #plot {float: left;}
+.legend, .plot {float: left;}
 
-#legend {
+.legend {
 	width: 300px;
-}
-
-#controls {
-	clear: both;
 }
 
 .key {
@@ -42,10 +38,4 @@
 }
 .key-text {
 	padding-left: 5px;
-}
-
-/*pie charts*/
-.piebox, .legendbox {
-  padding: 20px;
-  float: left;
 }

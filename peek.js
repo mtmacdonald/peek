@@ -123,15 +123,11 @@ function Trend(container, width, height) {
 
     this.plot = d3.select(this.container)
                     .append("div")
-                    .attr("id", "plot");
+                    .attr("class", "plot");
 
     this.legend = d3.select(this.container)
                     .append("div")
-                    .attr("id", "legend")
-
-    this.controls = d3.select(this.container)
-                    .append("div")
-                    .attr("id", "controls");
+                    .attr("class", "legend");
 
     this.svg = this.plot
         .append("svg")
@@ -189,7 +185,7 @@ function Trend(container, width, height) {
             .style('border-width', '5px')
             .style('border-color', metric.colour);
 
-        row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
+        row.append("span").text(metric.legend).attr('class', 'key-text');
     }
 
     this.render = function (data) {
@@ -368,15 +364,11 @@ function Stacked(container, width, height) {
 
         this.plot = d3.select(this.container)
                         .append("div")
-                        .attr("id", "plot");
+                        .attr("class", "plot");
 
         this.legend = d3.select(this.container)
                         .append("div")
-                        .attr("id", "legend")
-
-        this.controls = d3.select(this.container)
-                        .append("div")
-                        .attr("id", "controls");
+                        .attr("class", "legend")
 
         this.svg = this.plot
             .append("svg")
