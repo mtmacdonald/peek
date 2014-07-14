@@ -7,7 +7,6 @@ function Pie(container) {
     this.height = 300;
     this.radius = 150;
     this.innerRadius = 60;
-    this.color = d3.scale.category20c();
 
     this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
     this.pie = d3.layout.pie().value(function(d) { return d.value; });
@@ -32,7 +31,7 @@ function Pie(container) {
             row.append("span").attr("class", "key")
                 .style('border-style', 'solid')
                 .style('border-width', '5px')
-                .style('border-color', this.color(i));
+                .style('border-color', data[i].colour);
 
             row.append("span").text(metric.label).attr('class', 'key-text');
         }, this);
@@ -52,7 +51,7 @@ function Pie(container) {
                     .attr("class", "slice");
 
         arcs.append("svg:path")
-                .attr("fill", function(d, i) { return self.color(i); } ) 
+                .attr("fill", function(d, i) { return data[i].colour; } ) 
                 .attr("d", self.arc);
 
         arcs.append("svg:text")
@@ -100,8 +99,6 @@ function Trend(container, width, height) {
 
     this.interpolate = 'basis';
 
-    this.color = d3.scale.category20c();
-
     this.margin = {top: 0, right: 20, bottom: 50, left: 50};
     this.width = width - this.margin.left - this.margin.right;
     this.height = height - this.margin.top - this.margin.bottom;
@@ -147,7 +144,7 @@ function Trend(container, width, height) {
         this.line.interpolate(this.interpolate);
         this.svg.append("path")
             .attr("class", "line")
-            .style("stroke", this.color(i))
+            .style("stroke", metric.colour)
             .attr("d", this.line(metric.values));
     }
 
@@ -190,9 +187,9 @@ function Trend(container, width, height) {
         row.append("span").attr("class", "key")
             .style('border-style', 'solid')
             .style('border-width', '5px')
-            .style('border-color', this.color(i));
+            .style('border-color', metric.colour);
 
-        row.append("span").text(metric.legend).attr('class', 'key-text');
+        row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
     }
 
     this.render = function (data) {
@@ -252,7 +249,6 @@ function Compare(container) {
     this.height = 300;
     this.bottomPadding = 0; //only meeded when displaying x-axis
     this.url;
-    this.color = d3.scale.category20c();
 
     this.plot = d3.select(container)
                     .append("div")
@@ -283,7 +279,7 @@ function Compare(container) {
                 .attr("y", function(d, i) {return dy*i + spacing*i;})
                 .attr("width", function(d, i) {return dx*d.value})
                 .attr("height", dy)
-                .attr("fill", this.color(1) );
+                .attr("fill", function(d, i) {return d.colour} );
 
             //labels
             var text = this.svg.selectAll("text")
