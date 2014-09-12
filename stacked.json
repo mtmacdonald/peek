@@ -1,6 +1,6 @@
 [
     {
-        "metric": "Fuel",
+        "metric": "Foo",
         "units": "tonnes",
         "color": "steelblue",
         "values": [
@@ -23,7 +23,7 @@
         ]
     },
     {
-        "metric": "Urea",
+        "metric": "Baz",
         "units": "litres",
         "color": "firebrick",
         "values": [

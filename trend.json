@@ -1,8 +1,7 @@
 [
     {
-        "metric": "Fuel",
-        "units": "tonnes",
-        "color": "steelblue",
+        "legend": "Foo",
+        "colour": "steelblue",
         "values": [
             {
                 "date": "2014-03-15 01:00:00",
@@ -23,9 +22,8 @@
         ]
     },
     {
-        "metric": "Urea",
-        "units": "litres",
-        "color": "firebrick",
+        "legend": "Baz",
+        "colour": "firebrick",
         "values": [
             {
                 "date": "2014-03-14 01:00:00",

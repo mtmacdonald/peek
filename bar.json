@@ -1,10 +1,12 @@
 [
     {
-        "label": "Fuel",
-        "value": 55
+        "label": "Foo",
+        "value": 55,
+        "colour": "steelblue"
     },
     {
-        "label": "Urea",
-        "value": 10
+        "label": "Baz",
+        "value": 10,
+        "colour": "firebrick"
     }
 ]
