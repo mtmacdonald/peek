@@ -22,6 +22,10 @@ var trend_data = [
             {
                 "date": "2014-03-25 01:00:00",
                 "value": 4.14
+            },
+            {
+                "date": "2014-03-28 01:00:00",
+                "value": 7.14
             }
         ]
     },
@@ -156,6 +160,7 @@ $( document ).ready(function() {
     */
 
     var trend_chart = new Trend("#trend-chart");
+    //trend_chart.interpolate = "monotone"; //default=cardinal
     trend_chart.render(trend_data);
 
     var stacked_chart = new Stacked("#stacked-bar-chart");
