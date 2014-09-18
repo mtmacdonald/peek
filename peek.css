@@ -58,3 +58,9 @@ circle {
   .infobox p {
     margin:0;
   }
+
+.hover-line { 
+  stroke: steelblue;  
+  fill: none;
+  stroke-width: 1px;
+}

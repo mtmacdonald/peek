@@ -105,6 +105,12 @@ function Trend(container, width, height) {
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
+    //NILS
+    this.bisectDate = d3.bisector(function(d) { return d.date; }).right;
+    this.nils = null;
+
+
+
     this.x = d3.time.scale().range([0, this.width]);
     this.y = d3.scale.linear().range([this.height, 0]);
 
@@ -135,6 +141,7 @@ function Trend(container, width, height) {
         .attr('height', this.height + this.margin.top + this.margin.bottom)
         .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
 
     this.render_line = function(metric, i) {
         this.line.interpolate(this.interpolate);
@@ -182,7 +189,7 @@ function Trend(container, width, height) {
         .style("display", "block")
         .style('opacity', 0)
         .transition().delay(200).duration(500).style('opacity', 1);  
-          
+
         d3.select(".infobox p")
             .html("<strong>Date:</strong> " 
                 + formatDate(new Date(data.date)) 
@@ -244,8 +251,212 @@ function Trend(container, width, height) {
         row.append("span").text(metric.legend).attr('class', 'key-text');
     }
 
-    this.render = function (data) {
 
+
+
+
+
+    this.pointfinder = function() {
+        var that = this;
+     //console.log(that);
+     //console.log(that.nils);
+
+         //NILS
+        this.focus = this.svg.append("g")
+            .attr("class", "focus");
+        this.focus.append("circle")
+            .attr("r", 3);
+
+
+       var line1 = d3.select("svg path.line").node();
+           // console.log(line1.getTotalLength());
+
+        // Hover line. 
+        var hoverLineGroup = this.svg.append("g")
+                                .attr("class", "hover-line");
+        var hoverLine = hoverLineGroup
+            .append("line")
+                .attr("x1", 0).attr("x2", 0) 
+                .attr("y1", this.margin.top).attr("y2", this.height); 
+
+        var hoverDate = hoverLineGroup.append('text')
+           .attr("class", "hover-text")
+           .attr('y', 10);
+
+        // Hide hover line by default.
+        hoverLineGroup.style("opacity", 1e-6);
+
+        var infobox = d3.select(".infobox");
+
+        this.plot.on("mousemove", function(){
+            
+            var coord = d3.mouse(this);
+            var mouse_x = coord[0] - that.margin.left;
+            var mouse_y = coord[1];
+            var graph_y = that.y.invert(mouse_y);
+            var graph_x = that.x.invert(mouse_x);
+
+            if(coord[0] > that.margin.left) {
+                hoverLine.attr("x1", mouse_x).attr("x2", mouse_x)
+                hoverLineGroup.style("opacity", 1);
+            }
+
+           var x0 = graph_x, //that.x.invert(d3.mouse(this)[0])  - that.margin.left,
+            i = that.bisectDate(that.nils, x0, 1),
+            d0 = that.nils[i - 1],
+            d1 = that.nils[i],
+            d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+            console.log(d);
+            that.focus.attr("transform", "translate(" + that.x(d0.date) + "," + that.y(d0.value) + ")");
+
+     
+
+        }).on("mouseout", function() {
+            hoverLineGroup.style("opacity", 1e-6);
+        });
+
+    }
+
+
+    this.linefinder = function() {
+        var that = this;
+     //console.log(that);
+     //console.log(that.nils);
+
+         //NILS
+    this.focus = this.svg.append("g")
+        .attr("class", "focus");
+    this.focus.append("circle")
+        .attr("r", 3);
+
+
+       var line1 = d3.select("svg path.line").node();
+           // console.log(line1.getTotalLength());
+
+        // Hover line. 
+        var hoverLineGroup = this.svg.append("g")
+                                .attr("class", "hover-line");
+        var hoverLine = hoverLineGroup
+            .append("line")
+                .attr("x1", 0).attr("x2", 0) 
+                .attr("y1", this.margin.top).attr("y2", this.height); 
+
+        var hoverDate = hoverLineGroup.append('text')
+           .attr("class", "hover-text")
+           .attr('y', 10);
+
+        // Hide hover line by default.
+        hoverLineGroup.style("opacity", 1e-6);
+
+        var infobox = d3.select(".infobox");
+
+        this.plot.on("mousemove", function(){
+            
+            var coord = d3.mouse(this);
+            var mouse_x = coord[0] - that.margin.left;
+            var mouse_y = coord[1];
+            var graph_y = that.y.invert(mouse_y);
+            var graph_x = that.x.invert(mouse_x);
+
+            if(coord[0] > that.margin.left) {
+                hoverLine.attr("x1", mouse_x).attr("x2", mouse_x)
+                hoverLineGroup.style("opacity", 1);
+
+                var l = line1.getTotalLength();
+                var p = line1.getPointAtLength(mouse_x);
+                //console.log("translate(" + p.x + "," + p.y + ")");
+
+                that.focus.attr("transform", "translate(" + p.x + "," + p.y + ")" );
+            }
+
+
+        }).on("mouseout", function() {
+            hoverLineGroup.style("opacity", 1e-6);
+        });
+
+      /*  var pathLength = line1.getTotalLength();
+
+        this.plot.on("mousemove", function() {
+ 
+          var x = d3.event.pageX - that.margin.left;
+
+          var beginning = x, end = pathLength, target;
+
+          while (true) {
+            target = Math.floor((beginning + end) / 2);
+    
+            pos = line1.getPointAtLength(target);
+            if ((target === end || target === beginning) && pos.x !== x) {
+                break;
+            }
+            if (pos.x > x)      end = target;
+            else if (pos.x < x) beginning = target;
+            else                break; //position found
+          }
+          that.focus
+            //.attr("opacity", 1)
+            //.attr("cx", x)
+            //.attr("cy", pos.y)
+            .attr("transform", "translate(" + x + "," + pos.y + ")");
+
+        });
+        */
+
+    }
+
+
+
+
+function translateAlong(path) {
+ var l = path.getTotalLength();
+ return function(d, i, a) {
+ return function(t) {
+ var p = path.getPointAtLength(t * l);
+ return "translate(" + p.x + "," + p.y + ")";
+ };
+ };
+}
+
+
+
+
+function mousemove() {
+  var x0 = x.invert(d3.mouse(this)[0]),
+    i = bisectDate(data, x0, 1),
+    d0 = data[i - 1],
+    d1 = data[i],
+    d = x0 - d0.date > d1.date - x0 ? d1 : d0; 
+       //d is now the data row for the date closest to the mouse position
+
+   /*focus.attr("transform", function(columnName){
+         return "translate(" + x( d.date ) + "," + y( d[ columnName ] ) + ")";
+   });
+   focus.select("text").text(function(columnName){
+         //because you didn't explictly set any data on the <text>
+         //elements, each one inherits the data from the focus <g>
+
+         return formatCurrency(d[ columnName ]);
+   });*/
+}
+
+/*
+this.translateAlong = function (path) {
+
+  var l = path.getTotalLength();
+    
+    return function(d, i, a) {
+        return function(t) {
+          var p = path.getPointAtLength(t * l);
+          return "translate(" + p.x + "," + p.y + ")";
+        };
+      }; 
+}
+*/
+
+
+    this.render = function (data) {
+//NILS
+this.nils = data[0].values;
         //for x-axis scale, merge all datasets and get the extent of the dates
         var merged = [];
         data.forEach(function(metric) {
@@ -274,13 +485,21 @@ function Trend(container, width, height) {
         this.render_x_ticks();
         this.render_y_ticks();
 
+        
+
         //plot values
         data.forEach(function(metric, i) {
             this.render_line(metric, i);
-            this.render_circles(metric, i);
+            //this.render_circles(metric, i);
             this.append_to_legend(metric, i);
+
+            
+
         }, this);
 
+        //NILS
+        this.pointfinder();
+        //this.linefinder();
 
     }
 
