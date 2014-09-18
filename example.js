@@ -161,6 +161,7 @@ $( document ).ready(function() {
 
     var trend_chart = new Trend("#trend-chart");
     //trend_chart.interpolate = "monotone"; //default=cardinal
+    trend_chart.showTooltip = true;
     trend_chart.render(trend_data);
 
     var stacked_chart = new Stacked("#stacked-bar-chart");

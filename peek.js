@@ -99,6 +99,8 @@ function Trend(container, width, height) {
 
     this.interpolate = 'cardinal';
 
+    this.showTooltip = false;
+
     this.margin = {top: 0, right: 20, bottom: 50, left: 50};
     this.width = width - this.margin.left - this.margin.right;
     this.height = height - this.margin.top - this.margin.bottom;
@@ -277,7 +279,8 @@ function Trend(container, width, height) {
         //plot values
         data.forEach(function(metric, i) {
             this.render_line(metric, i);
-            this.render_circles(metric, i);
+            if(this.showTooltip)
+                this.render_circles(metric, i);
             this.append_to_legend(metric, i);
         }, this);
 
