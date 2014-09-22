@@ -1,5 +1,7 @@
+/*! Peek.js (c) 2014 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
+
 /*
-    Example usage of peek.js
+    Example usage of Peek.js
 */
 
 var trend_data = [
@@ -118,12 +120,12 @@ var horizontal_bar_data = [
 var pie_data_one = [
     {     
         "label": "Foo",
-        "value": 55.05,
+        "value": 90.1,
         "colour": "steelblue"
     },
     {     
         "label": "Baz",
-        "value": 10.07,
+        "value": 9.9,
         "colour": "firebrick"
     }     
 ];
@@ -131,12 +133,12 @@ var pie_data_one = [
 var pie_data_two = [
     {     
         "label": "Foo",
-        "value": 30.05,
+        "value": 49.9,
         "colour": "steelblue"
     },    
     {
         "label": "Baz",
-        "value": 30.07,
+        "value": 50.1,
         "colour": "firebrick"
     }
 ];
