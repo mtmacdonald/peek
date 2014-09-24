@@ -101,7 +101,7 @@ function Trend(container, width, height) {
 
     this.showTooltip = false;
 
-    this.margin = {top: 0, right: 20, bottom: 50, left: 50};
+    this.margin = {top: 20, right: 20, bottom: 50, left: 50};
     this.width = width - this.margin.left - this.margin.right;
     this.height = height - this.margin.top - this.margin.bottom;
 
