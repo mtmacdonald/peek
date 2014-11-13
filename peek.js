@@ -32,7 +32,7 @@ function Pie(container) {
                 .style('border-width', '5px')
                 .style('border-color', data[i].colour);
 
-            row.append("span").text(metric.label).attr('class', 'key-text');
+            row.append("span").html(metric.label).attr('class', 'key-text');
         }, this);
 
     }
@@ -60,7 +60,7 @@ function Pie(container) {
                 return "translate(" + self.arc.centroid(d) + ")";
             })
             .attr("text-anchor", "middle")
-            .text(function(d, i) { 
+            .html(function(d, i) { 
                 var value = data[i].value;
                 if (value > 3.0) {
                    return Math.round(data[i].value)+'%';
@@ -100,7 +100,7 @@ function Trend(container, width, height) {
 
     this.showTooltip = false;
 
-    this.margin = {top: 0, right: 20, bottom: 50, left: 50};
+    this.margin = {top: 20, right: 20, bottom: 50, left: 50};
     this.width = width - this.margin.left - this.margin.right;
     this.height = height - this.margin.top - this.margin.bottom;
 
@@ -242,7 +242,7 @@ function Trend(container, width, height) {
             .style('border-width', '5px')
             .style('border-color', metric.colour);
 
-        row.append("span").text(metric.legend).attr('class', 'key-text');
+        row.append("span").html(metric.legend).attr('class', 'key-text');
     }
 
     this.render = function (data) {
@@ -344,7 +344,7 @@ function Compare(container) {
                     .attr('class', 'label')
                     .attr("x", function(d, i) {return (dx*d.value)+5})
                     .attr("y", function(d, i) {return dy*i + spacing*i + (dy/2) + 4;}) //4 accounts for text height
-                    .text( function(d) {return d.label;});
+                    .html( function(d) {return d.label;});
 
             //text values
             var text = this.svg.selectAll(".compare-chart-values")
@@ -352,7 +352,7 @@ function Compare(container) {
                 .enter()
                 .append("text")
                     .attr('class', 'compare-chart-values')
-                    .text( function(d) { return d.value.toFixed(2); })
+                    .html( function(d) { return d.value.toFixed(2); })
                     .attr("x", function(d, i) {
                         //position the values just left of the end of the bars
                         var width = this.getComputedTextLength() + 10;
@@ -460,7 +460,7 @@ function Stacked(container, width, height) {
             .style('border-width', '5px')
             .style('border-color', metric.color);
 
-        row.append("span").text(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
+        row.append("span").html(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
     }
 
     this.render = function (data) {
