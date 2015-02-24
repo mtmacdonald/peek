@@ -24,6 +24,15 @@ function Legend (container) {
     }
 }
 
+function Plot (width, height) {
+    var width = typeof width !== 'undefined' ? width : 600; //default
+    var height = typeof height !== 'undefined' ? height : 400; //default
+
+    this.margin = {top: 0, right: 20, bottom: 50, left: 50};
+    this.width = width - this.margin.left - this.margin.right;
+    this.height = height - this.margin.top - this.margin.bottom;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 function Pie(container) {
@@ -98,11 +107,7 @@ function Pie(container) {
 
 }
 
-
 function Trend(container, width, height) {
-
-    width = typeof width !== 'undefined' ? width : 600; //default
-    height = typeof height !== 'undefined' ? height : 400; //default
 
     this.url;
 
@@ -110,6 +115,7 @@ function Trend(container, width, height) {
 
     this.controls;
 
+    var plot = new Plot(width, height);
     var legend = new Legend(container);
 
     this.plot;
@@ -117,14 +123,10 @@ function Trend(container, width, height) {
 
     this.interpolate = 'basis';
 
-    this.margin = {top: 0, right: 20, bottom: 50, left: 50};
-    this.width = width - this.margin.left - this.margin.right;
-    this.height = height - this.margin.top - this.margin.bottom;
-
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
-    this.x = d3.time.scale().range([0, this.width]);
-    this.y = d3.scale.linear().range([this.height, 0]);
+    this.x = d3.time.scale().range([0, plot.width]);
+    this.y = d3.scale.linear().range([plot.height, 0]);
 
     this.xAxis = d3.svg.axis()
         .scale(this.x)
@@ -145,10 +147,10 @@ function Trend(container, width, height) {
 
     this.svg = this.plot
         .append("svg")
-        .attr('width', this.width + this.margin.left + this.margin.right)
-        .attr('height', this.height + this.margin.top + this.margin.bottom)
+        .attr('width', plot.width + plot.margin.left + plot.margin.right)
+        .attr('height', plot.height + plot.margin.top + plot.margin.bottom)
         .append("g")
-        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+        .attr("transform", "translate(" + plot.margin.left + "," + plot.margin.top + ")");
 
     this.render_line = function(metric, i) {
         this.line.interpolate(this.interpolate);
@@ -161,7 +163,7 @@ function Trend(container, width, height) {
     this.render_x_axis = function() {
         this.svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(0," + this.height + ")")
+            .attr("transform", "translate(0," + plot.height + ")")
             .call(this.xAxis);
     }
 
@@ -174,9 +176,9 @@ function Trend(container, width, height) {
     this.render_x_ticks = function() {
         this.svg.append("g")
             .attr("class", "grid")
-            .attr("transform", "translate(0," + this.height + ")")
+            .attr("transform", "translate(0," + plot.height + ")")
             .call(this.xAxis
-                .tickSize(-this.height, 0, 0)
+                .tickSize(-plot.height, 0, 0)
                 .tickFormat("")
             );
     }
@@ -185,7 +187,7 @@ function Trend(container, width, height) {
         this.svg.append("g")         
             .attr("class", "grid")
             .call(this.yAxis
-                .tickSize(-this.width, 0, 0)
+                .tickSize(-plot.width, 0, 0)
                 .tickFormat("")
             );
     }
@@ -328,31 +330,25 @@ function Compare(container) {
 
 function Stacked(container, width, height) {
 
-    width = typeof width !== 'undefined' ? width : 600; //default
-    height = typeof height !== 'undefined' ? height : 400; //default
-
     this.url;
 
     this.container = container;
 
     this.controls;
 
+    var plot = new Plot(width, height);
     var legend = new Legend(container);
 
     this.plot;
     this.svg;
 
-    this.margin = {top: 5, right: 20, bottom: 20, left: 50};
-    this.width = width - this.margin.left - this.margin.right;
-    this.height = height - this.margin.top - this.margin.bottom;
-
     this.color = d3.scale.category20c();
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
-    this.x = d3.time.scale().range([0, this.width]);
-    this.y = d3.scale.linear().range([this.height, 0]);
-    this.yAxisScale = d3.scale.linear().range([0, this.height]);
+    this.x = d3.time.scale().range([0, plot.width]);
+    this.y = d3.scale.linear().range([plot.height, 0]);
+    this.yAxisScale = d3.scale.linear().range([0, plot.height]);
 
     this.xAxis = d3.svg.axis()
         .scale(this.x)
@@ -374,17 +370,17 @@ function Stacked(container, width, height) {
 
         this.svg = this.plot
             .append("svg")
-            .attr('width', this.width + this.margin.left + this.margin.right)
-            .attr('height', this.height + this.margin.top + this.margin.bottom)
+            .attr('width', plot.width + plot.margin.left + plot.margin.right)
+            .attr('height', plot.height + plot.margin.top + plot.margin.bottom)
             .append("g")
-            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+            .attr("transform", "translate(" + plot.margin.left + "," + plot.margin.top + ")");
 
     };
 
     this.render_x_axis = function() {
         this.svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(0," + this.height + ")")
+            .attr("transform", "translate(0," + plot.height + ")")
             .call(this.xAxis);
     }
 
@@ -392,18 +388,6 @@ function Stacked(container, width, height) {
         this.svg.append("g")
             .attr("class", "y axis")
             .call(this.yAxis);
-    }
-
-    this.append_to_legend = function(metric) {
-        var row = this.legend
-            .append("div");
-
-        row.append("span").attr("class", "key")
-            .style('border-style', 'solid')
-            .style('border-width', '5px')
-            .style('border-color', metric.color);
-
-        row.append("span").html(metric.metric+' ('+metric.units+")").attr('class', 'key-text');
     }
 
     this.render = function (data) {
@@ -445,7 +429,7 @@ function Stacked(container, width, height) {
                     heightCounter[value.date] = 0;
                 }
 
-                var heightShift = this.height - this.y(value.value)
+                var heightShift = plot.height - this.y(value.value)
                 this.svg.append("rect")
                     .attr("x", this.x(value.date) - 2)
                     .attr("width", 5)
