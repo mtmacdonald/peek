@@ -24,7 +24,7 @@ function Legend (container) {
     }
 }
 
-function Axis (plot) {
+function Axes (plot) {
 
     var plot = plot;
     this.ticks = true;
@@ -75,6 +75,8 @@ function Plot(container, width, height) {
     this.width = width - this.margin.left - this.margin.right;
     this.height = height - this.margin.top - this.margin.bottom;
 
+    this.axes = new Axes(this);
+
     this.canvas = d3.select(container)
                     .append("div")
                     .attr("class", "plot");
@@ -119,7 +121,6 @@ function Trend(container, width, height) {
     this.controls;
 
     var plot = new Plot(container, width, height);
-    var axis = new Axis(plot);
     var line = new Line(plot);
     var legend = new Legend(container);
 
@@ -207,7 +208,7 @@ function Trend(container, width, height) {
         }, this);
         yScale.domain([0, max]);
 
-        axis.draw(xScale, yScale);
+        plot.axes.draw(xScale, yScale);
 
         //plot values
         data.forEach(function(metric, i) {
