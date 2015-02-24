@@ -391,11 +391,8 @@ function Stacked(container, width, height) {
 
     this.controls;
 
-    var plot = new Plot(width, height);
+    var plot = new Plot(container, width, height);
     var legend = new Legend(container);
-
-    this.plot;
-    this.svg;
 
     this.color = d3.scale.category20c();
 
@@ -413,40 +410,20 @@ function Stacked(container, width, height) {
         .scale(this.yAxisScale)
         .orient("left").ticks(5);
 
-    this.layout = function () {
-
-        this.plot = d3.select(this.container)
-                        .append("div")
-                        .attr("class", "plot");
-
-        this.legend = d3.select(this.container)
-                        .append("div")
-                        .attr("class", "legend")
-
-        this.svg = this.plot
-            .append("svg")
-            .attr('width', plot.width + plot.margin.left + plot.margin.right)
-            .attr('height', plot.height + plot.margin.top + plot.margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + plot.margin.left + "," + plot.margin.top + ")");
-
-    };
-
     this.render_x_axis = function() {
-        this.svg.append("g")
+        plot.svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + plot.height + ")")
             .call(this.xAxis);
     }
 
     this.render_y_axis = function() {
-        this.svg.append("g")
+        plot.svg.append("g")
             .attr("class", "y axis")
             .call(this.yAxis);
     }
 
     this.render = function (data) {
-        this.layout();
 
         //for y-axis scale, iterate the all values and find the total for the biggest stack
         var maximums = {};
@@ -485,7 +462,7 @@ function Stacked(container, width, height) {
                 }
 
                 var heightShift = plot.height - this.y(value.value)
-                this.svg.append("rect")
+                plot.svg.append("rect")
                     .attr("x", this.x(value.date) - 2)
                     .attr("width", 5)
                     .attr("y", heightCounter[value.date])
