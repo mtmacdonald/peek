@@ -63,21 +63,21 @@ function Trend(container, width, height) {
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
-    this.x = d3.time.scale().range([0, plot.width]);
-    this.y = d3.scale.linear().range([plot.height, 0]);
+    var xScale = d3.time.scale().range([0, plot.width]);
+    var yScale = d3.scale.linear().range([plot.height, 0]);
 
     this.xAxis = d3.svg.axis()
-        .scale(this.x)
+        .scale(xScale)
         .orient("bottom").ticks(5);
 
     this.yAxis = d3.svg.axis()
-        .scale(this.y)
+        .scale(yScale)
         .orient("left").ticks(5);
 
     this.line = d3.svg.line()
                 .interpolate(this.interpolate) 
-                .x(function(d) { return this.x(d.date); })
-                .y(function(d) { return this.y(d.value); });
+                .x(function(d) { return xScale(d.date); })
+                .y(function(d) { return yScale(d.value); });
 
     this.render_line = function(metric, i) {
         this.line.interpolate(this.interpolate);
@@ -88,8 +88,6 @@ function Trend(container, width, height) {
     }
 
     this.render_circles = function(metric, i) {
-        var that = this;
-
         d3.select(this.container)
             .append("div")
             .attr("class", "infobox").html("<p>Tooltip</p>");
@@ -99,7 +97,7 @@ function Trend(container, width, height) {
             .enter()
             .append("circle")
               .attr("transform", function(d) { 
-                return "translate(" + that.x(d.date) + ", " + that.y(d.value) + ")"; 
+                return "translate(" + xScale(d.date) + ", " + yScale(d.value) + ")"; 
             })
               .attr("r", function(d){ return 4; }) 
               .attr("fill", "white")
@@ -184,7 +182,7 @@ function Trend(container, width, height) {
             //then merge into one array
             merged = merged.concat(metric.values);
         }, this);
-        this.x.domain(d3.extent(merged, function(d) { return d.date; }));
+        xScale.domain(d3.extent(merged, function(d) { return d.date; }));
 
         //for y-axis scale, get the minimum and maximum for each metric
         var max = 0;
@@ -194,7 +192,7 @@ function Trend(container, width, height) {
                 max = localMax;
             }
         }, this);
-        this.y.domain([0, max]);
+        yScale.domain([0, max]);
 
         this.render_x_axis();
         this.render_y_axis();
