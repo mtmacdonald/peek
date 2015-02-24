@@ -77,6 +77,7 @@ function Plot(container, width, height) {
 
     this.axes = new Axes(this);
 
+    this.container = container;
     this.canvas = d3.select(container)
                     .append("div")
                     .attr("class", "plot");
@@ -86,6 +87,13 @@ function Plot(container, width, height) {
         .attr('height', this.height + this.margin.top + this.margin.bottom)
         .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+    this.canvas.on("mousemove", function(){
+            var infobox = d3.select(".infobox");
+            var coord = d3.mouse(this);
+            infobox.style("left", (d3.event.pageX) + 15 + "px" );
+            infobox.style("top", (d3.event.pageY) + "px");
+    });
 }
 
 function Line (plot) {
@@ -93,6 +101,9 @@ function Line (plot) {
     var self = this;
     this.xScale;
     this.yScale;
+
+    this.showTooltip = true;
+    this.point = new Point(plot);
 
     var line = d3.svg.line()
                 .interpolate('cardinal') 
@@ -107,34 +118,18 @@ function Line (plot) {
             .attr("class", "line")
             .style("stroke", metric.color)
             .attr("d", line(metric.values));
+
+        if (this.showTooltip) {
+            this.point.draw(metric, xScale, yScale);
+        }
     }
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+function Point (plot) {
+    var plot = plot;
 
-function Trend(container, width, height) {
-
-    this.url;
-
-    this.container = container;
-
-    this.controls;
-
-    var plot = new Plot(container, width, height);
-    var line = new Line(plot);
-    var legend = new Legend(container);
-
-    var xScale = d3.time.scale().range([0, plot.width]);
-    var yScale = d3.scale.linear().range([plot.height, 0]);
-
-    this.interpolate = 'cardinal';
-
-    this.showTooltip = false;
-
-    this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-
-    this.render_circles = function(metric, i) {
-        d3.select(this.container)
+    this.draw = function(metric, xScale, yScale) {
+        d3.select(plot.container)
             .append("div")
             .attr("class", "infobox").html("<p>Tooltip</p>");
 
@@ -150,13 +145,6 @@ function Trend(container, width, height) {
               .style("stroke", metric.color)
               .on("mouseover", this.mouseover_circle)
               .on("mouseout", this.mouseout_circle);
-
-        plot.canvas.on("mousemove", function(){
-            var infobox = d3.select(".infobox");
-            var coord = d3.mouse(this);
-            infobox.style("left", (d3.event.pageX) + 15 + "px" );
-            infobox.style("top", (d3.event.pageY) + "px");
-        });
     }
 
     this.mouseover_circle = function(data,i) {     
@@ -183,6 +171,29 @@ function Trend(container, width, height) {
         circle.transition().duration(500).attr("r", 4);
         d3.select(".infobox").style("display", "none"); 
     }
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function Trend(container, width, height) {
+
+    this.url;
+
+    this.container = container;
+
+    this.controls;
+
+    var plot = new Plot(container, width, height);
+    var line = new Line(plot);
+    var legend = new Legend(container);
+
+    var xScale = d3.time.scale().range([0, plot.width]);
+    var yScale = d3.scale.linear().range([plot.height, 0]);
+
+    this.interpolate = 'cardinal';
+
+    this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     this.render = function (data) {
 
@@ -213,9 +224,6 @@ function Trend(container, width, height) {
         //plot values
         data.forEach(function(metric, i) {
             line.draw(metric, xScale, yScale);
-            if(this.showTooltip) {
-                this.render_circles(metric, i);                
-            }
             legend.push(metric);
         }, this);
     }
