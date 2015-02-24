@@ -24,82 +24,6 @@ function Legend (container) {
     }
 }
 
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function Pie(container) {
-
-    this.width = 300;
-    this.height = 300;
-    this.radius = 150;
-    this.innerRadius = 60;
-
-    var legend = new Legend(container);
-
-    this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
-    this.pie = d3.layout.pie().value(function(d) { return d.value; });
-
-        this.plot = d3.select(container)
-                        .append("div")
-                        .attr("class", "plotbox");
-
-        this.svg = this.plot
-            .append("svg")
-                .attr("width", this.width)
-                .attr("height", this.height)
-            .append("g")
-                .attr("transform", "translate(" + this.radius + "," + this.radius + ")");
-
-    this.legend = function(container, data) {
-        data.forEach(function(metric, i) {
-            legend.push(metric);
-        }, this);
-    }
-
-    this.render = function (data) {
-
-        var self = this;
-
-        this.svg.data([data]);
-
-        var arcs = this.svg.selectAll("g.slice")
-            .data(self.pie)
-            .enter()
-                .append("svg:g")
-                    .attr("class", "slice");
-
-        arcs.append("svg:path")
-                .attr("fill", function(d, i) { return data[i].color; } ) 
-                .attr("d", self.arc);
-
-        arcs.append("svg:text")
-                .attr("transform", function(d) { 
-                d.innerRadius = 0;
-                d.outerRadius = self.radius;
-                return "translate(" + self.arc.centroid(d) + ")";
-            })
-            .attr("text-anchor", "middle")
-            .text(function(d, i) { 
-                var value = data[i].value;
-                if (value > 3.0) {
-                   return Math.round(data[i].value)+'%';
-                }
-            });
-    };
-
-    this.load = function() {
-        d3.json(this.url, function (data) {
-            this.render(data);
-        }.bind(this));
-    };
-
-    this.draw = function () {
-        this.load();
-    };
-
-}
-
 function Plot(container, width, height) {
 
     var width = typeof width !== 'undefined' ? width : 600; //default
@@ -119,6 +43,8 @@ function Plot(container, width, height) {
         .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 function Trend(container, width, height) {
 
@@ -297,91 +223,6 @@ function Trend(container, width, height) {
     };
 }
 
-function Compare(container) {
-
-    this.width = 950;
-    this.rightPadding = 100;
-    this.height = 300;
-    this.bottomPadding = 0; //only meeded when displaying x-axis
-    this.url;
-
-    this.plot = d3.select(container)
-                    .append("div")
-                    .attr("class", "plotbox");
-
-    this.svg = this.plot
-                .append("svg")
-                    .attr("width", this.width)
-                    .attr("height", this.height);
-
-    this.render = function (data) {
-            var self = this;
-
-            this.svg.attr("width", this.width).attr("height", this.height); //dynamically update width and height
-
-            var max = d3.max(data, function(d) { return d.value;} );
-
-            var spacing = 10;
-            var dx = (this.width - this.rightPadding) / max;
-            var dy = ((this.height-this.bottomPadding) / data.length) - spacing;
-    
-            //bars
-            var bars = this.svg.selectAll(".bar")
-                .data(data)
-                .enter()
-                .append("rect")
-                .attr("x", function(d, i) {return 0;})
-                .attr("y", function(d, i) {return dy*i + spacing*i;})
-                .attr("width", function(d, i) {return dx*d.value})
-                .attr("height", dy)
-                .attr("fill", function(d, i) {return d.colour} );
-
-            //labels
-            var text = this.svg.selectAll("text")
-                .data(data)
-                .enter()
-                .append("text")
-                    .attr('class', 'label')
-                    .attr("x", function(d, i) {return (dx*d.value)+5})
-                    .attr("y", function(d, i) {return dy*i + spacing*i + (dy/2) + 4;}) //4 accounts for text height
-                    .html( function(d) {return d.label;});
-
-            //text values
-            var text = this.svg.selectAll(".compare-chart-values")
-                .data(data)
-                .enter()
-                .append("text")
-                    .attr('class', 'compare-chart-values')
-                    .text( function(d) { return d.value.toFixed(2); })
-                    .attr("x", function(d, i) {
-                        //position the values just left of the end of the bars
-                        var width = this.getComputedTextLength() + 10;
-                        return (dx*d.value)-(width);
-                    })
-                    .attr("y", function(d, i) {return dy*i + spacing*i + (dy/2) + 4;}) //4 accounts for text height
-                    .style("display", function(d, i){
-                        //only display the values when there is space inside the bar
-                        var width = this.getComputedTextLength() + 10;
-                        if (dx*d.value < width) {
-                            return "none";
-                        } else {
-                            return "initial";
-                        }
-                    })
-                    .style("font-weight", "bold")
-                    .attr("fill", "white");
-    };
-
-    this.load = function() {
-        d3.json(this.url, function (data) {
-            this.render(data);
-        }.bind(this));
-    };  
-
-    this.draw = function () {
-        this.load();
-    };
-}
 
 function Stacked(container, width, height) {
 
@@ -491,4 +332,162 @@ function Stacked(container, width, height) {
     this.draw = function () {
         this.load();
     };
+}
+
+function Compare(container) {
+
+    this.width = 950;
+    this.rightPadding = 100;
+    this.height = 300;
+    this.bottomPadding = 0; //only meeded when displaying x-axis
+    this.url;
+
+    this.plot = d3.select(container)
+                    .append("div")
+                    .attr("class", "plotbox");
+
+    this.svg = this.plot
+                .append("svg")
+                    .attr("width", this.width)
+                    .attr("height", this.height);
+
+    this.render = function (data) {
+            var self = this;
+
+            this.svg.attr("width", this.width).attr("height", this.height); //dynamically update width and height
+
+            var max = d3.max(data, function(d) { return d.value;} );
+
+            var spacing = 10;
+            var dx = (this.width - this.rightPadding) / max;
+            var dy = ((this.height-this.bottomPadding) / data.length) - spacing;
+    
+            //bars
+            var bars = this.svg.selectAll(".bar")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr("x", function(d, i) {return 0;})
+                .attr("y", function(d, i) {return dy*i + spacing*i;})
+                .attr("width", function(d, i) {return dx*d.value})
+                .attr("height", dy)
+                .attr("fill", function(d, i) {return d.colour} );
+
+            //labels
+            var text = this.svg.selectAll("text")
+                .data(data)
+                .enter()
+                .append("text")
+                    .attr('class', 'label')
+                    .attr("x", function(d, i) {return (dx*d.value)+5})
+                    .attr("y", function(d, i) {return dy*i + spacing*i + (dy/2) + 4;}) //4 accounts for text height
+                    .html( function(d) {return d.label;});
+
+            //text values
+            var text = this.svg.selectAll(".compare-chart-values")
+                .data(data)
+                .enter()
+                .append("text")
+                    .attr('class', 'compare-chart-values')
+                    .text( function(d) { return d.value.toFixed(2); })
+                    .attr("x", function(d, i) {
+                        //position the values just left of the end of the bars
+                        var width = this.getComputedTextLength() + 10;
+                        return (dx*d.value)-(width);
+                    })
+                    .attr("y", function(d, i) {return dy*i + spacing*i + (dy/2) + 4;}) //4 accounts for text height
+                    .style("display", function(d, i){
+                        //only display the values when there is space inside the bar
+                        var width = this.getComputedTextLength() + 10;
+                        if (dx*d.value < width) {
+                            return "none";
+                        } else {
+                            return "initial";
+                        }
+                    })
+                    .style("font-weight", "bold")
+                    .attr("fill", "white");
+    };
+
+    this.load = function() {
+        d3.json(this.url, function (data) {
+            this.render(data);
+        }.bind(this));
+    };  
+
+    this.draw = function () {
+        this.load();
+    };
+}
+
+function Pie(container) {
+
+    this.width = 300;
+    this.height = 300;
+    this.radius = 150;
+    this.innerRadius = 60;
+
+    var legend = new Legend(container);
+
+    this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
+    this.pie = d3.layout.pie().value(function(d) { return d.value; });
+
+        this.plot = d3.select(container)
+                        .append("div")
+                        .attr("class", "plotbox");
+
+        this.svg = this.plot
+            .append("svg")
+                .attr("width", this.width)
+                .attr("height", this.height)
+            .append("g")
+                .attr("transform", "translate(" + this.radius + "," + this.radius + ")");
+
+    this.legend = function(container, data) {
+        data.forEach(function(metric, i) {
+            legend.push(metric);
+        }, this);
+    }
+
+    this.render = function (data) {
+
+        var self = this;
+
+        this.svg.data([data]);
+
+        var arcs = this.svg.selectAll("g.slice")
+            .data(self.pie)
+            .enter()
+                .append("svg:g")
+                    .attr("class", "slice");
+
+        arcs.append("svg:path")
+                .attr("fill", function(d, i) { return data[i].color; } ) 
+                .attr("d", self.arc);
+
+        arcs.append("svg:text")
+                .attr("transform", function(d) { 
+                d.innerRadius = 0;
+                d.outerRadius = self.radius;
+                return "translate(" + self.arc.centroid(d) + ")";
+            })
+            .attr("text-anchor", "middle")
+            .text(function(d, i) { 
+                var value = data[i].value;
+                if (value > 3.0) {
+                   return Math.round(data[i].value)+'%';
+                }
+            });
+    };
+
+    this.load = function() {
+        d3.json(this.url, function (data) {
+            this.render(data);
+        }.bind(this));
+    };
+
+    this.draw = function () {
+        this.load();
+    };
+
 }
