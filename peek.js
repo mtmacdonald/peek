@@ -231,7 +231,6 @@ function Trend(container, width, height) {
     };
 }
 
-
 function Stacked(container, width, height) {
 
     this.url;
@@ -247,30 +246,9 @@ function Stacked(container, width, height) {
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
-    this.x = d3.time.scale().range([0, plot.width]);
-    this.y = d3.scale.linear().range([plot.height, 0]);
-    this.yAxisScale = d3.scale.linear().range([0, plot.height]);
-
-    this.xAxis = d3.svg.axis()
-        .scale(this.x)
-        .orient("bottom").ticks(5);
-
-    this.yAxis = d3.svg.axis()
-        .scale(this.yAxisScale)
-        .orient("left").ticks(5);
-
-    this.render_x_axis = function() {
-        plot.svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + plot.height + ")")
-            .call(this.xAxis);
-    }
-
-    this.render_y_axis = function() {
-        plot.svg.append("g")
-            .attr("class", "y axis")
-            .call(this.yAxis);
-    }
+    var xScale = d3.time.scale().range([0, plot.width]);
+    var yScale = d3.scale.linear().range([plot.height, 0]);
+    var yAxisScale = d3.scale.linear().range([0, plot.height]);
 
     this.render = function (data) {
 
@@ -285,8 +263,8 @@ function Stacked(container, width, height) {
             }, this);
         }, this);
         var yMax = d3.max(d3.values(maximums));
-        this.y.domain([yMax, 0]);
-        this.yAxisScale.domain([yMax, 0]);
+        yScale.domain([yMax, 0]);
+        yAxisScale.domain([yMax, 0]);
 
         //for x-axis scale, merge all datasets and get the extent of the dates
         var merged = [];
@@ -298,7 +276,7 @@ function Stacked(container, width, height) {
             //then merge into one array
             merged = merged.concat(metric.values);
         }, this);
-        this.x.domain(d3.extent(merged, function(d) { return d.date; }));
+        xScale.domain(d3.extent(merged, function(d) { return d.date; }));
 
         //iterate and plot each value, keeping track of the accumalated stack height
         var heightCounter = {};
@@ -310,25 +288,25 @@ function Stacked(container, width, height) {
                     heightCounter[value.date] = 0;
                 }
 
-                var heightShift = plot.height - this.y(value.value)
+                var heightShift = plot.height - yScale(value.value)
                 plot.svg.append("rect")
-                    .attr("x", this.x(value.date) - 2)
+                    .attr("x", xScale(value.date) - 2)
                     .attr("width", 5)
                     .attr("y", heightCounter[value.date])
-                    .attr("height", this.y(value.value))
+                    .attr("height", yScale(value.value))
                     .attr("fill", metric.color)
                     .attr("transform", "translate(" + 0 + "," + heightShift + ")")
 
                 if (heightCounter.hasOwnProperty(value.date)) {
-                    heightCounter[value.date] -= this.y(value.value);
+                    heightCounter[value.date] -= yScale(value.value);
                 }
             }, this);
             legend.push(metric);
 
         }, this);
 
-        this.render_x_axis();
-        this.render_y_axis();
+        plot.axes.ticks = false;
+        plot.axes.draw(xScale, yScale);
     }
 
     this.load = function() {
