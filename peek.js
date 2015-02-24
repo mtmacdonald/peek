@@ -306,7 +306,7 @@ function Stacked(container, width, height) {
         }, this);
 
         plot.axes.ticks = false;
-        plot.axes.draw(xScale, yScale);
+        plot.axes.draw(xScale, yAxisScale);
     }
 
     this.load = function() {
