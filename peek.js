@@ -66,6 +66,48 @@ function Line (plot) {
     }
 }
 
+function Axis (plot) {
+
+    var plot = plot;
+    this.ticks = true;
+
+    this.draw = function(xScale, yScale) {
+        var xAxis = d3.svg.axis()
+            .scale(xScale)
+            .orient("bottom").ticks(5);
+
+        var yAxis = d3.svg.axis()
+            .scale(yScale)
+            .orient("left").ticks(5);
+
+        plot.svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + plot.height + ")")
+            .call(xAxis);
+
+        plot.svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);    
+            
+        if (this.ticks) {
+            plot.svg.append("g")
+                .attr("class", "grid")
+                .attr("transform", "translate(0," + plot.height + ")")
+                .call(xAxis
+                    .tickSize(-plot.height, 0, 0)
+                    .tickFormat("")
+                );
+
+            plot.svg.append("g")         
+                .attr("class", "grid")
+                .call(yAxis
+                    .tickSize(-plot.width, 0, 0)
+                    .tickFormat("")
+                );
+        }    
+    };
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 function Trend(container, width, height) {
@@ -77,7 +119,8 @@ function Trend(container, width, height) {
     this.controls;
 
     var plot = new Plot(container, width, height);
-    var line = new Line(plot, xScale, yScale);
+    var axis = new Axis(plot);
+    var line = new Line(plot);
     var legend = new Legend(container);
 
     var xScale = d3.time.scale().range([0, plot.width]);
@@ -88,15 +131,6 @@ function Trend(container, width, height) {
     this.showTooltip = false;
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-
-    this.xAxis = d3.svg.axis()
-        .scale(xScale)
-        .orient("bottom").ticks(5);
-
-    this.yAxis = d3.svg.axis()
-        .scale(yScale)
-        .orient("left").ticks(5);
-
 
     this.render_circles = function(metric, i) {
         d3.select(this.container)
@@ -149,38 +183,6 @@ function Trend(container, width, height) {
         d3.select(".infobox").style("display", "none"); 
     }
 
-    this.render_x_axis = function() {
-        plot.svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + plot.height + ")")
-            .call(this.xAxis);
-    }
-
-    this.render_y_axis = function() {
-        plot.svg.append("g")
-            .attr("class", "y axis")
-            .call(this.yAxis);
-    }
-
-    this.render_x_ticks = function() {
-        plot.svg.append("g")
-            .attr("class", "grid")
-            .attr("transform", "translate(0," + plot.height + ")")
-            .call(this.xAxis
-                .tickSize(-plot.height, 0, 0)
-                .tickFormat("")
-            );
-    }
-
-    this.render_y_ticks = function () {
-        plot.svg.append("g")         
-            .attr("class", "grid")
-            .call(this.yAxis
-                .tickSize(-plot.width, 0, 0)
-                .tickFormat("")
-            );
-    }
-
     this.render = function (data) {
 
         //for x-axis scale, merge all datasets and get the extent of the dates
@@ -205,11 +207,7 @@ function Trend(container, width, height) {
         }, this);
         yScale.domain([0, max]);
 
-        this.render_x_axis();
-        this.render_y_axis();
-
-        this.render_x_ticks();
-        this.render_y_ticks();
+        axis.draw(xScale, yScale);
 
         //plot values
         data.forEach(function(metric, i) {
