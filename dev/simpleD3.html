@@ -1,3 +1,9 @@
+<html>
+<head>
+<script src="../require/jquery.min.js"></script>
+ <script src="../require/d3.min.js"></script>
+<script>
+$( document ).ready(function() {
     //input data
     var data = [
         {
@@ -60,3 +66,10 @@
             .attr("height", y(value.value))
             .attr("fill", "steelblue")
     });
+});
+</script>
+</head>
+<body>
+<div id="chart"></div>
+</body>
+</html>
