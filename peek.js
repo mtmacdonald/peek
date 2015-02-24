@@ -80,6 +80,25 @@ function Pie(container) {
 
 }
 
+function Legend (container) {
+
+    var legend = d3.select(container);
+
+    legend.append("div").attr("class", "legend");
+
+    this.push = function(metric) {
+        var row = legend.append("div");
+
+        row.append("span").attr("class", "key")
+            .style('border-style', 'solid')
+            .style('border-width', '5px')
+            .style('border-color', metric.colour);
+
+        row.append("span").html(metric.legend).attr('class', 'key-text');
+    }
+
+}
+
 function Trend(container, width, height) {
 
     width = typeof width !== 'undefined' ? width : 600; //default
@@ -91,7 +110,7 @@ function Trend(container, width, height) {
 
     this.controls;
 
-    this.legend;
+    var legend = new Legend(container);
 
     this.plot;
     this.svg;
@@ -123,10 +142,6 @@ function Trend(container, width, height) {
     this.plot = d3.select(this.container)
                     .append("div")
                     .attr("class", "plot");
-
-    this.legend = d3.select(this.container)
-                    .append("div")
-                    .attr("class", "legend");
 
     this.svg = this.plot
         .append("svg")
@@ -175,18 +190,6 @@ function Trend(container, width, height) {
             );
     }
 
-    this.append_to_legend = function(metric, i) {
-        var row = this.legend
-            .append("div");
-
-        row.append("span").attr("class", "key")
-            .style('border-style', 'solid')
-            .style('border-width', '5px')
-            .style('border-color', metric.colour);
-
-        row.append("span").html(metric.legend).attr('class', 'key-text');
-    }
-
     this.render = function (data) {
 
         //for x-axis scale, merge all datasets and get the extent of the dates
@@ -220,7 +223,7 @@ function Trend(container, width, height) {
         //plot values
         data.forEach(function(metric, i) {
             this.render_line(metric, i);
-            this.append_to_legend(metric, i);
+            legend.push(metric);
         }, this);
 
 
