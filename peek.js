@@ -341,34 +341,27 @@ function Stacked(container, width, height) {
 
 function Compare(container) {
 
-    this.width = 950;
+    var width = 950;
     this.rightPadding = 100;
-    this.height = 300;
+    var height = 300;
     this.bottomPadding = 0; //only meeded when displaying x-axis
     this.url;
 
-    this.plot = d3.select(container)
-                    .append("div")
-                    .attr("class", "plotbox");
-
-    this.svg = this.plot
-                .append("svg")
-                    .attr("width", this.width)
-                    .attr("height", this.height);
+    var plot = new Plot(container, width, height);
 
     this.render = function (data) {
             var self = this;
 
-            this.svg.attr("width", this.width).attr("height", this.height); //dynamically update width and height
+            plot.svg.attr("width", width).attr("height", height); //dynamically update width and height
 
             var max = d3.max(data, function(d) { return d.value;} );
 
             var spacing = 10;
-            var dx = (this.width - this.rightPadding) / max;
-            var dy = ((this.height-this.bottomPadding) / data.length) - spacing;
+            var dx = (width - this.rightPadding) / max;
+            var dy = ((height-this.bottomPadding) / data.length) - spacing;
     
             //bars
-            var bars = this.svg.selectAll(".bar")
+            var bars = plot.svg.selectAll(".bar")
                 .data(data)
                 .enter()
                 .append("rect")
@@ -379,7 +372,7 @@ function Compare(container) {
                 .attr("fill", function(d, i) {return d.colour} );
 
             //labels
-            var text = this.svg.selectAll("text")
+            var text = plot.svg.selectAll("text")
                 .data(data)
                 .enter()
                 .append("text")
@@ -389,7 +382,7 @@ function Compare(container) {
                     .html( function(d) {return d.label;});
 
             //text values
-            var text = this.svg.selectAll(".compare-chart-values")
+            var text = plot.svg.selectAll(".compare-chart-values")
                 .data(data)
                 .enter()
                 .append("text")
