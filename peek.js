@@ -239,6 +239,24 @@ function Trend(container, width, height) {
     };
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+
+function Bar (plot) {
+    var plot = plot;
+
+    this.draw = function(value, color, y, heightShift, xScale, yScale) {
+        plot.svg.append("rect")
+            .attr("x", xScale(value.date) - 2)
+            .attr("width", 5)
+            .attr("y", y)
+            .attr("height", yScale(value.value))
+            .attr("fill", color)
+            .attr("transform", "translate(" + 0 + "," + heightShift + ")")
+    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function Stacked(container, width, height) {
 
     this.url;
@@ -248,6 +266,7 @@ function Stacked(container, width, height) {
     this.controls;
 
     var plot = new Plot(container, width, height);
+    var bar = new Bar(plot);
     var legend = new Legend(container);
 
     this.color = d3.scale.category20c();
@@ -295,16 +314,8 @@ function Stacked(container, width, height) {
                 if (!heightCounter.hasOwnProperty(value.date)) {
                     heightCounter[value.date] = 0;
                 }
-
-                var heightShift = plot.height - yScale(value.value)
-                plot.svg.append("rect")
-                    .attr("x", xScale(value.date) - 2)
-                    .attr("width", 5)
-                    .attr("y", heightCounter[value.date])
-                    .attr("height", yScale(value.value))
-                    .attr("fill", metric.color)
-                    .attr("transform", "translate(" + 0 + "," + heightShift + ")")
-
+                var heightShift = plot.height - yScale(value.value);
+                bar.draw(value, metric.color, heightCounter[value.date], heightShift, xScale, yScale)
                 if (heightCounter.hasOwnProperty(value.date)) {
                     heightCounter[value.date] -= yScale(value.value);
                 }
