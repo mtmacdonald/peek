@@ -24,48 +24,6 @@ function Legend (container) {
     }
 }
 
-function Plot(container, width, height) {
-
-    var width = typeof width !== 'undefined' ? width : 600; //default
-    var height = typeof height !== 'undefined' ? height : 400; //default
-
-    this.margin = {top: 0, right: 20, bottom: 50, left: 50};
-    this.width = width - this.margin.left - this.margin.right;
-    this.height = height - this.margin.top - this.margin.bottom;
-
-    this.canvas = d3.select(container)
-                    .append("div")
-                    .attr("class", "plot");
-
-    this.svg = this.canvas.append("svg")
-        .attr('width', this.width + this.margin.left + this.margin.right)
-        .attr('height', this.height + this.margin.top + this.margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-}
-
-function Line (plot) {
-    var plot = plot;
-    var self = this;
-    this.xScale;
-    this.yScale;
-
-    var line = d3.svg.line()
-                .interpolate('cardinal') 
-                .x(function(d) { return self.xScale(d.date); })
-                .y(function(d) { return self.yScale(d.value); });
-
-    this.draw = function(metric, xScale, yScale) {
-        this.xScale = xScale;
-        this.yScale = yScale;
-        line.interpolate('cardinal');
-        plot.svg.append("path")
-            .attr("class", "line")
-            .style("stroke", metric.color)
-            .attr("d", line(metric.values));
-    }
-}
-
 function Axis (plot) {
 
     var plot = plot;
@@ -106,6 +64,48 @@ function Axis (plot) {
                 );
         }    
     };
+}
+
+function Plot(container, width, height) {
+
+    var width = typeof width !== 'undefined' ? width : 600; //default
+    var height = typeof height !== 'undefined' ? height : 400; //default
+
+    this.margin = {top: 0, right: 20, bottom: 50, left: 50};
+    this.width = width - this.margin.left - this.margin.right;
+    this.height = height - this.margin.top - this.margin.bottom;
+
+    this.canvas = d3.select(container)
+                    .append("div")
+                    .attr("class", "plot");
+
+    this.svg = this.canvas.append("svg")
+        .attr('width', this.width + this.margin.left + this.margin.right)
+        .attr('height', this.height + this.margin.top + this.margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+}
+
+function Line (plot) {
+    var plot = plot;
+    var self = this;
+    this.xScale;
+    this.yScale;
+
+    var line = d3.svg.line()
+                .interpolate('cardinal') 
+                .x(function(d) { return self.xScale(d.date); })
+                .y(function(d) { return self.yScale(d.value); });
+
+    this.draw = function(metric, xScale, yScale) {
+        this.xScale = xScale;
+        this.yScale = yScale;
+        line.interpolate('cardinal');
+        plot.svg.append("path")
+            .attr("class", "line")
+            .style("stroke", metric.color)
+            .attr("d", line(metric.values));
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
