@@ -44,17 +44,20 @@ function Plot(container, width, height) {
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 }
 
-function Line (plot, xScale, yScale) {
+function Line (plot) {
     var plot = plot;
-    var xScale = xScale;
-    var yScale = yScale;
+    var self = this;
+    this.xScale;
+    this.yScale;
 
     var line = d3.svg.line()
                 .interpolate('cardinal') 
-                .x(function(d) { return xScale(d.date); })
-                .y(function(d) { return yScale(d.value); });
+                .x(function(d) { return self.xScale(d.date); })
+                .y(function(d) { return self.yScale(d.value); });
 
-    this.draw = function(metric) {
+    this.draw = function(metric, xScale, yScale) {
+        this.xScale = xScale;
+        this.yScale = yScale;
         line.interpolate('cardinal');
         plot.svg.append("path")
             .attr("class", "line")
@@ -74,13 +77,11 @@ function Trend(container, width, height) {
     this.controls;
 
     var plot = new Plot(container, width, height);
+    var line = new Line(plot, xScale, yScale);
     var legend = new Legend(container);
 
     var xScale = d3.time.scale().range([0, plot.width]);
     var yScale = d3.scale.linear().range([plot.height, 0]);
-
-    var line = new Line(plot, xScale, yScale);
-
 
     this.interpolate = 'cardinal';
 
@@ -95,6 +96,7 @@ function Trend(container, width, height) {
     this.yAxis = d3.svg.axis()
         .scale(yScale)
         .orient("left").ticks(5);
+
 
     this.render_circles = function(metric, i) {
         d3.select(this.container)
@@ -211,7 +213,7 @@ function Trend(container, width, height) {
 
         //plot values
         data.forEach(function(metric, i) {
-            line.draw(metric);
+            line.draw(metric, xScale, yScale);
             if(this.showTooltip) {
                 this.render_circles(metric, i);                
             }
