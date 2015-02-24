@@ -1,5 +1,31 @@
 /*! Peek.js (c) 2014 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
 
+function Legend (container) {
+
+    var legend = d3.select(container);
+
+    legend.append("div").attr("class", "legend");
+
+    this.push = function(metric) {
+        var row = legend.append("div");
+
+        row.append("span").attr("class", "key")
+            .style('border-style', 'solid')
+            .style('border-width', '5px')
+            .style('border-color', metric.color);
+
+        var text = [], i = -1;
+        text[++i] = metric.label;
+        if (metric.units) {
+            text[++i] = ' ('+metric.units+')';
+        };
+
+        row.append("span").html(text.join('')).attr('class', 'key-text');
+    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function Pie(container) {
 
     this.width = 300;
@@ -80,24 +106,6 @@ function Pie(container) {
 
 }
 
-function Legend (container) {
-
-    var legend = d3.select(container);
-
-    legend.append("div").attr("class", "legend");
-
-    this.push = function(metric) {
-        var row = legend.append("div");
-
-        row.append("span").attr("class", "key")
-            .style('border-style', 'solid')
-            .style('border-width', '5px')
-            .style('border-color', metric.colour);
-
-        row.append("span").html(metric.legend).attr('class', 'key-text');
-    }
-
-}
 
 function Trend(container, width, height) {
 
@@ -154,7 +162,7 @@ function Trend(container, width, height) {
         this.line.interpolate(this.interpolate);
         this.svg.append("path")
             .attr("class", "line")
-            .style("stroke", metric.colour)
+            .style("stroke", metric.color)
             .attr("d", this.line(metric.values));
     }
 
@@ -337,7 +345,7 @@ function Stacked(container, width, height) {
 
     this.controls;
 
-    this.legend;
+    var legend = new Legend(container);
 
     this.plot;
     this.svg;
@@ -458,7 +466,7 @@ function Stacked(container, width, height) {
                     heightCounter[value.date] -= this.y(value.value);
                 }
             }, this);
-            this.append_to_legend(metric);
+            legend.push(metric);
 
         }, this);
 

@@ -6,8 +6,9 @@
 
 var trend_data = [
     {
-        "legend": "Foo",
-        "colour": "steelblue",
+        "label": "Foo",
+        "units": "tonnes",
+        "color": "steelblue",
         "values": [
             {
                 "date": "2014-03-15 01:00:00",
@@ -32,8 +33,9 @@ var trend_data = [
         ]
     },
     {
-        "legend": "Baz",
-        "colour": "firebrick",
+        "label": "Baz",
+        "units": "tonnes",
+        "color": "firebrick",
         "values": [
             {
                 "date": "2014-03-14 01:00:00",
@@ -57,7 +59,7 @@ var trend_data = [
 
 var stacked_data = [
     {
-        "metric": "Foo",
+        "label": "Foo",
         "units": "tonnes",
         "color": "steelblue",
         "values": [
@@ -80,7 +82,7 @@ var stacked_data = [
         ]
     },
     {
-        "metric": "Baz",
+        "label": "Baz",
         "units": "litres",
         "color": "firebrick",
         "values": [
