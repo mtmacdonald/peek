@@ -44,6 +44,25 @@ function Plot(container, width, height) {
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 }
 
+function Line (plot, xScale, yScale) {
+    var plot = plot;
+    var xScale = xScale;
+    var yScale = yScale;
+
+    var line = d3.svg.line()
+                .interpolate('cardinal') 
+                .x(function(d) { return xScale(d.date); })
+                .y(function(d) { return yScale(d.value); });
+
+    this.draw = function(metric) {
+        line.interpolate('cardinal');
+        plot.svg.append("path")
+            .attr("class", "line")
+            .style("stroke", metric.color)
+            .attr("d", line(metric.values));
+    }
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 function Trend(container, width, height) {
@@ -57,14 +76,17 @@ function Trend(container, width, height) {
     var plot = new Plot(container, width, height);
     var legend = new Legend(container);
 
+    var xScale = d3.time.scale().range([0, plot.width]);
+    var yScale = d3.scale.linear().range([plot.height, 0]);
+
+    var line = new Line(plot, xScale, yScale);
+
+
     this.interpolate = 'cardinal';
 
     this.showTooltip = false;
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-
-    var xScale = d3.time.scale().range([0, plot.width]);
-    var yScale = d3.scale.linear().range([plot.height, 0]);
 
     this.xAxis = d3.svg.axis()
         .scale(xScale)
@@ -73,19 +95,6 @@ function Trend(container, width, height) {
     this.yAxis = d3.svg.axis()
         .scale(yScale)
         .orient("left").ticks(5);
-
-    this.line = d3.svg.line()
-                .interpolate(this.interpolate) 
-                .x(function(d) { return xScale(d.date); })
-                .y(function(d) { return yScale(d.value); });
-
-    this.render_line = function(metric, i) {
-        this.line.interpolate(this.interpolate);
-        plot.svg.append("path")
-            .attr("class", "line")
-            .style("stroke", metric.color)
-            .attr("d", this.line(metric.values));
-    }
 
     this.render_circles = function(metric, i) {
         d3.select(this.container)
@@ -202,7 +211,7 @@ function Trend(container, width, height) {
 
         //plot values
         data.forEach(function(metric, i) {
-            this.render_line(metric, i);
+            line.draw(metric);
             if(this.showTooltip) {
                 this.render_circles(metric, i);                
             }
