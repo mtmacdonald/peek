@@ -193,7 +193,6 @@ function Trend(container, width, height) {
     this.mouseover_circle = function(data,i) {     
         var formatDate = d3.time.format("%A %d. %B %Y");
         var circle = d3.select(this);
-        //circle.attr("r", function(d){ return 8; });
         circle.transition().duration(500).attr("r", 16);
 
         d3.select(".infobox")
@@ -212,7 +211,6 @@ function Trend(container, width, height) {
 
     this.mouseout_circle = function() {
         var circle = d3.select(this);
-        //circle.attr("r", function(d){ return 4; });
         circle.transition().duration(500).attr("r", 4);
         d3.select(".infobox").style("display", "none"); 
     }
