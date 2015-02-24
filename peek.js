@@ -121,7 +121,9 @@ function Trend(container, width, height) {
     this.plot;
     this.svg;
 
-    this.interpolate = 'basis';
+    this.interpolate = 'cardinal';
+
+    this.showTooltip = false;
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
@@ -158,6 +160,61 @@ function Trend(container, width, height) {
             .attr("class", "line")
             .style("stroke", metric.color)
             .attr("d", this.line(metric.values));
+    }
+
+    this.render_circles = function(metric, i) {
+        var that = this;
+
+        d3.select(this.container)
+            .append("div")
+            .attr("class", "infobox").html("<p>Tooltip</p>");
+
+        this.svg.selectAll(".plot")
+            .data(metric.values)
+            .enter()
+            .append("circle")
+              .attr("transform", function(d) { 
+                return "translate(" + that.x(d.date) + ", " + that.y(d.value) + ")"; 
+            })
+              .attr("r", function(d){ return 4; }) 
+              .attr("fill", "white")
+              .style("stroke", metric.color)
+              .on("mouseover", this.mouseover_circle)
+              .on("mouseout", this.mouseout_circle);
+
+        this.plot.on("mousemove", function(){
+            var infobox = d3.select(".infobox");
+            var coord = d3.mouse(this);
+            infobox.style("left", (d3.event.pageX) + 15 + "px" );
+            infobox.style("top", (d3.event.pageY) + "px");
+        });
+    }
+
+    this.mouseover_circle = function(data,i) {     
+        var formatDate = d3.time.format("%A %d. %B %Y");
+        var circle = d3.select(this);
+        //circle.attr("r", function(d){ return 8; });
+        circle.transition().duration(500).attr("r", 16);
+
+        d3.select(".infobox")
+        .style("display", "block")
+        .style('opacity', 0)
+        .transition().delay(200).duration(500).style('opacity', 1);  
+          
+        d3.select(".infobox p")
+            .html("<strong>Date:</strong> " 
+                + formatDate(new Date(data.date)) 
+                + "<br/>" 
+                + "<strong>Value:</strong> " 
+                + data.value
+                );
+    }
+
+    this.mouseout_circle = function() {
+        var circle = d3.select(this);
+        //circle.attr("r", function(d){ return 4; });
+        circle.transition().duration(500).attr("r", 4);
+        d3.select(".infobox").style("display", "none"); 
     }
 
     this.render_x_axis = function() {
@@ -225,6 +282,9 @@ function Trend(container, width, height) {
         //plot values
         data.forEach(function(metric, i) {
             this.render_line(metric, i);
+            if(this.showTooltip) {
+                this.render_circles(metric, i);                
+            }
             legend.push(metric);
         }, this);
 
