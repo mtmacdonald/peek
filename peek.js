@@ -33,6 +33,8 @@ function Pie(container) {
     this.radius = 150;
     this.innerRadius = 60;
 
+    var legend = new Legend(container);
+
     this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
     this.pie = d3.layout.pie().value(function(d) { return d.value; });
 
@@ -48,19 +50,9 @@ function Pie(container) {
                 .attr("transform", "translate(" + this.radius + "," + this.radius + ")");
 
     this.legend = function(container, data) {
-
         data.forEach(function(metric, i) {
-
-            var row = d3.select(container).append("div");
-
-            row.append("span").attr("class", "key")
-                .style('border-style', 'solid')
-                .style('border-width', '5px')
-                .style('border-color', data[i].colour);
-
-            row.append("span").html(metric.label).attr('class', 'key-text');
+            legend.push(metric);
         }, this);
-
     }
 
     this.render = function (data) {
@@ -76,7 +68,7 @@ function Pie(container) {
                     .attr("class", "slice");
 
         arcs.append("svg:path")
-                .attr("fill", function(d, i) { return data[i].colour; } ) 
+                .attr("fill", function(d, i) { return data[i].color; } ) 
                 .attr("d", self.arc);
 
         arcs.append("svg:text")

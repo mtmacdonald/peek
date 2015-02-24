@@ -123,12 +123,12 @@ var pie_data_one = [
     {     
         "label": "Foo",
         "value": 90.1,
-        "colour": "steelblue"
+        "color": "steelblue"
     },
     {     
         "label": "Baz",
         "value": 9.9,
-        "colour": "firebrick"
+        "color": "firebrick"
     }     
 ];
 
@@ -136,12 +136,12 @@ var pie_data_two = [
     {     
         "label": "Foo",
         "value": 49.9,
-        "colour": "steelblue"
+        "color": "steelblue"
     },    
     {
         "label": "Baz",
         "value": 50.1,
-        "colour": "firebrick"
+        "color": "firebrick"
     }
 ];
 
