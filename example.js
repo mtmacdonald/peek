@@ -4,7 +4,7 @@
     Example usage of Peek.js
 */
 
-var trend_data = [
+var example_data = [
     {
         "label": "Foo",
         "units": "tonnes",
@@ -51,55 +51,6 @@ var trend_data = [
             },
             {
                 "date": "2014-03-21 01:00:00",
-                "value": 3.14
-            }
-        ]
-    }
-];
-
-var stacked_data = [
-    {
-        "label": "Foo",
-        "units": "tonnes",
-        "color": "steelblue",
-        "values": [
-            {
-                "date": "2014-03-15 00:00:00",
-                "value": 6
-            },
-            {
-                "date": "2014-03-16 00:00:00",
-                "value": 1.43
-            },
-            {
-                "date": "2014-03-19 00:00:00",
-                "value": 1.38
-            },
-            {
-                "date": "2014-03-25 00:00:00",
-                "value": 4.14
-            }
-        ]
-    },
-    {
-        "label": "Baz",
-        "units": "litres",
-        "color": "firebrick",
-        "values": [
-            {
-                "date": "2014-03-14 00:00:00",
-                "value": 1.14
-            },
-            {
-                "date": "2014-03-15 00:00:00",
-                "value": 0.43
-            },
-            {
-                "date": "2014-03-19 00:00:00",
-                "value": 6
-            },
-            {
-                "date": "2014-03-21 00:00:00",
                 "value": 3.14
             }
         ]
@@ -162,19 +113,20 @@ $( document ).ready(function() {
                 trend_chart.url = 'trend.json'; 
                 chart.draw();
     */
-
+    var data = JSON.parse(JSON.stringify(example_data)); //clone
     var line_chart = new Trend("#line-chart");
     line_chart.line.points = true;
     line_chart.line.area = false;
-    line_chart.render(trend_data);
+    line_chart.render(data);
 
-    //var area_chart = new Trend("#area-chart");
-    //area_chart.line.points = true;
-    //area_chart.line.area = true;
-    //area_chart.render(trend_data);
+    var data = JSON.parse(JSON.stringify(example_data)); //clone
+    var area_chart = new Trend("#area-chart");
+    area_chart.line.area = true;
+    area_chart.render(data);
 
+    var data = JSON.parse(JSON.stringify(example_data)); //clone
     var stacked_chart = new Stacked("#stacked-bar-chart");
-    stacked_chart.render(stacked_data);
+    stacked_chart.render(data);
 
     var compare_chart = new Compare('#compare-chart');
     compare_chart.render(horizontal_bar_data);

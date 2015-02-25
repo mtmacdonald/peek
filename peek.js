@@ -207,8 +207,6 @@ function Trend(container, width, height) {
 
     this.url;
 
-    this.controls;
-
     var plot = new Plot(container, width, height);
     this.line = new Line(plot);
     var legend = new Legend(container);
@@ -219,9 +217,9 @@ function Trend(container, width, height) {
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     this.render = function (data) {
-
         //for x-axis scale, merge all datasets and get the extent of the dates
         var merged = [];
+
         data.forEach(function(metric) {
             //first parse dates
             metric.values.forEach(function(value) {
@@ -230,6 +228,7 @@ function Trend(container, width, height) {
             //then merge into one array
             merged = merged.concat(metric.values);
         }, this);
+
         xScale.domain(d3.extent(merged, function(d) { return d.date; }));
 
         //for y-axis scale, get the minimum and maximum for each metric
