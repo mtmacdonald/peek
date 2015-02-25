@@ -24,46 +24,58 @@ function Legend (container) {
     }
 }
 
+function Axis (plot) {
+
+    var plot = plot;
+    this.showTicks = true;
+
+    this.draw = function (scale, orient, ticks) {
+        var axis = d3.svg.axis()
+                    .scale(scale)
+                    .orient(orient).ticks(ticks);
+
+        var rendered = plot.svg.append("g")
+            .attr("class", "x axis");
+
+        if (orient === 'bottom') {
+            rendered.attr("transform", "translate(0," + plot.height + ")")
+        }
+
+        rendered.call(axis);
+
+        if (this.showTicks) {
+
+            if (orient === 'bottom') {
+                plot.svg.append("g")
+                    .attr("class", "grid")
+                    .attr("transform", "translate(0," + plot.height + ")")
+                    .call(axis
+                        .tickSize(-plot.height, 0, 0)
+                        .tickFormat("")
+                    );
+            } else {
+                plot.svg.append("g")         
+                    .attr("class", "grid")
+                    .call(axis
+                        .tickSize(-plot.width, 0, 0)
+                        .tickFormat("")
+                    );
+            }
+        }
+    }
+}
+
 function Axes (plot) {
 
     var plot = plot;
-    this.ticks = true;
+    this.x = new Axis(plot);
+    this.y = new Axis(plot);
 
     this.draw = function(xScale, yScale) {
-        var xAxis = d3.svg.axis()
-            .scale(xScale)
-            .orient("bottom").ticks(5);
-
-        var yAxis = d3.svg.axis()
-            .scale(yScale)
-            .orient("left").ticks(5);
-
-        plot.svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + plot.height + ")")
-            .call(xAxis);
-
-        plot.svg.append("g")
-            .attr("class", "y axis")
-            .call(yAxis);    
-            
-        if (this.ticks) {
-            plot.svg.append("g")
-                .attr("class", "grid")
-                .attr("transform", "translate(0," + plot.height + ")")
-                .call(xAxis
-                    .tickSize(-plot.height, 0, 0)
-                    .tickFormat("")
-                );
-
-            plot.svg.append("g")         
-                .attr("class", "grid")
-                .call(yAxis
-                    .tickSize(-plot.width, 0, 0)
-                    .tickFormat("")
-                );
-        }    
+        this.x.draw(xScale, 'bottom', 5);
+        this.y.draw(yScale, 'left', 5);
     };
+
 }
 
 function Plot(container, width, height) {
@@ -324,7 +336,8 @@ function Stacked(container, width, height) {
 
         }, this);
 
-        plot.axes.ticks = false;
+        plot.axes.x.showTicks = false;
+        plot.axes.y.showTicks = false;
         plot.axes.draw(xScale, yAxisScale);
     }
 
