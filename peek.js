@@ -39,23 +39,22 @@ function Plot(container, width, height, type, radius) {
                     .attr("class", "canvas");
 
     this.canvas.on("mousemove", function() {
-            var infobox = d3.select(".infobox");
-            var coord = d3.mouse(this);
-            infobox.style("left", (d3.event.pageX) + 15 + "px" );
-            infobox.style("top", (d3.event.pageY) + "px");     
+        var infobox = d3.select(".infobox");
+        var coord = d3.mouse(this);
+        infobox.style("left", (d3.event.pageX) + 15 + "px" );
+        infobox.style("top", (d3.event.pageY) + "px");     
     });
 
-    this.svg = this.canvas
-        .append("svg")
-            .attr('width', this.width + this.margin.left + this.margin.right)
-            .attr('height', this.height + this.margin.top + this.margin.bottom);
+    this.svg = this.canvas.append("svg")
+                .attr('width', this.width + this.margin.left + this.margin.right)
+                .attr('height', this.height + this.margin.top + this.margin.bottom);
 
     if (type === 'radial') {
             this.svg = this.svg.append("g")
-                .attr("transform", "translate(" + radius + "," + radius + ")");
+                        .attr("transform", "translate(" + radius + "," + radius + ")");
     } else {
         this.svg = this.svg.append("g")
-            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");  
+                    .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");  
     }
 }
 
