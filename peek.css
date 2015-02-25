@@ -1,10 +1,16 @@
 /*! Peek.js (c) 2014 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
 
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 2;
-}
+/*
+  chart
+*/
+
+.plot {float: left;}
+
+/**********************************************************************************************************************/
+
+/*
+  axes
+*/
 
 .axis path, .axis line{
   fill: none;
@@ -26,9 +32,14 @@
     stroke-width: 0;
 }
 
-.legend, .plot {float: left;}
+/**********************************************************************************************************************/
+
+/*
+  legends
+*/
 
 .legend {
+  float: left;
 	width: 300px;
 }
 
@@ -50,6 +61,18 @@
   margin 0;
 	padding-left: 4px;
   vertical-align: middle;
+}
+
+/**********************************************************************************************************************/
+
+/*
+  lines
+*/
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2;
 }
 
 circle {
