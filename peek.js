@@ -34,8 +34,6 @@ function Plot(container, width, height, type, radius) {
 
     this.axes = new Axes(this);
 
-    this.container = container;
-
     this.canvas = d3.select(container)
                     .append("div")
                     .attr("class", "canvas");
@@ -45,20 +43,18 @@ function Plot(container, width, height, type, radius) {
             var coord = d3.mouse(this);
             infobox.style("left", (d3.event.pageX) + 15 + "px" );
             infobox.style("top", (d3.event.pageY) + "px");     
-    }); 
+    });
+
+    this.svg = this.canvas
+        .append("svg")
+            .attr('width', this.width + this.margin.left + this.margin.right)
+            .attr('height', this.height + this.margin.top + this.margin.bottom);
 
     if (type === 'radial') {
-        this.svg = this.canvas
-            .append("svg")
-                .attr('width', this.width + this.margin.left + this.margin.right)
-                .attr('height', this.height + this.margin.top + this.margin.bottom)
-            .append("g")
+            this.svg = this.svg.append("g")
                 .attr("transform", "translate(" + radius + "," + radius + ")");
     } else {
-        this.svg = this.canvas.append("svg")
-            .attr('width', this.width + this.margin.left + this.margin.right)
-            .attr('height', this.height + this.margin.top + this.margin.bottom)
-            .append("g")
+        this.svg = this.svg.append("g")
             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");  
     }
 }
