@@ -117,24 +117,36 @@ function Line (plot) {
     this.xScale;
     this.yScale;
 
-    this.showTooltip = true;
+    this.points = false;
+    this.interpolation = 'cardinal';
+    this.area = false;
     this.point = new Point(plot);
 
     var line = d3.svg.line()
-                .interpolate('cardinal') 
+                .interpolate(this.interpolation) 
                 .x(function(d) { return self.xScale(d.date); })
                 .y(function(d) { return self.yScale(d.value); });
+
+    var area = d3.svg.area()
+                .interpolate(this.interpolation)
+                .x(function(d) { return self.xScale(d.date); })
+                .y0(plot.height)
+                .y1(function(d) { return self.yScale(d.value); });
 
     this.draw = function(metric, xScale, yScale) {
         this.xScale = xScale;
         this.yScale = yScale;
-        line.interpolate('cardinal');
         plot.svg.append("path")
             .attr("class", "line")
             .style("stroke", metric.color)
             .attr("d", line(metric.values));
-
-        if (this.showTooltip) {
+        if (this.area === true) {
+            plot.svg.append("path")
+                    .attr("class", "area")
+                    .style("fill", metric.color)
+                    .attr("d", area(metric.values));
+        }
+        if (this.points) {
             this.point.draw(metric, xScale, yScale);
         }
     }
@@ -195,18 +207,14 @@ function Trend(container, width, height) {
 
     this.url;
 
-    this.container = container;
-
     this.controls;
 
     var plot = new Plot(container, width, height);
-    var line = new Line(plot);
+    this.line = new Line(plot);
     var legend = new Legend(container);
 
     var xScale = d3.time.scale().range([0, plot.width]);
     var yScale = d3.scale.linear().range([plot.height, 0]);
-
-    this.interpolate = 'cardinal';
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
@@ -238,7 +246,7 @@ function Trend(container, width, height) {
 
         //plot values
         data.forEach(function(metric, i) {
-            line.draw(metric, xScale, yScale);
+            this.line.draw(metric, xScale, yScale);
             legend.push(metric);
         }, this);
     }

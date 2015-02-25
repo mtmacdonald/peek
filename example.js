@@ -163,10 +163,15 @@ $( document ).ready(function() {
                 chart.draw();
     */
 
-    var trend_chart = new Trend("#trend-chart");
-    //trend_chart.interpolate = "monotone"; //default=cardinal
-    trend_chart.showTooltip = true;
-    trend_chart.render(trend_data);
+    var line_chart = new Trend("#line-chart");
+    line_chart.line.points = true;
+    line_chart.line.area = false;
+    line_chart.render(trend_data);
+
+    //var area_chart = new Trend("#area-chart");
+    //area_chart.line.points = true;
+    //area_chart.line.area = true;
+    //area_chart.render(trend_data);
 
     var stacked_chart = new Stacked("#stacked-bar-chart");
     stacked_chart.render(stacked_data);
