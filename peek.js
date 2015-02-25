@@ -93,7 +93,7 @@ function Plot(container, width, height, type, radius) {
     if (type === 'radial') {
         this.canvas = d3.select(container)
                         .append("div")
-                        .attr("class", "plotbox");
+                        .attr("class", "canvas");
 
         this.svg = this.canvas
             .append("svg")
@@ -104,7 +104,7 @@ function Plot(container, width, height, type, radius) {
     } else {
         this.canvas = d3.select(container)
                         .append("div")
-                        .attr("class", "plot");
+                        .attr("class", "canvas");
 
         this.svg = this.canvas.append("svg")
             .attr('width', this.width + this.margin.left + this.margin.right)
