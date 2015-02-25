@@ -21,12 +21,11 @@ function Legend (container) {
     }
 }
 
-function Plot(container, width, height, type, radius) {
+function Plot(container, width, height, radius) {
 
     var width = typeof width !== 'undefined' ? width : 600; //default
     var height = typeof height !== 'undefined' ? height : 400; //default
-    var type = typeof type !== 'undefined' ? type : 'rectangular'; //default
-    var radius = radius;
+    var radius = typeof radius !== 'undefined' ? radius : false; //default
 
     this.margin = {top: 20, right: 20, bottom: 50, left: 50};
     this.width = width - this.margin.left - this.margin.right;
@@ -49,12 +48,12 @@ function Plot(container, width, height, type, radius) {
                 .attr('width', this.width + this.margin.left + this.margin.right)
                 .attr('height', this.height + this.margin.top + this.margin.bottom);
 
-    if (type === 'radial') {
-            this.svg = this.svg.append("g")
-                        .attr("transform", "translate(" + radius + "," + radius + ")");
+    if (radius === false) {
+        this.svg = this.svg.append("g")
+                    .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
     } else {
         this.svg = this.svg.append("g")
-                    .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");  
+                    .attr("transform", "translate(" + radius + "," + radius + ")");
     }
 }
 
@@ -442,7 +441,7 @@ function Pie(container) {
     this.radius = 150;
     this.innerRadius = 60;
 
-    var plot = new Plot(container, this.width, this.height, 'radial', this.radius);
+    var plot = new Plot(container, this.width, this.height, this.radius);
     var legend = new Legend(container);
 
     this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
