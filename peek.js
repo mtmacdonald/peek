@@ -91,11 +91,11 @@ function Plot(container, width, height, type, radius) {
     this.container = container;
 
     if (type === 'radial') {
-        this.plot = d3.select(container)
+        this.canvas = d3.select(container)
                         .append("div")
                         .attr("class", "plotbox");
 
-        this.svg = this.plot
+        this.svg = this.canvas
             .append("svg")
                 .attr("width", this.width)
                 .attr("height", this.height)
@@ -456,18 +456,7 @@ function Pie(container) {
 
     this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
     this.pie = d3.layout.pie().value(function(d) { return d.value; });
-/*
-        this.plot = d3.select(container)
-                        .append("div")
-                        .attr("class", "plotbox");
 
-        this.svg = this.plot
-            .append("svg")
-                .attr("width", this.width)
-                .attr("height", this.height)
-            .append("g")
-                .attr("transform", "translate(" + this.radius + "," + this.radius + ")");
-*/
     this.legend = function(container, data) {
         data.forEach(function(metric, i) {
             legend.push(metric);
