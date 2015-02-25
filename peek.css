@@ -4,7 +4,14 @@
   chart
 */
 
-.canvas {float: left;}
+.canvas {
+  line-height: 0;
+  float: left;
+}
+
+.canvas svg {
+
+}
 
 /**********************************************************************************************************************/
 
@@ -40,6 +47,7 @@
 
 .legend {
   float: left;
+  padding-left: 10px;
 	width: 300px;
 }
 

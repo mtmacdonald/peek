@@ -21,6 +21,52 @@ function Legend (container) {
     }
 }
 
+function Plot(container, width, height, type, radius) {
+
+    var width = typeof width !== 'undefined' ? width : 600; //default
+    var height = typeof height !== 'undefined' ? height : 400; //default
+    var type = typeof type !== 'undefined' ? type : 'rectangular'; //default
+    var radius = radius;
+
+    this.margin = {top: 20, right: 20, bottom: 50, left: 50};
+    this.width = width - this.margin.left - this.margin.right;
+    this.height = height - this.margin.top - this.margin.bottom;
+
+    this.axes = new Axes(this);
+
+    this.container = container;
+
+    if (type === 'radial') {
+        this.canvas = d3.select(container)
+                        .append("div")
+                        .attr("class", "canvas");
+
+        this.svg = this.canvas
+            .append("svg")
+                .attr("width", this.width)
+                .attr("height", this.height)
+            .append("g")
+                .attr("transform", "translate(" + radius + "," + radius + ")");
+    } else {
+        this.canvas = d3.select(container)
+                        .append("div")
+                        .attr("class", "canvas");
+
+        this.svg = this.canvas.append("svg")
+            .attr('width', this.width + this.margin.left + this.margin.right)
+            .attr('height', this.height + this.margin.top + this.margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+        this.canvas.on("mousemove", function() {
+                var infobox = d3.select(".infobox");
+                var coord = d3.mouse(this);
+                infobox.style("left", (d3.event.pageX) + 15 + "px" );
+                infobox.style("top", (d3.event.pageY) + "px");     
+        });   
+    }
+}
+
 function Axis (plot) {
 
     var plot = plot;
@@ -73,52 +119,6 @@ function Axes (plot) {
         this.y.draw(yScale, 'left', 5);
     };
 
-}
-
-function Plot(container, width, height, type, radius) {
-
-    var width = typeof width !== 'undefined' ? width : 600; //default
-    var height = typeof height !== 'undefined' ? height : 400; //default
-    var type = typeof type !== 'undefined' ? type : 'rectangular'; //default
-    var radius = radius;
-
-    this.margin = {top: 0, right: 20, bottom: 50, left: 50};
-    this.width = width - this.margin.left - this.margin.right;
-    this.height = height - this.margin.top - this.margin.bottom;
-
-    this.axes = new Axes(this);
-
-    this.container = container;
-
-    if (type === 'radial') {
-        this.canvas = d3.select(container)
-                        .append("div")
-                        .attr("class", "canvas");
-
-        this.svg = this.canvas
-            .append("svg")
-                .attr("width", this.width)
-                .attr("height", this.height)
-            .append("g")
-                .attr("transform", "translate(" + radius + "," + radius + ")");
-    } else {
-        this.canvas = d3.select(container)
-                        .append("div")
-                        .attr("class", "canvas");
-
-        this.svg = this.canvas.append("svg")
-            .attr('width', this.width + this.margin.left + this.margin.right)
-            .attr('height', this.height + this.margin.top + this.margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-
-        this.canvas.on("mousemove", function() {
-                var infobox = d3.select(".infobox");
-                var coord = d3.mouse(this);
-                infobox.style("left", (d3.event.pageX) + 15 + "px" );
-                infobox.style("top", (d3.event.pageY) + "px");     
-        });   
-    }
 }
 
 function Line (plot) {
