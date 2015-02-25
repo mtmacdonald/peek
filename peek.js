@@ -35,6 +35,8 @@ function Plot(container, width, height, radius) {
 
     this.axes = new Axes(this);
 
+    this.container = container; //Do not delete - needed for tooltip
+
     this.canvas = d3.select(container)
                     .append("div")
                     .attr("class", "canvas");
