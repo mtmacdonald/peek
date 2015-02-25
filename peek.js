@@ -1,5 +1,7 @@
 /*! Peek.js (c) 2014 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
 
+// todo stacked line charts: http://stackoverflow.com/questions/14713503/how-to-handle-layers-with-missing-data-points-in-d3-layout-stack
+
 function Legend (container) {
 
     var legend = d3.select(container).append("div").attr("class", "legend");
