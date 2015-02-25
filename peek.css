@@ -32,16 +32,25 @@
 	width: 300px;
 }
 
-.key {
-	width: 15px;
-	height: 10px;
-	display: inline-block;
-  box-sizing:border-box;
-}
-.key-text {
-	padding-left: 5px;
+.legend div {
+  /*inherited line height*/
 }
 
+.key {
+  width: 18px;
+  display: inline-block;
+  box-sizing: border-box;
+  vertical-align: middle;
+  border-style: solid;
+  border-width: 6px;
+  border-radius: 3px;
+}
+
+.key-text {
+  margin 0;
+	padding-left: 4px;
+  vertical-align: middle;
+}
 
 circle {
   stroke: steelblue;

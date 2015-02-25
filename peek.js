@@ -2,17 +2,14 @@
 
 function Legend (container) {
 
-    var legend = d3.select(container);
-
-    legend.append("div").attr("class", "legend");
+    var legend = d3.select(container).append("div").attr("class", "legend");
 
     this.push = function(metric) {
         var row = legend.append("div");
 
         row.append("span").attr("class", "key")
-            .style('border-style', 'solid')
-            .style('border-width', '5px')
-            .style('border-color', metric.color);
+            .style('background-color', metric.color)
+            .style('border-color', metric.color); //show color when printing
 
         var text = [], i = -1;
         text[++i] = metric.label;
