@@ -113,6 +113,7 @@ $( document ).ready(function() {
                 trend_chart.url = 'trend.json'; 
                 chart.draw();
     */
+
     var data = JSON.parse(JSON.stringify(example_data)); //clone
     var line_chart = new Trend("#line-chart");
     line_chart.line.points = true;
@@ -123,6 +124,9 @@ $( document ).ready(function() {
     var area_chart = new Trend("#area-chart");
     area_chart.line.area = true;
     area_chart.render(data);
+
+    var stacked_area_chart = new StackedArea("#stacked-area-chart");
+    stacked_area_chart.render();
 
     var data = JSON.parse(JSON.stringify(example_data)); //clone
     var stacked_chart = new Stacked("#stacked-bar-chart");

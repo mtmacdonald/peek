@@ -212,6 +212,55 @@ function Point (plot) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function StackedArea(container, width, height) {
+
+    this.url;
+
+    var plot = new Plot(container, width, height);
+    this.line = new Line(plot);
+    var legend = new Legend(container);
+
+    var xScale = d3.scale.linear().range([0, plot.width]).domain([0,3]);
+
+    var yScale = d3.scale.linear().range([plot.height, 0]).domain([0,25]);
+
+    //this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
+
+    this.render = function () {
+        plot.axes.draw(xScale, yScale);
+
+        //http://jsfiddle.net/DyrsK/2/
+        var data = [[ 1,  4,  2,  7],
+            [21,  2,  5, 10],
+            [ 1, 17, 16,  6]];
+
+        data = data.map(function(d) { return d.map(function(p, i) { return {x:i, y:p, y0:0}; }); })
+
+        var colors = d3.scale.category10();
+
+        var stack = d3.layout.stack()
+              .offset("zero");
+ 
+        var layers = stack(data);
+
+        var area = d3.svg.area()
+            .interpolate('cardinal')
+            .x(function(d, i) { return xScale(i); })
+            .y0(function(d) { return yScale(d.y0); })
+            .y1(function(d) { return yScale(d.y0 + d.y); });
+
+        plot.svg.selectAll(".layer")
+              .data(layers)
+              .enter().append("path")
+              .attr("class", "layer")
+              .attr("d", function(d) { return area(d); })
+              .style("fill", function(d, i) { return colors(i); });
+
+    }
+
+}
+
+
 function Trend(container, width, height) {
 
     this.url;
