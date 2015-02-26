@@ -1,12 +1,8 @@
 /*! Peek.js (c) 2014 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
 
 /*
-  chart
+  make it easy to clear floats
 */
-
-.test {
-  writing-mode: vertical-rl;
-}
 
 .p-clear-after::after {
   clear: both;
@@ -16,54 +12,59 @@
   content:" ";
 }
 
+/*
+  chart
+*/
+
 .chart {
   float: left;
-  display: table;
-  /*border: 1px solid blue;*/
-}
-
-.main-container {
-  display: table-cell;
-
-  /*float: left;*/
-  /*border: 1px solid red;*/
+  display: table; /*make left-container stretch to height of chart*/
 }
 
 .left-container {
-  position: relative;
-  width: 30px;
+  display: table-cell; /*make left-container stretch to height of chart*/
   vertical-align: middle;
-  display: table-cell;
-  border: 1px solid red;
+  position: relative; /*make container the closest positioned ancestor for yLabel: http://stackoverflow.com/questions/28741562*/
+  width: 20px; /*same as label line-height*/
 }
 
-.canvas {
-  line-height: 0;
-  /*border: 1px solid black;*/
+.yLabel {
+  text-align: center;
+  overflow: hidden;
+  height: 20px;
+  line-height: 20px;
+  position: absolute;
+  bottom: 0;
+  width: 400px; /*must be same as height of container*/
+  transform: rotate(-90deg);
+  transform-origin: top left;
 }
 
-.canvas svg {
-
+.main-container {
+  /*display: table-cell;*/
 }
 
 .title {
   text-align: center;
-}
-
-.yLabel {
-  position: absolute;
-  left: -180px;
-  /*height: 100%!important;*/
-  width: 400px;
-  transform: rotate(270deg);
-  /*transform-origin: bottom right 0;*/
+  overflow: hidden;
+  height: 20px;
+  line-height: 20px;
+  font-weight: bold;
 }
 
 .xLabel {
   text-align: center;
+  overflow: hidden;
+  height: 20px;
+  line-height: 20px;
 }
-.title, .yLabel, .xLabel {
-  border: 1px solid orange;
+
+.canvas {
+  line-height: 0;
+}
+
+.canvas svg {
+
 }
 
 /**********************************************************************************************************************/
@@ -102,7 +103,6 @@
   float: left;
   padding-left: 10px;
 	width: 300px;
-  border: 1px solid green;
 }
 
 .legend div {

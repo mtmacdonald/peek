@@ -39,7 +39,7 @@ function Plot(container, width, height, radius) {
 
     this.chart = d3.select(container).insert("div").attr("class", "chart p-clear-after");
     this.leftContainer = this.chart.insert("div").attr("class", "left-container");
-        this.leftContainer.insert("div").html('Y Label that is longer than we expected once again').attr("class", "yLabel");
+        this.leftContainer.insert("div").html('Y Label').attr("class", "yLabel");
     this.mainContainer = this.chart.insert("div").attr("class", "main-container");
 
     this.mainContainer.insert("div").html('Chart Title').attr("class", "title");
