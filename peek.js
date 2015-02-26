@@ -37,9 +37,18 @@ function Plot(container, width, height, radius) {
 
     this.container = container; //Do not delete - needed for tooltip
 
-    this.canvas = d3.select(container)
-                    .append("div")
-                    .attr("class", "canvas");
+    this.chart = d3.select(container).insert("div").attr("class", "chart p-clear-after");
+    this.leftContainer = this.chart.insert("div").attr("class", "left-container");
+        this.leftContainer.insert("div").html('Y Label that is longer than we expected once again').attr("class", "yLabel");
+    this.mainContainer = this.chart.insert("div").attr("class", "main-container");
+
+    this.mainContainer.insert("div").html('Chart Title').attr("class", "title");
+    this.canvas = this.mainContainer.insert("div").attr("class", "canvas");
+    this.mainContainer.insert("div").html('X Label').attr("class", "xLabel");
+
+    this.svg = this.canvas.insert("svg")
+                .attr('width', this.width + this.margin.left + this.margin.right)
+                .attr('height', this.height + this.margin.top + this.margin.bottom);
 
     this.canvas.on("mousemove", function() {
         var infobox = d3.select(".infobox");
@@ -47,10 +56,6 @@ function Plot(container, width, height, radius) {
         infobox.style("left", (d3.event.pageX) + 15 + "px" );
         infobox.style("top", (d3.event.pageY) + "px");     
     });
-
-    this.svg = this.canvas.append("svg")
-                .attr('width', this.width + this.margin.left + this.margin.right)
-                .attr('height', this.height + this.margin.top + this.margin.bottom);
 
     if (radius === false) {
         this.svg = this.svg.append("g")

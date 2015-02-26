@@ -137,4 +137,6 @@ $( document ).ready(function() {
     pie_two.render(pie_data_two);
     pie_one.legend("#pie-legend", pie_data_one);
 
+    //$('.yLabel').css('height', $('.yLabel').width());
+
 });

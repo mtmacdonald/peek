@@ -4,13 +4,66 @@
   chart
 */
 
+.test {
+  writing-mode: vertical-rl;
+}
+
+.p-clear-after::after {
+  clear: both;
+  height: 0;
+  visibility: hidden;
+  display: block;
+  content:" ";
+}
+
+.chart {
+  float: left;
+  display: table;
+  /*border: 1px solid blue;*/
+}
+
+.main-container {
+  display: table-cell;
+
+  /*float: left;*/
+  /*border: 1px solid red;*/
+}
+
+.left-container {
+  position: relative;
+  width: 30px;
+  vertical-align: middle;
+  display: table-cell;
+  border: 1px solid red;
+}
+
 .canvas {
   line-height: 0;
-  float: left;
+  /*border: 1px solid black;*/
 }
 
 .canvas svg {
 
+}
+
+.title {
+  text-align: center;
+}
+
+.yLabel {
+  position: absolute;
+  left: -180px;
+  /*height: 100%!important;*/
+  width: 400px;
+  transform: rotate(270deg);
+  /*transform-origin: bottom right 0;*/
+}
+
+.xLabel {
+  text-align: center;
+}
+.title, .yLabel, .xLabel {
+  border: 1px solid orange;
 }
 
 /**********************************************************************************************************************/
@@ -49,6 +102,7 @@
   float: left;
   padding-left: 10px;
 	width: 300px;
+  border: 1px solid green;
 }
 
 .legend div {
