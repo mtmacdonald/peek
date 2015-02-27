@@ -268,7 +268,7 @@ function StackedArea(container, width, height) {
         var stack = d3.layout.stack()
               .offset("zero");
 
-        var layers = stack(prepared_data);
+        var layers = stack(stripped_data);
 //----------------------------------------------------------------------------------------------------------------------
 
         var area = d3.svg.area()
