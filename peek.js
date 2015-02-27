@@ -133,14 +133,14 @@ function Line (plot) {
 
     var line = d3.svg.line()
                 .interpolate(this.interpolation) 
-                .x(function(d) { return self.xScale(d.date); })
-                .y(function(d) { return self.yScale(d.value); });
+                .x(function(d) { return self.xScale(d.x); })
+                .y(function(d) { return self.yScale(d.y); });
 
     var area = d3.svg.area()
                 .interpolate(this.interpolation)
-                .x(function(d) { return self.xScale(d.date); })
+                .x(function(d) { return self.xScale(d.x); })
                 .y0(plot.height)
-                .y1(function(d) { return self.yScale(d.value); });
+                .y1(function(d) { return self.yScale(d.y); });
 
     this.draw = function(metric, xScale, yScale) {
         this.xScale = xScale;
@@ -174,7 +174,7 @@ function Point (plot) {
             .enter()
             .append("circle")
               .attr("transform", function(d) { 
-                return "translate(" + xScale(d.date) + ", " + yScale(d.value) + ")"; 
+                return "translate(" + xScale(d.x) + ", " + yScale(d.y) + ")"; 
             })
               .attr("r", function(d){ return 4; }) 
               .attr("fill", "white")
@@ -195,10 +195,10 @@ function Point (plot) {
           
         d3.select(".infobox p")
             .html("<strong>Date:</strong> " 
-                + formatDate(new Date(data.date)) 
+                + formatDate(new Date(data.x)) 
                 + "<br/>" 
                 + "<strong>Value:</strong> " 
-                + data.value
+                + data.y
                 );
     }
 
@@ -321,7 +321,6 @@ var example_data = [
             }, this);
             data.push(series.values);
         }, this);
-        console.log(data[0][0].x);
 
         //xScale.domain([data[0][0].x, data[0][4].x]);
         yScale.domain([0, 5]);
@@ -371,18 +370,18 @@ function Trend(container, width, height) {
             data.forEach(function (metric) {
                 //first parse dates
                 metric.values.forEach(function (value) {
-                    value.date = this.parseDate(value.date);
+                    value.x = this.parseDate(value.x);
                 }, this);
                 //then merge into one array
                 merged = merged.concat(metric.values);
             }, this);
 
-        xScale.domain(d3.extent(merged, function(d) { return d.date; }));
+        xScale.domain(d3.extent(merged, function(d) { return d.x; }));
 
         //for y-axis scale, get the minimum and maximum for each metric
         var max = 0;
         data.forEach(function(metric, i) {
-            var localMax = d3.max(metric.values, function(d) { return d.value; });
+            var localMax = d3.max(metric.values, function(d) { return d.y; });
             if (localMax > max) {
                 max = localMax;
             }
@@ -416,10 +415,10 @@ function Bar (plot) {
 
     this.draw = function(value, color, y, heightShift, xScale, yScale) {
         plot.svg.append("rect")
-            .attr("x", xScale(value.date) - 2)
+            .attr("x", xScale(value.x) - 2)
             .attr("width", 5)
             .attr("y", y)
-            .attr("height", yScale(value.value))
+            .attr("height", yScale(value.y))
             .attr("fill", color)
             .attr("transform", "translate(" + 0 + "," + heightShift + ")")
     }
@@ -453,10 +452,10 @@ function Stacked(container, width, height) {
         var maximums = {};
         data.forEach(function(metric) {
             metric.values.forEach(function(value) {
-                if (!maximums.hasOwnProperty(value.date)) {
-                    maximums[value.date] = 0;
+                if (!maximums.hasOwnProperty(value.x)) {
+                    maximums[value.x] = 0;
                 }
-                maximums[value.date] += value.value;
+                maximums[value.x] += value.y;
             }, this);
         }, this);
         var yMax = d3.max(d3.values(maximums));
@@ -468,12 +467,12 @@ function Stacked(container, width, height) {
         data.forEach(function(metric) {
             //first parse dates
             metric.values.forEach(function(value) {
-                value.date = this.parseDate(value.date);
+                value.x = this.parseDate(value.x);
             }, this);
             //then merge into one array
             merged = merged.concat(metric.values);
         }, this);
-        xScale.domain(d3.extent(merged, function(d) { return d.date; }));
+        xScale.domain(d3.extent(merged, function(d) { return d.x; }));
 
         //iterate and plot each value, keeping track of the accumalated stack height
         var heightCounter = {};
@@ -481,13 +480,13 @@ function Stacked(container, width, height) {
 
             metric.values.forEach(function(value) {
 
-                if (!heightCounter.hasOwnProperty(value.date)) {
-                    heightCounter[value.date] = 0;
+                if (!heightCounter.hasOwnProperty(value.x)) {
+                    heightCounter[value.x] = 0;
                 }
-                var heightShift = plot.height - yScale(value.value);
-                bar.draw(value, metric.color, heightCounter[value.date], heightShift, xScale, yScale)
-                if (heightCounter.hasOwnProperty(value.date)) {
-                    heightCounter[value.date] -= yScale(value.value);
+                var heightShift = plot.height - yScale(value.y);
+                bar.draw(value, metric.color, heightCounter[value.x], heightShift, xScale, yScale)
+                if (heightCounter.hasOwnProperty(value.x)) {
+                    heightCounter[value.x] -= yScale(value.y);
                 }
             }, this);
             legend.push(metric);
