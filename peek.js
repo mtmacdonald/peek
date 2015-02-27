@@ -142,7 +142,7 @@ function Line (plot, stacked) {
                 .y0(plot.height)
                 .y1(function(d) { return self.yScale(d.y); });
 
-    if (stacked === 'true') {
+    if (stacked === true) {
         var line = d3.svg.line()
                     .interpolate(this.interpolation) 
                     .x(function(d) { return self.xScale(d.x); })
@@ -231,7 +231,7 @@ function StackedArea(container, width, height) {
     this.url;
 
     var plot = new Plot(container, width, height);
-    this.line = new Line(plot, 'true');
+    this.line = new Line(plot, true);
     var legend = new Legend(container);
 
     var xScale = d3.time.scale().range([0, plot.width]);
