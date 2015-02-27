@@ -276,9 +276,9 @@ function StackedArea(container, width, height) {
         plot.svg.selectAll(".layer")
               .data(layers)
               .enter().append("path")
-              .attr("class", "layer")
+              .attr("class", "layer area")
               .attr("d", function(d) { return area(d); })
-              .style("fill", function(d, i) { return colors(i); });
+              .style("fill", function(d, i) { return data[i].color; });
     }
 
 }

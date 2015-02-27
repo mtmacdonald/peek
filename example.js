@@ -158,6 +158,7 @@ $( document ).ready(function() {
 
     var data = JSON.parse(JSON.stringify(example_data)); //clone
     var stacked_area_chart = new StackedArea("#stacked-area-chart");
+    stacked_area_chart.line.area = true;
     stacked_area_chart.render(data);
 
     var data = JSON.parse(JSON.stringify(example_data)); //clone
