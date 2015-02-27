@@ -220,40 +220,56 @@ function StackedArea(container, width, height) {
     this.line = new Line(plot);
     var legend = new Legend(container);
 
-    //var xScale = d3.scale.linear().range([0, plot.width]).domain([0,3]);
-    //var yScale = d3.scale.linear().range([plot.height, 0]).domain([0,25]);
-
     var xScale = d3.time.scale().range([0, plot.width]);
     var yScale = d3.scale.linear().range([plot.height, 0]);
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
-    this.render = function (input_data) {
+    this.render = function (data) {
 
-        
+       //for x-axis scale, merge all datasets and get the extent of the dates
+        var merged = [];
+
+            data.forEach(function (metric) {
+                //first parse dates
+                metric.values.forEach(function (value) {
+                    value.x = this.parseDate(value.x);
+                }, this);
+                //then merge into one array
+                merged = merged.concat(metric.values);
+            }, this);
+
+        xScale.domain(d3.extent(merged, function(d) { return d.x; }));
+
+        //for y-axis scale, get the minimum and maximum for each metric
+        var max = 0;
+        data.forEach(function(metric, i) {
+            var localMax = d3.max(metric.values, function(d) { return d.y; });
+            if (localMax > max) {
+                max = localMax;
+            }
+        }, this);
+        yScale.domain([0, max]);
+
         plot.axes.draw(xScale, yScale);
 
-        var data = [];
-        input_data.forEach(function (series) {
-            series.values.forEach(function (value) {
-                value.x = this.parseDate(value.x);
-            }, this);
-            data.push(series.values);
-        }, this);
+//----------------------------------------------------------------------------------------------------------------------
 
-        //xScale.domain([data[0][0].x, data[0][4].x]);
-        yScale.domain([0, 5]);
+        var prepared_data = [];
+        data.forEach(function (series) {
+            prepared_data.push(series.values);
+        }, this);
 
         var colors = d3.scale.category10();
 
         var stack = d3.layout.stack()
               .offset("zero");
  
-        var layers = stack(data);
+        var layers = stack(prepared_data);
 
         var area = d3.svg.area()
             .interpolate('cardinal')
-            .x(function(d, i) { return xScale(i); })
+            .x(function(d, i) { return xScale(d.x); })
             .y0(function(d) { return yScale(d.y0); })
             .y1(function(d) { return yScale(d.y0 + d.y); });
 
@@ -263,7 +279,6 @@ function StackedArea(container, width, height) {
               .attr("class", "layer")
               .attr("d", function(d) { return area(d); })
               .style("fill", function(d, i) { return colors(i); });
-
     }
 
 }
