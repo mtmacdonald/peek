@@ -228,94 +228,13 @@ function StackedArea(container, width, height) {
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
-    this.render = function () {
+    this.render = function (input_data) {
+
+        
         plot.axes.draw(xScale, yScale);
 
-        //http://jsfiddle.net/DyrsK/2/
-
-        var data = [
-                [
-                    { x: 0, y: 5 },
-                    { x: 1, y: 4 },
-                    { x: 2, y: 2 },
-                    { x: 3, y: 7 },
-                    { x: 4, y: 23 }
-                ],
-                [
-                    { x: 0, y: 10 },
-                    { x: 1, y: 12 },
-                    { x: 2, y: 19 },
-                    { x: 3, y: 23 },
-                    { x: 4, y: 17 }
-                ],
-                [
-                    { x: 0, y: 22 },
-                    { x: 1, y: 28 },
-                    { x: 2, y: 32 },
-                    { x: 3, y: 35 },
-                    { x: 4, y: 43 }
-                ]
-            ];
-
-var example_data = [
-    {
-        "label": "Foo",
-        "units": "tonnes",
-        "color": "steelblue",
-        "values": [
-            {
-                x : "2014-03-15 01:00:00",
-                y : 1
-            },
-            {
-                x : "2014-03-16 01:00:00",
-                y : 2
-            },
-            {
-                x : "2014-03-19 01:00:00",
-                y : 1
-            },
-            {
-                x : "2014-03-25 01:00:00",
-                y : 2
-            },
-            {
-                x : "2014-03-28 01:00:00",
-                y : 1
-            }
-        ]
-    },
-    {
-        "label": "Baz",
-        "units": "tonnes",
-        "color": "firebrick",
-        "values": [
-            {
-                x : "2014-03-15 01:00:00",
-                y : 4
-            },
-            {
-                x : "2014-03-16 01:00:00",
-                y : 3
-            },
-            {
-                x : "2014-03-19 01:00:00",
-                y : 4
-            },
-            {
-                x : "2014-03-25 01:00:00",
-                y : 3
-            },
-            {
-                x : "2014-03-28 01:00:00",
-                y : 4
-            }
-        ]
-    }
-];
-
         var data = [];
-        example_data.forEach(function (series) {
+        input_data.forEach(function (series) {
             series.values.forEach(function (value) {
                 value.x = this.parseDate(value.x);
             }, this);
