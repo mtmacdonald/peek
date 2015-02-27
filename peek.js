@@ -226,12 +226,14 @@ function Point (plot) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function StackedArea(container, width, height) {
+function Xy(container, stacked, width, height) {
+
+    var stacked = typeof stacked !== 'undefined' ? stacked : false; //default
 
     this.url;
 
     var plot = new Plot(container, width, height);
-    this.line = new Line(plot, true);
+    this.line = new Line(plot, stacked);
     var legend = new Legend(container);
 
     var xScale = d3.time.scale().range([0, plot.width]);
@@ -242,20 +244,21 @@ function StackedArea(container, width, height) {
     this.render = function (data) {
 
 //----------------------------------------------------------------------------------------------------------------------
-//layering code (only for stacked charts)
+        if (stacked) {
+            //layering code (only for stacked charts)
+            //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
+            //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
+                //modifies the original data array
+            var stripped_data = [];
+            data.forEach(function (series) {
+                stripped_data.push(series.values);
+            }, this);
 
-        //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
-        //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
-            //modifies the original data array
-        var stripped_data = [];
-        data.forEach(function (series) {
-            stripped_data.push(series.values);
-        }, this);
+            var stack = d3.layout.stack()
+                  .offset("zero");
 
-        var stack = d3.layout.stack()
-              .offset("zero");
-
-        var layers = stack(stripped_data);
+            var layers = stack(stripped_data);
+        }
 //----------------------------------------------------------------------------------------------------------------------
 
        //for x-axis scale, merge all datasets and get the extent of the dates
@@ -274,89 +277,33 @@ function StackedArea(container, width, height) {
 
         var max = 0;
 
+//----------------------------------------------------------------------------------------------------------------------
         //y-axis domain range for stacked charts
-        var last = data[data.length-1];
-        max = d3.max(last.values, function(d) { return d.y0+d.y; });
-
-/*
-        //y-axis domain range for regular charts
-        //for y-axis scale, get the minimum and maximum for each metric
-        //todo - handle y-axis scale properly for stacking        
-        data.forEach(function(metric, i) {
-            var localMax = d3.max(metric.values, function(d) { return d.y; });
-            if (localMax > max) {
-                max = localMax;
-            }
-        }, this);
-*/
-        yScale.domain([0, max]);
-
-        plot.axes.draw(xScale, yScale);
-
-        data.forEach(function(metric, i) {
-            this.line.draw(metric, xScale, yScale);
-            legend.push(metric);
-        }, this);
-    }
-}
-
-
-function Trend(container, width, height) {
-
-    this.url;
-
-    var plot = new Plot(container, width, height);
-    this.line = new Line(plot);
-    var legend = new Legend(container);
-
-    var xScale = d3.time.scale().range([0, plot.width]);
-    var yScale = d3.scale.linear().range([plot.height, 0]);
-
-    this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-
-    this.render = function (data) {
-        //for x-axis scale, merge all datasets and get the extent of the dates
-        var merged = [];
-
-            data.forEach(function (metric) {
-                //first parse dates
-                metric.values.forEach(function (value) {
-                    value.x = this.parseDate(value.x);
-                }, this);
-                //then merge into one array
-                merged = merged.concat(metric.values);
+        if (stacked) {
+            var last = data[data.length-1];
+            max = d3.max(last.values, function(d) { return d.y0+d.y; });
+//----------------------------------------------------------------------------------------------------------------------
+        } else {
+            //y-axis domain range for regular charts
+            //for y-axis scale, get the minimum and maximum for each metric
+            //todo - handle y-axis scale properly for stacking        
+            data.forEach(function(metric, i) {
+                var localMax = d3.max(metric.values, function(d) { return d.y; });
+                if (localMax > max) {
+                    max = localMax;
+                }
             }, this);
+        }
 
-        xScale.domain(d3.extent(merged, function(d) { return d.x; }));
-
-        //for y-axis scale, get the minimum and maximum for each metric
-        var max = 0;
-        data.forEach(function(metric, i) {
-            var localMax = d3.max(metric.values, function(d) { return d.y; });
-            if (localMax > max) {
-                max = localMax;
-            }
-        }, this);
         yScale.domain([0, max]);
 
         plot.axes.draw(xScale, yScale);
 
-        //plot values
         data.forEach(function(metric, i) {
             this.line.draw(metric, xScale, yScale);
             legend.push(metric);
         }, this);
     }
-
-    this.load = function() {
-        d3.json(this.url, function (data) {
-            this.render(data);
-        }.bind(this));
-    };
-
-    this.draw = function () {
-        this.load();
-    };
 }
 
 //----------------------------------------------------------------------------------------------------------------------

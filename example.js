@@ -146,18 +146,18 @@ $( document ).ready(function() {
     */
 
     var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var line_chart = new Trend("#line-chart");
+    var line_chart = new Xy("#line-chart");
     line_chart.line.points = true;
     line_chart.line.area = false;
     line_chart.render(data);
 
     var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var area_chart = new Trend("#area-chart");
+    var area_chart = new Xy("#area-chart");
     area_chart.line.area = true;
     area_chart.render(data);
 
     var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var stacked_area_chart = new StackedArea("#stacked-area-chart");
+    var stacked_area_chart = new Xy("#stacked-area-chart", true);
     stacked_area_chart.line.area = true;
     stacked_area_chart.render(data);
 
