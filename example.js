@@ -11,24 +11,24 @@ var example_data = [
         "color": "steelblue",
         "values": [
             {
-                "date": "2014-03-15 01:00:00",
-                "value": 6
+                date : "2014-03-15 01:00:00",
+                value : 6
             },
             {
-                "date": "2014-03-16 01:00:00",
-                "value": 1.43
+                date : "2014-03-16 01:00:00",
+                value : 1.43
             },
             {
-                "date": "2014-03-19 01:00:00",
-                "value": 1.38
+                date : "2014-03-19 01:00:00",
+                value : 1.38
             },
             {
-                "date": "2014-03-25 01:00:00",
-                "value": 4.14
+                date : "2014-03-25 01:00:00",
+                value : 4.14
             },
             {
-                "date": "2014-03-28 01:00:00",
-                "value": 7.14
+                date : "2014-03-28 01:00:00",
+                value : 7.14
             }
         ]
     },
@@ -38,20 +38,20 @@ var example_data = [
         "color": "firebrick",
         "values": [
             {
-                "date": "2014-03-14 01:00:00",
-                "value": 1.14
+                date : "2014-03-14 01:00:00",
+                value : 1.14
             },
             {
-                "date": "2014-03-15 01:00:00",
-                "value": 0.43
+                date : "2014-03-15 01:00:00",
+                value : 0.43
             },
             {
-                "date": "2014-03-19 01:00:00",
-                "value": 0.38
+                date : "2014-03-19 01:00:00",
+                value : 0.38
             },
             {
-                "date": "2014-03-21 01:00:00",
-                "value": 3.14
+                date : "2014-03-21 01:00:00",
+                value : 3.14
             }
         ]
     }
@@ -125,6 +125,7 @@ $( document ).ready(function() {
     area_chart.line.area = true;
     area_chart.render(data);
 
+    var data = JSON.parse(JSON.stringify(example_data)); //clone
     var stacked_area_chart = new StackedArea("#stacked-area-chart");
     stacked_area_chart.render();
 

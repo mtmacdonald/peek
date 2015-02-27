@@ -220,21 +220,111 @@ function StackedArea(container, width, height) {
     this.line = new Line(plot);
     var legend = new Legend(container);
 
-    var xScale = d3.scale.linear().range([0, plot.width]).domain([0,3]);
+    //var xScale = d3.scale.linear().range([0, plot.width]).domain([0,3]);
+    //var yScale = d3.scale.linear().range([plot.height, 0]).domain([0,25]);
 
-    var yScale = d3.scale.linear().range([plot.height, 0]).domain([0,25]);
+    var xScale = d3.time.scale().range([0, plot.width]);
+    var yScale = d3.scale.linear().range([plot.height, 0]);
 
-    //this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
+    this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     this.render = function () {
         plot.axes.draw(xScale, yScale);
 
         //http://jsfiddle.net/DyrsK/2/
-        var data = [[ 1,  4,  2,  7],
-            [21,  2,  5, 10],
-            [ 1, 17, 16,  6]];
 
-        data = data.map(function(d) { return d.map(function(p, i) { return {x:i, y:p, y0:0}; }); })
+        var data = [
+                [
+                    { x: 0, y: 5 },
+                    { x: 1, y: 4 },
+                    { x: 2, y: 2 },
+                    { x: 3, y: 7 },
+                    { x: 4, y: 23 }
+                ],
+                [
+                    { x: 0, y: 10 },
+                    { x: 1, y: 12 },
+                    { x: 2, y: 19 },
+                    { x: 3, y: 23 },
+                    { x: 4, y: 17 }
+                ],
+                [
+                    { x: 0, y: 22 },
+                    { x: 1, y: 28 },
+                    { x: 2, y: 32 },
+                    { x: 3, y: 35 },
+                    { x: 4, y: 43 }
+                ]
+            ];
+
+var example_data = [
+    {
+        "label": "Foo",
+        "units": "tonnes",
+        "color": "steelblue",
+        "values": [
+            {
+                x : "2014-03-15 01:00:00",
+                y : 1
+            },
+            {
+                x : "2014-03-16 01:00:00",
+                y : 2
+            },
+            {
+                x : "2014-03-19 01:00:00",
+                y : 1
+            },
+            {
+                x : "2014-03-25 01:00:00",
+                y : 2
+            },
+            {
+                x : "2014-03-28 01:00:00",
+                y : 1
+            }
+        ]
+    },
+    {
+        "label": "Baz",
+        "units": "tonnes",
+        "color": "firebrick",
+        "values": [
+            {
+                x : "2014-03-15 01:00:00",
+                y : 4
+            },
+            {
+                x : "2014-03-16 01:00:00",
+                y : 3
+            },
+            {
+                x : "2014-03-19 01:00:00",
+                y : 4
+            },
+            {
+                x : "2014-03-25 01:00:00",
+                y : 3
+            },
+            {
+                x : "2014-03-28 01:00:00",
+                y : 4
+            }
+        ]
+    }
+];
+
+        var data = [];
+        example_data.forEach(function (series) {
+            series.values.forEach(function (value) {
+                value.x = this.parseDate(value.x);
+            }, this);
+            data.push(series.values);
+        }, this);
+        console.log(data[0][0].x);
+
+        //xScale.domain([data[0][0].x, data[0][4].x]);
+        yScale.domain([0, 5]);
 
         var colors = d3.scale.category10();
 
@@ -278,14 +368,14 @@ function Trend(container, width, height) {
         //for x-axis scale, merge all datasets and get the extent of the dates
         var merged = [];
 
-        data.forEach(function(metric) {
-            //first parse dates
-            metric.values.forEach(function(value) {
-                value.date = this.parseDate(value.date);
+            data.forEach(function (metric) {
+                //first parse dates
+                metric.values.forEach(function (value) {
+                    value.date = this.parseDate(value.date);
+                }, this);
+                //then merge into one array
+                merged = merged.concat(metric.values);
             }, this);
-            //then merge into one array
-            merged = merged.concat(metric.values);
-        }, this);
 
         xScale.domain(d3.extent(merged, function(d) { return d.date; }));
 
