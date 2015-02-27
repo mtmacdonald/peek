@@ -285,18 +285,10 @@ function StackedArea(container, width, height) {
         var layers = stack(stripped_data);
 //----------------------------------------------------------------------------------------------------------------------
 
-        var area = d3.svg.area()
-            .interpolate('cardinal')
-            .x(function(d, i) { return xScale(d.x); })
-            .y0(function(d) { return yScale(d.y0); })
-            .y1(function(d) { return yScale(d.y0 + d.y); });
-
         data.forEach(function(metric, i) {
             this.line.draw(metric, xScale, yScale);
             legend.push(metric);
         }, this);
-
-
     }
 }
 
