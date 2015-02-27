@@ -242,6 +242,7 @@ function StackedArea(container, width, height) {
         xScale.domain(d3.extent(merged, function(d) { return d.x; }));
 
         //for y-axis scale, get the minimum and maximum for each metric
+        //todo - handle y-axis scale properly for stacking
         var max = 0;
         data.forEach(function(metric, i) {
             var localMax = d3.max(metric.values, function(d) { return d.y; });
@@ -249,23 +250,26 @@ function StackedArea(container, width, height) {
                 max = localMax;
             }
         }, this);
-        yScale.domain([0, max]);
+        yScale.domain([0, max+10]);
 
         plot.axes.draw(xScale, yScale);
 
 //----------------------------------------------------------------------------------------------------------------------
+//layering code 
 
-        var prepared_data = [];
+        //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
+        //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
+            //modifies the original data array
+        var stripped_data = [];
         data.forEach(function (series) {
-            prepared_data.push(series.values);
+            stripped_data.push(series.values);
         }, this);
-
-        var colors = d3.scale.category10();
 
         var stack = d3.layout.stack()
               .offset("zero");
- 
+
         var layers = stack(prepared_data);
+//----------------------------------------------------------------------------------------------------------------------
 
         var area = d3.svg.area()
             .interpolate('cardinal')
@@ -273,14 +277,36 @@ function StackedArea(container, width, height) {
             .y0(function(d) { return yScale(d.y0); })
             .y1(function(d) { return yScale(d.y0 + d.y); });
 
-        plot.svg.selectAll(".layer")
-              .data(layers)
-              .enter().append("path")
-              .attr("class", "layer area")
-              .attr("d", function(d) { return area(d); })
-              .style("fill", function(d, i) { return data[i].color; });
-    }
+        data.forEach(function (metric, i) {
+            plot.svg.append("path")
+                    .attr("class", "area")
+                    .style("fill", metric.color)
+                    .attr("d", area(metric.values));
+        }, this);
 
+/*
+todo - move this to line
+    var area = d3.svg.area()
+            .interpolate(this.interpolation)
+            .x(function(d) { return self.xScale(d.x); })
+            .y0(plot.height)
+            .y1(function(d) { return self.yScale(d.y); });
+
+    var area = d3.svg.area()
+            .interpolate('cardinal')
+            .x(function(d, i) { return xScale(d.x); })
+            .y0(function(d) { return yScale(d.y0); })
+            .y1(function(d) { return yScale(d.y0 + d.y); });
+*/
+
+/*
+        data.forEach(function(metric, i) {
+            this.line.draw(metric, xScale, yScale);
+            legend.push(metric);
+        }, this);
+*/
+
+    }
 }
 
 
