@@ -120,7 +120,7 @@ function Axes (plot) {
 
 }
 
-function Line (plot) {
+function Line (plot, stacked) {
     var plot = plot;
     var self = this;
     this.xScale;
@@ -141,6 +141,20 @@ function Line (plot) {
                 .x(function(d) { return self.xScale(d.x); })
                 .y0(plot.height)
                 .y1(function(d) { return self.yScale(d.y); });
+
+    if (stacked === 'true') {
+        var line = d3.svg.line()
+                    .interpolate(this.interpolation) 
+                    .x(function(d) { return self.xScale(d.x); })
+                    .y(function(d) { return self.yScale(d.y0 + d.y); });
+
+
+        var area = d3.svg.area()
+            .interpolate('cardinal')
+            .x(function(d, i) { return self.xScale(d.x); })
+            .y0(function(d) { return self.yScale(d.y0); })
+            .y1(function(d) { return self.yScale(d.y0 + d.y); });   
+    }
 
     this.draw = function(metric, xScale, yScale) {
         this.xScale = xScale;
@@ -217,7 +231,7 @@ function StackedArea(container, width, height) {
     this.url;
 
     var plot = new Plot(container, width, height);
-    this.line = new Line(plot);
+    this.line = new Line(plot, 'true');
     var legend = new Legend(container);
 
     var xScale = d3.time.scale().range([0, plot.width]);
@@ -277,34 +291,11 @@ function StackedArea(container, width, height) {
             .y0(function(d) { return yScale(d.y0); })
             .y1(function(d) { return yScale(d.y0 + d.y); });
 
-        data.forEach(function (metric, i) {
-            plot.svg.append("path")
-                    .attr("class", "area")
-                    .style("fill", metric.color)
-                    .attr("d", area(metric.values));
-        }, this);
-
-/*
-todo - move this to line
-    var area = d3.svg.area()
-            .interpolate(this.interpolation)
-            .x(function(d) { return self.xScale(d.x); })
-            .y0(plot.height)
-            .y1(function(d) { return self.yScale(d.y); });
-
-    var area = d3.svg.area()
-            .interpolate('cardinal')
-            .x(function(d, i) { return xScale(d.x); })
-            .y0(function(d) { return yScale(d.y0); })
-            .y1(function(d) { return yScale(d.y0 + d.y); });
-*/
-
-/*
         data.forEach(function(metric, i) {
             this.line.draw(metric, xScale, yScale);
             legend.push(metric);
         }, this);
-*/
+
 
     }
 }
