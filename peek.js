@@ -420,7 +420,7 @@ function Bar2 (container, width, height) {
         .data(layers)
         .enter().append("svg:g")
         .attr("class", "valgroup")
-        .style("fill", function(d, i) { console.log(data[i].color);return data[i].color; })
+        .style("fill", function(d, i) { return data[i].color; })
         .style("stroke", function(d, i) { return d3.rgb(data[i].color).darker(); });
  
         // Add a rect for each date.
@@ -428,7 +428,7 @@ function Bar2 (container, width, height) {
         .data(function(d){return d;})
         .enter().append("svg:rect")
         .attr("x", function(d) { return xScale(d.x); })
-        .attr("y", function(d) { return yScale(d.y0) + yScale(d.y); })
+        .attr("y", function(d) { return yScale(d.y0); })
         .attr("height", function(d) { return yScale(d.y); })
         .attr("width", 40/*xScale.rangeBand()*/);
     }  
