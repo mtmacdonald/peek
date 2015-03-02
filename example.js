@@ -162,9 +162,14 @@ $( document ).ready(function() {
     stacked_area_chart.render(data);
 
     var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var stacked2 = new Xy("#stacked-bar-chart", true);
-    stacked2.bar = true;
-    stacked2.render(data);
+    var stacked_bar_chart = new Xy("#stacked-bar-chart", true);
+    stacked_bar_chart.bar = true;
+    stacked_bar_chart.render(data);
+
+    var data = JSON.parse(JSON.stringify(example_data)); //clone
+    var grouped_bar_chart = new Grouped("#grouped-bar-chart", true);
+    grouped_bar_chart.bar = true;
+    grouped_bar_chart.render(data);
 
     var compare_chart = new Compare('#compare-chart');
     compare_chart.render(horizontal_bar_data);
