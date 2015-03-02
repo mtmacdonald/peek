@@ -307,23 +307,33 @@ function Xy(container, stacked, width, height) {
 }
 
 function Bar2 (container, width, height) {
-            var w = 960,
-            h = 500
+
+    var stacked = typeof stacked !== 'undefined' ? stacked : false; //default
+
+    this.url;
+
+    var plot = new Plot(container, width, height);
+    this.line = new Line(plot, stacked);
+    var legend = new Legend(container);
+
+    var xScale = d3.time.scale().range([0, plot.width]);
+    var yScale = d3.scale.linear().range([plot.height, 0]);
+
+    this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
+
+    this.render = function (data) {
+
+            var w = 600,
+            h = 400
  
             // create canvas
-            var svg = d3.select(container).append("svg:svg")
-            .attr("class", "chart")
-            .attr("width", w)
-            .attr("height", h )
-            .append("svg:g")
-            .attr("transform", "translate(10,470)");
+            var svg = plot.svg.attr("transform", "translate(10,470)");
  
-            x = d3.scale.ordinal().rangeRoundBands([0, w-50])
-            y = d3.scale.linear().range([0, h-50])
-            z = d3.scale.ordinal().range(["darkblue", "blue", "lightblue"])
+            var xScale = d3.scale.ordinal().rangeRoundBands([0, w-50]);
+            var yScale = d3.scale.linear().range([0, h-50]);
+            var zScale = d3.scale.ordinal().range(["darkblue", "blue", "lightblue"]);
  
-            console.log("RAW MATRIX---------------------------");
-        // 4 columns: ID,c1,c2,c3
+            // 4 columns: ID,c1,c2,c3
             var matrix = [
                 [ 1,  5871, 8916, 2868],
                 [ 2, 10048, 2060, 6171],
@@ -331,44 +341,35 @@ function Bar2 (container, width, height) {
                 [ 4,   990,  940, 6907],
                 [ 5,   450,  430, 5000]
             ];
-            console.log(matrix)
- 
-            console.log("REMAP---------------------------");
+
             var remapped =["c1","c2","c3"].map(function(dat,i){
                 return matrix.map(function(d,ii){
                     return {x: ii, y: d[i+1] };
                 })
             });
-            console.log(remapped)
- 
-            console.log("LAYOUT---------------------------");
+
             var stacked = d3.layout.stack()(remapped)
-            console.log(stacked)
  
-            x.domain(stacked[0].map(function(d) { return d.x; }));
-            y.domain([0, d3.max(stacked[stacked.length - 1], function(d) { return d.y0 + d.y; })]);
- 
-            // show the domains of the scales
-            console.log("x.domain(): " + x.domain())
-            console.log("y.domain(): " + y.domain())
-            console.log("------------------------------------------------------------------");
- 
+            xScale.domain(stacked[0].map(function(d) { return d.x; }));
+            yScale.domain([0, d3.max(stacked[stacked.length - 1], function(d) { return d.y0 + d.y; })]);
+  
             // Add a group for each column.
             var valgroup = svg.selectAll("g.valgroup")
             .data(stacked)
             .enter().append("svg:g")
             .attr("class", "valgroup")
-            .style("fill", function(d, i) { return z(i); })
-            .style("stroke", function(d, i) { return d3.rgb(z(i)).darker(); });
+            .style("fill", function(d, i) { return zScale(i); })
+            .style("stroke", function(d, i) { return d3.rgb(zScale(i)).darker(); });
  
             // Add a rect for each date.
             var rect = valgroup.selectAll("rect")
             .data(function(d){return d;})
             .enter().append("svg:rect")
-            .attr("x", function(d) { return x(d.x); })
-            .attr("y", function(d) { return -y(d.y0) - y(d.y); })
-            .attr("height", function(d) { return y(d.y); })
-            .attr("width", x.rangeBand());    
+            .attr("x", function(d) { return xScale(d.x); })
+            .attr("y", function(d) { return -yScale(d.y0) - yScale(d.y); })
+            .attr("height", function(d) { return yScale(d.y); })
+            .attr("width", xScale.rangeBand());
+    }  
 }
 
 
