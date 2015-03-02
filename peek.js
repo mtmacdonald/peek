@@ -224,6 +224,60 @@ function Point (plot) {
 
 }
 
+function Box (plot, stacked) {
+    var plot = plot;
+    var self = this;
+    this.xScale;
+    this.yScale;
+
+    this.interpolation = 'cardinal';
+    this.area = false;
+
+    //var line = d3.svg.line()
+    //            .interpolate(this.interpolation) 
+    //            .x(function(d) { return self.xScale(d.x); })
+    //            .y(function(d) { return self.yScale(d.y); });
+
+    //var area = d3.svg.area()
+    //            .interpolate(this.interpolation)
+    //            .x(function(d) { return self.xScale(d.x); })
+    //            .y0(plot.height)
+    //            .y1(function(d) { return self.yScale(d.y); });
+
+
+    this.draw = function(metric, xScale, yScale) {
+        this.xScale = xScale;
+        this.yScale = yScale;
+    //    plot.svg.append("path")
+    //        .attr("class", "line")
+    //        .style("stroke", metric.color)
+    //        .attr("d", line(metric.values));
+    //    if (this.area === true) {
+    //        plot.svg.append("path")
+    //                .attr("class", "area")
+    //                .style("fill", metric.color)
+    //                .attr("d", area(metric.values));
+    //    }
+    //    if (this.points) {
+    //        this.point.draw(metric, xScale, yScale);
+    //    }
+    }
+}
+
+function Bar (plot) {
+    var plot = plot;
+
+    this.draw = function(value, color, y, heightShift, xScale, yScale) {
+        plot.svg.append("rect")
+            .attr("x", xScale(value.x) - 2)
+            .attr("width", 5)
+            .attr("y", y)
+            .attr("height", yScale(value.y))
+            .attr("fill", color)
+            .attr("transform", "translate(" + 0 + "," + heightShift + ")")
+    }
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 function Xy(container, stacked, width, height) {
@@ -235,6 +289,8 @@ function Xy(container, stacked, width, height) {
     var plot = new Plot(container, width, height);
     this.line = new Line(plot, stacked);
     var legend = new Legend(container);
+
+    this.bar = false;
 
     var xScale = d3.time.scale().range([0, plot.width]);
     var yScale = d3.scale.linear().range([plot.height, 0]);
@@ -299,52 +355,37 @@ function Xy(container, stacked, width, height) {
 
         plot.axes.draw(xScale, yScale);
 
-        data.forEach(function(metric, i) {
-            this.line.draw(metric, xScale, yScale);
-            legend.push(metric);
-        }, this);
+        if (this.bar) {
+            // Add a group for each column.
+            var valgroup = plot.svg.selectAll("g.valgroup")
+            .data(layers)
+            .enter().append("svg:g")
+            .attr("class", "valgroup")
+            .style("fill", function(d, i) { return data[i].color; })
+            .style("stroke", function(d, i) { return d3.rgb(data[i].color).darker(); });
+     
+            // Add a rect for each date.
+            var rect = valgroup.selectAll("rect")
+            .data(function(d){return d;})
+            .enter().append("svg:rect")
+            .attr("x", function(d) { return xScale(d.x); })
+            .attr("y", function(d) { return yScale(d.y0); })
+            .attr("height", function(d) { return yScale(d.y); })
+            .attr("width", 40/*xScale.rangeBand()*/);
+        } else {
+            data.forEach(function(metric, i) {
+                this.line.draw(metric, xScale, yScale);
+                legend.push(metric);
+            }, this);
+        }
+
+
+
+
     }
 }
 
-function Box (plot, stacked) {
-    var plot = plot;
-    var self = this;
-    this.xScale;
-    this.yScale;
 
-    this.interpolation = 'cardinal';
-    this.area = false;
-
-    //var line = d3.svg.line()
-    //            .interpolate(this.interpolation) 
-    //            .x(function(d) { return self.xScale(d.x); })
-    //            .y(function(d) { return self.yScale(d.y); });
-
-    //var area = d3.svg.area()
-    //            .interpolate(this.interpolation)
-    //            .x(function(d) { return self.xScale(d.x); })
-    //            .y0(plot.height)
-    //            .y1(function(d) { return self.yScale(d.y); });
-
-
-    this.draw = function(metric, xScale, yScale) {
-        this.xScale = xScale;
-        this.yScale = yScale;
-    //    plot.svg.append("path")
-    //        .attr("class", "line")
-    //        .style("stroke", metric.color)
-    //        .attr("d", line(metric.values));
-    //    if (this.area === true) {
-    //        plot.svg.append("path")
-    //                .attr("class", "area")
-    //                .style("fill", metric.color)
-    //                .attr("d", area(metric.values));
-    //    }
-    //    if (this.points) {
-    //        this.point.draw(metric, xScale, yScale);
-    //    }
-    }
-}
 
 function Bar2 (container, width, height) {
 
@@ -437,19 +478,6 @@ function Bar2 (container, width, height) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function Bar (plot) {
-    var plot = plot;
-
-    this.draw = function(value, color, y, heightShift, xScale, yScale) {
-        plot.svg.append("rect")
-            .attr("x", xScale(value.x) - 2)
-            .attr("width", 5)
-            .attr("y", y)
-            .attr("height", yScale(value.y))
-            .attr("fill", color)
-            .attr("transform", "translate(" + 0 + "," + heightShift + ")")
-    }
-}
 
 //----------------------------------------------------------------------------------------------------------------------
 
