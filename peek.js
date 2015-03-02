@@ -316,9 +316,9 @@ function Bar2 (container, width, height) {
     this.line = new Line(plot, stacked);
     var legend = new Legend(container);
 
-    //var xScale = d3.time.scale().range([0, plot.width]);
+    var xScale = d3.time.scale().range([0, plot.width]);
     //var yScale = d3.scale.linear().range([plot.height, 0]);
-    var xScale = d3.scale.ordinal().rangeRoundBands([0, plot.width]);
+    //var xScale = d3.scale.ordinal().rangeRoundBands([0, plot.width]);
     var yScale = d3.scale.linear().range([0, plot.height]);
     var zScale = d3.scale.ordinal().range(["darkblue", "blue", "lightblue"]);
 
@@ -388,9 +388,9 @@ function Bar2 (container, width, height) {
         .data(function(d){return d;})
         .enter().append("svg:rect")
         .attr("x", function(d) { return xScale(d.x); })
-        .attr("y", function(d) { return -yScale(d.y0) - yScale(d.y); })
+        .attr("y", function(d) { return yScale(d.y0) + yScale(d.y); })
         .attr("height", function(d) { return yScale(d.y); })
-        .attr("width", xScale.rangeBand());
+        .attr("width", 40/*xScale.rangeBand()*/);
     }  
 }
 
