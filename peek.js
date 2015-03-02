@@ -306,6 +306,46 @@ function Xy(container, stacked, width, height) {
     }
 }
 
+function Box (plot, stacked) {
+    var plot = plot;
+    var self = this;
+    this.xScale;
+    this.yScale;
+
+    this.interpolation = 'cardinal';
+    this.area = false;
+
+    //var line = d3.svg.line()
+    //            .interpolate(this.interpolation) 
+    //            .x(function(d) { return self.xScale(d.x); })
+    //            .y(function(d) { return self.yScale(d.y); });
+
+    //var area = d3.svg.area()
+    //            .interpolate(this.interpolation)
+    //            .x(function(d) { return self.xScale(d.x); })
+    //            .y0(plot.height)
+    //            .y1(function(d) { return self.yScale(d.y); });
+
+
+    this.draw = function(metric, xScale, yScale) {
+        this.xScale = xScale;
+        this.yScale = yScale;
+    //    plot.svg.append("path")
+    //        .attr("class", "line")
+    //        .style("stroke", metric.color)
+    //        .attr("d", line(metric.values));
+    //    if (this.area === true) {
+    //        plot.svg.append("path")
+    //                .attr("class", "area")
+    //                .style("fill", metric.color)
+    //                .attr("d", area(metric.values));
+    //    }
+    //    if (this.points) {
+    //        this.point.draw(metric, xScale, yScale);
+    //    }
+    }
+}
+
 function Bar2 (container, width, height) {
 
     var stacked = typeof stacked !== 'undefined' ? stacked : true; //default
@@ -380,8 +420,8 @@ function Bar2 (container, width, height) {
         .data(layers)
         .enter().append("svg:g")
         .attr("class", "valgroup")
-        .style("fill", function(d, i) { return zScale(i); })
-        .style("stroke", function(d, i) { return d3.rgb(zScale(i)).darker(); });
+        .style("fill", function(d, i) { console.log(data[i].color);return data[i].color; })
+        .style("stroke", function(d, i) { return d3.rgb(data[i].color).darker(); });
  
         // Add a rect for each date.
         var rect = valgroup.selectAll("rect")
