@@ -153,7 +153,7 @@ function Line (plot, stacked) {
             .interpolate('cardinal')
             .x(function(d, i) { return self.xScale(d.x); })
             .y0(function(d) { return self.yScale(d.y0); })
-            .y1(function(d) { return self.yScale(d.y0 + d.y); });   
+            .y1(function(d) { return self.yScale(d.y0 + d.y); });
     }
 
     this.draw = function(metric, xScale, yScale) {
@@ -222,60 +222,6 @@ function Point (plot) {
         d3.select(".infobox").style("display", "none"); 
     }
 
-}
-
-function Box (plot, stacked) {
-    var plot = plot;
-    var self = this;
-    this.xScale;
-    this.yScale;
-
-    this.interpolation = 'cardinal';
-    this.area = false;
-
-    //var line = d3.svg.line()
-    //            .interpolate(this.interpolation) 
-    //            .x(function(d) { return self.xScale(d.x); })
-    //            .y(function(d) { return self.yScale(d.y); });
-
-    //var area = d3.svg.area()
-    //            .interpolate(this.interpolation)
-    //            .x(function(d) { return self.xScale(d.x); })
-    //            .y0(plot.height)
-    //            .y1(function(d) { return self.yScale(d.y); });
-
-
-    this.draw = function(metric, xScale, yScale) {
-        this.xScale = xScale;
-        this.yScale = yScale;
-    //    plot.svg.append("path")
-    //        .attr("class", "line")
-    //        .style("stroke", metric.color)
-    //        .attr("d", line(metric.values));
-    //    if (this.area === true) {
-    //        plot.svg.append("path")
-    //                .attr("class", "area")
-    //                .style("fill", metric.color)
-    //                .attr("d", area(metric.values));
-    //    }
-    //    if (this.points) {
-    //        this.point.draw(metric, xScale, yScale);
-    //    }
-    }
-}
-
-function Bar (plot) {
-    var plot = plot;
-
-    this.draw = function(value, color, y, heightShift, xScale, yScale) {
-        plot.svg.append("rect")
-            .attr("x", xScale(value.x) - 2)
-            .attr("width", 5)
-            .attr("y", y)
-            .attr("height", yScale(value.y))
-            .attr("fill", color)
-            .attr("transform", "translate(" + 0 + "," + heightShift + ")")
-    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -356,118 +302,24 @@ function Xy(container, stacked, width, height) {
         plot.axes.draw(xScale, yScale);
 
         if (this.bar === true) {
-            // Add a group for each column.
-            var valgroup = plot.svg.selectAll("g.valgroup")
-            .data(layers)
-            .enter().append("svg:g")
-            .attr("class", "valgroup")
-            .style("fill", function(d, i) { return data[i].color; })
-            .style("stroke", function(d, i) { return d3.rgb(data[i].color).darker(); });
-     
-            // Add a rect for each date.
-            var rect = valgroup.selectAll("rect")
-            .data(function(d){return d;})
-            .enter().append("svg:rect")
-            .attr("x", function(d) { return xScale(d.x); })
-            .attr("y", function(d) { return yScale(d.y0); })
-            .attr("height", function(d) { return yScale(d.y); })
-            .attr("width", 40/*xScale.rangeBand()*/);
+            data.forEach(function(metric, i) {
+                metric.values.forEach(function(value) {
+                    plot.svg.append("rect")
+                        .style("fill", metric.color)
+                        .attr("x", function(d) { return xScale(value.x); })
+                        .attr("y", function(d) { return yScale(value.y0); })
+                        .attr("height", function(d) { return yScale(value.y); })
+                        .attr("width", 40);
+                });
+                legend.push(metric);
+            }, this);
         } else {
             data.forEach(function(metric, i) {
                 this.line.draw(metric, xScale, yScale);
                 legend.push(metric);
             }, this);
         }
-
-
-
-
     }
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-function Stacked(container, width, height) {
-
-    this.url;
-
-    this.container = container;
-
-    this.controls;
-
-    var plot = new Plot(container, width, height);
-    var bar = new Bar(plot);
-    var legend = new Legend(container);
-
-    this.color = d3.scale.category20c();
-
-    this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-
-    var xScale = d3.time.scale().range([0, plot.width]);
-    var yScale = d3.scale.linear().range([plot.height, 0]);
-    var yAxisScale = d3.scale.linear().range([0, plot.height]);
-
-    this.render = function (data) {
-
-        //for y-axis scale, iterate the all values and find the total for the biggest stack
-        var maximums = {};
-        data.forEach(function(metric) {
-            metric.values.forEach(function(value) {
-                if (!maximums.hasOwnProperty(value.x)) {
-                    maximums[value.x] = 0;
-                }
-                maximums[value.x] += value.y;
-            }, this);
-        }, this);
-        var yMax = d3.max(d3.values(maximums));
-        yScale.domain([yMax, 0]);
-        yAxisScale.domain([yMax, 0]);
-
-        //for x-axis scale, merge all datasets and get the extent of the dates
-        var merged = [];
-        data.forEach(function(metric) {
-            //first parse dates
-            metric.values.forEach(function(value) {
-                value.x = this.parseDate(value.x);
-            }, this);
-            //then merge into one array
-            merged = merged.concat(metric.values);
-        }, this);
-        xScale.domain(d3.extent(merged, function(d) { return d.x; }));
-
-        //iterate and plot each value, keeping track of the accumalated stack height
-        var heightCounter = {};
-        data.forEach(function(metric, i) {
-
-            metric.values.forEach(function(value) {
-
-                if (!heightCounter.hasOwnProperty(value.x)) {
-                    heightCounter[value.x] = 0;
-                }
-                var heightShift = plot.height - yScale(value.y);
-                bar.draw(value, metric.color, heightCounter[value.x], heightShift, xScale, yScale)
-                if (heightCounter.hasOwnProperty(value.x)) {
-                    heightCounter[value.x] -= yScale(value.y);
-                }
-            }, this);
-            legend.push(metric);
-
-        }, this);
-
-        plot.axes.x.showTicks = false;
-        plot.axes.y.showTicks = false;
-        plot.axes.draw(xScale, yAxisScale);
-    }
-
-    this.load = function() {
-        d3.json(this.url, function (data) {
-            this.render(data);
-        }.bind(this));
-    };
-
-    this.draw = function () {
-        this.load();
-    };
 }
 
 function Compare(container) {

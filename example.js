@@ -162,11 +162,7 @@ $( document ).ready(function() {
     stacked_area_chart.render(data);
 
     var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var stacked_chart = new Stacked("#stacked-bar-chart");
-    stacked_chart.render(data);
-
-    var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var stacked2 = new Xy("#stacked2", true);
+    var stacked2 = new Xy("#stacked-bar-chart", true);
     stacked2.bar = true;
     stacked2.render(data);
 
@@ -178,7 +174,5 @@ $( document ).ready(function() {
     pie_one.render(pie_data_one);
     pie_two.render(pie_data_two);
     pie_one.legend("#pie-legend", pie_data_one);
-
-    //$('.yLabel').css('height', $('.yLabel').width());
 
 });
