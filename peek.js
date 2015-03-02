@@ -70,6 +70,7 @@ function Axis (plot) {
 
     var plot = plot;
     this.showTicks = true;
+    this.barWidth = 0;
 
     this.draw = function (scale, orient, ticks) {
         var axis = d3.svg.axis()
@@ -80,7 +81,7 @@ function Axis (plot) {
             .attr("class", "x axis");
 
         if (orient === 'bottom') {
-            rendered.attr("transform", "translate(0," + plot.height + ")")
+            rendered.attr("transform", "translate("+this.barWidth/2+"," + plot.height + ")")
         }
 
         rendered.call(axis);
@@ -90,7 +91,7 @@ function Axis (plot) {
             if (orient === 'bottom') {
                 plot.svg.append("g")
                     .attr("class", "grid")
-                    .attr("transform", "translate(0," + plot.height + ")")
+                    .attr("transform", "translate("+this.barWidth/2+"," + plot.height + ")")
                     .call(axis
                         .tickSize(-plot.height, 0, 0)
                         .tickFormat("")
@@ -251,6 +252,7 @@ function Xy(container, stacked, width, height) {
             var barWidth = (plot.width-((barCount-1)*barSpacing))/barCount;
             var barPlotWidth = plot.width-barWidth; //subtract the width of last bar to avoid overshooting end of chart
             xScale = d3.time.scale().range([0, barPlotWidth]);
+            plot.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
         }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -308,6 +310,10 @@ function Xy(container, stacked, width, height) {
         yScale.domain([0, max]);
 
         plot.axes.draw(xScale, yScale);
+        if (this.bar) {
+            //plot.selectAll(".tick").attr("transform", "translate(0,-5)");
+        }
+
 
         if (this.bar === true) {
             data.forEach(function(metric, i) {
