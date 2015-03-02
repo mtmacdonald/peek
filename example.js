@@ -165,6 +165,10 @@ $( document ).ready(function() {
     var stacked_chart = new Stacked("#stacked-bar-chart");
     stacked_chart.render(data);
 
+    var data = JSON.parse(JSON.stringify(example_data)); //clone
+    var stacked2 = new Bar2("#stacked2");
+    //stacked2.render(data);
+
     var compare_chart = new Compare('#compare-chart');
     compare_chart.render(horizontal_bar_data);
 
