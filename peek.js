@@ -316,22 +316,15 @@ function Bar2 (container, width, height) {
     this.line = new Line(plot, stacked);
     var legend = new Legend(container);
 
-    var xScale = d3.time.scale().range([0, plot.width]);
-    var yScale = d3.scale.linear().range([plot.height, 0]);
+    //var xScale = d3.time.scale().range([0, plot.width]);
+    //var yScale = d3.scale.linear().range([plot.height, 0]);
+    var xScale = d3.scale.ordinal().rangeRoundBands([0, plot.width]);
+    var yScale = d3.scale.linear().range([0, plot.height]);
+    var zScale = d3.scale.ordinal().range(["darkblue", "blue", "lightblue"]);
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     this.render = function (data) {
-
-            var w = 600,
-            h = 400
- 
-            // create canvas
-            var svg = plot.svg.attr("transform", "translate(10,470)");
- 
-            var xScale = d3.scale.ordinal().rangeRoundBands([0, w-50]);
-            var yScale = d3.scale.linear().range([0, h-50]);
-            var zScale = d3.scale.ordinal().range(["darkblue", "blue", "lightblue"]);
 
         if (stacked) {
             //layering code (only for stacked charts)
@@ -348,28 +341,56 @@ function Bar2 (container, width, height) {
 
             var layers = stack(stripped_data);
         }
+//----------------------------------------------------------------------------------------------------------------------
 
+       //for x-axis scale, merge all datasets and get the extent of the dates
+        var merged = [];
 
+            data.forEach(function (metric) {
+                //first parse dates
+                metric.values.forEach(function (value) {
+                    value.x = this.parseDate(value.x);
+                }, this);
+                //then merge into one array
+                merged = merged.concat(metric.values);
+            }, this);
+
+        xScale.domain(d3.extent(merged, function(d) { return d.x; }));
+
+        var max = 0;
+
+//----------------------------------------------------------------------------------------------------------------------
+        //y-axis domain range for stacked charts
+        if (stacked) {
+            var last = data[data.length-1];
+            max = d3.max(last.values, function(d) { return d.y0+d.y; });
+//----------------------------------------------------------------------------------------------------------------------
+        }
+        yScale.domain([0, max]);
+
+        plot.axes.draw(xScale, yScale);
  
-            xScale.domain(layers[0].map(function(d) { return d.x; }));
-            yScale.domain([0, d3.max(layers[layers.length - 1], function(d) { return d.y0 + d.y; })]);
+        //xScale.domain(layers[0].map(function(d) { return d.x; }));
+        //yScale.domain([0, d3.max(layers[layers.length - 1], function(d) { return d.y0 + d.y; })]);
   
-            // Add a group for each column.
-            var valgroup = svg.selectAll("g.valgroup")
-            .data(layers)
-            .enter().append("svg:g")
-            .attr("class", "valgroup")
-            .style("fill", function(d, i) { return zScale(i); })
-            .style("stroke", function(d, i) { return d3.rgb(zScale(i)).darker(); });
+        //plot.svg.attr("transform", "translate(10,470)");
+
+        // Add a group for each column.
+        var valgroup = plot.svg.selectAll("g.valgroup")
+        .data(layers)
+        .enter().append("svg:g")
+        .attr("class", "valgroup")
+        .style("fill", function(d, i) { return zScale(i); })
+        .style("stroke", function(d, i) { return d3.rgb(zScale(i)).darker(); });
  
-            // Add a rect for each date.
-            var rect = valgroup.selectAll("rect")
-            .data(function(d){return d;})
-            .enter().append("svg:rect")
-            .attr("x", function(d) { return xScale(d.x); })
-            .attr("y", function(d) { return -yScale(d.y0) - yScale(d.y); })
-            .attr("height", function(d) { return yScale(d.y); })
-            .attr("width", xScale.rangeBand());
+        // Add a rect for each date.
+        var rect = valgroup.selectAll("rect")
+        .data(function(d){return d;})
+        .enter().append("svg:rect")
+        .attr("x", function(d) { return xScale(d.x); })
+        .attr("y", function(d) { return -yScale(d.y0) - yScale(d.y); })
+        .attr("height", function(d) { return yScale(d.y); })
+        .attr("width", xScale.rangeBand());
     }  
 }
 
