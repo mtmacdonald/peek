@@ -131,20 +131,25 @@
   lines
 */
 
-.area {
-    fill: lightsteelblue;
-    stroke-width: 0;
-    opacity: 0.4;
-}
-
 .line {
   fill: none;
-  stroke: steelblue;
-  stroke-width: 2;
+  stroke-width: 2px;
+}
+
+.area {
+    stroke-width: 0;
+    fill-opacity: 0.4;
+}
+
+.rect-line {
+    stroke-width: 2px;
+}
+
+.rect-area {
+    fill-opacity: 0.4;
 }
 
 circle {
-  stroke: steelblue;
   stroke-width: 2px;
 }
 

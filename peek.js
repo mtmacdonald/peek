@@ -305,7 +305,9 @@ function Xy(container, stacked, width, height) {
             data.forEach(function(metric, i) {
                 metric.values.forEach(function(value) {
                     plot.svg.append("rect")
+                        .attr("class", "rect-line rect-area")
                         .style("fill", metric.color)
+                        .style("stroke", metric.color)
                         .attr("x", function(d) { return xScale(value.x); })
                         .attr("y", function(d) { return yScale(value.y0); })
                         .attr("height", function(d) { return yScale(value.y); })
