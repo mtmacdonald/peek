@@ -308,7 +308,7 @@ function Xy(container, stacked, width, height) {
 
 function Bar2 (container, width, height) {
 
-    var stacked = typeof stacked !== 'undefined' ? stacked : false; //default
+    var stacked = typeof stacked !== 'undefined' ? stacked : true; //default
 
     this.url;
 
@@ -332,30 +332,31 @@ function Bar2 (container, width, height) {
             var xScale = d3.scale.ordinal().rangeRoundBands([0, w-50]);
             var yScale = d3.scale.linear().range([0, h-50]);
             var zScale = d3.scale.ordinal().range(["darkblue", "blue", "lightblue"]);
- 
-            // 4 columns: ID,c1,c2,c3
-            var matrix = [
-                [ 1,  5871, 8916, 2868],
-                [ 2, 10048, 2060, 6171],
-                [ 3, 16145, 8090, 8045],
-                [ 4,   990,  940, 6907],
-                [ 5,   450,  430, 5000]
-            ];
 
-            var remapped =["c1","c2","c3"].map(function(dat,i){
-                return matrix.map(function(d,ii){
-                    return {x: ii, y: d[i+1] };
-                })
-            });
+        if (stacked) {
+            //layering code (only for stacked charts)
+            //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
+            //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
+                //modifies the original data array
+            var stripped_data = [];
+            data.forEach(function (series) {
+                stripped_data.push(series.values);
+            }, this);
 
-            var stacked = d3.layout.stack()(remapped)
+            var stack = d3.layout.stack()
+                  .offset("zero");
+
+            var layers = stack(stripped_data);
+        }
+
+
  
-            xScale.domain(stacked[0].map(function(d) { return d.x; }));
-            yScale.domain([0, d3.max(stacked[stacked.length - 1], function(d) { return d.y0 + d.y; })]);
+            xScale.domain(layers[0].map(function(d) { return d.x; }));
+            yScale.domain([0, d3.max(layers[layers.length - 1], function(d) { return d.y0 + d.y; })]);
   
             // Add a group for each column.
             var valgroup = svg.selectAll("g.valgroup")
-            .data(stacked)
+            .data(layers)
             .enter().append("svg:g")
             .attr("class", "valgroup")
             .style("fill", function(d, i) { return zScale(i); })
