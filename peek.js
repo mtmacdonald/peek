@@ -245,6 +245,14 @@ function Xy(container, stacked, width, height) {
 
     this.render = function (data) {
 
+        if (this.bar) {
+            var barSpacing = 20;
+            var barCount = data[0].values.length; //todo: don't assume all bars are in all series
+            var barWidth = (plot.width-((barCount-1)*barSpacing))/barCount;
+            var barPlotWidth = plot.width-barWidth; //subtract the width of last bar to avoid overshooting end of chart
+            xScale = d3.time.scale().range([0, barPlotWidth]);
+        }
+
 //----------------------------------------------------------------------------------------------------------------------
         if (stacked) {
             //layering code (only for stacked charts)
@@ -309,10 +317,10 @@ function Xy(container, stacked, width, height) {
                         .style("fill", metric.color)
                         .style("stroke", metric.color)
                         .attr("x", function(d) { return xScale(value.x); })
-                        .attr("width", 40)
+                        .attr("width", barWidth)
                         //for y-axis, d3 has a top-left coordinate system
-                        //todo - account for line size
-                        .attr("y", function(d) { return plot.height-yScale(max-value.y)-yScale(max-value.y0); })
+                        //todo - account for line size / line overlap?
+                        .attr("y", function(d) { return plot.height-yScale(max-value.y-value.y0); })
                         .attr("height", function(d) { return yScale(max-value.y); });
                 });
                 legend.push(metric);
