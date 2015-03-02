@@ -309,9 +309,11 @@ function Xy(container, stacked, width, height) {
                         .style("fill", metric.color)
                         .style("stroke", metric.color)
                         .attr("x", function(d) { return xScale(value.x); })
-                        .attr("y", function(d) { return yScale(value.y0); })
-                        .attr("height", function(d) { return yScale(value.y); })
-                        .attr("width", 40);
+                        .attr("width", 40)
+                        //for y-axis, d3 has a top-left coordinate system
+                        //todo - account for line size
+                        .attr("y", function(d) { return plot.height-yScale(max-value.y)-yScale(max-value.y0); })
+                        .attr("height", function(d) { return yScale(max-value.y); });
                 });
                 legend.push(metric);
             }, this);
