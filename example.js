@@ -166,7 +166,8 @@ $( document ).ready(function() {
     stacked_chart.render(data);
 
     var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var stacked2 = new Bar2("#stacked2");
+    var stacked2 = new Xy("#stacked2", true);
+    stacked2.bar = true;
     stacked2.render(data);
 
     var compare_chart = new Compare('#compare-chart');

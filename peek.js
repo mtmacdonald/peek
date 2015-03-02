@@ -355,7 +355,7 @@ function Xy(container, stacked, width, height) {
 
         plot.axes.draw(xScale, yScale);
 
-        if (this.bar) {
+        if (this.bar === true) {
             // Add a group for each column.
             var valgroup = plot.svg.selectAll("g.valgroup")
             .data(layers)
@@ -384,100 +384,6 @@ function Xy(container, stacked, width, height) {
 
     }
 }
-
-
-
-function Bar2 (container, width, height) {
-
-    var stacked = typeof stacked !== 'undefined' ? stacked : true; //default
-
-    this.url;
-
-    var plot = new Plot(container, width, height);
-    this.line = new Line(plot, stacked);
-    var legend = new Legend(container);
-
-    var xScale = d3.time.scale().range([0, plot.width]);
-    //var yScale = d3.scale.linear().range([plot.height, 0]);
-    //var xScale = d3.scale.ordinal().rangeRoundBands([0, plot.width]);
-    var yScale = d3.scale.linear().range([0, plot.height]);
-    var zScale = d3.scale.ordinal().range(["darkblue", "blue", "lightblue"]);
-
-    this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-
-    this.render = function (data) {
-
-        if (stacked) {
-            //layering code (only for stacked charts)
-            //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
-            //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
-                //modifies the original data array
-            var stripped_data = [];
-            data.forEach(function (series) {
-                stripped_data.push(series.values);
-            }, this);
-
-            var stack = d3.layout.stack()
-                  .offset("zero");
-
-            var layers = stack(stripped_data);
-        }
-//----------------------------------------------------------------------------------------------------------------------
-
-       //for x-axis scale, merge all datasets and get the extent of the dates
-        var merged = [];
-
-            data.forEach(function (metric) {
-                //first parse dates
-                metric.values.forEach(function (value) {
-                    value.x = this.parseDate(value.x);
-                }, this);
-                //then merge into one array
-                merged = merged.concat(metric.values);
-            }, this);
-
-        xScale.domain(d3.extent(merged, function(d) { return d.x; }));
-
-        var max = 0;
-
-//----------------------------------------------------------------------------------------------------------------------
-        //y-axis domain range for stacked charts
-        if (stacked) {
-            var last = data[data.length-1];
-            max = d3.max(last.values, function(d) { return d.y0+d.y; });
-//----------------------------------------------------------------------------------------------------------------------
-        }
-        yScale.domain([0, max]);
-
-        plot.axes.draw(xScale, yScale);
- 
-        //xScale.domain(layers[0].map(function(d) { return d.x; }));
-        //yScale.domain([0, d3.max(layers[layers.length - 1], function(d) { return d.y0 + d.y; })]);
-  
-        //plot.svg.attr("transform", "translate(10,470)");
-
-        // Add a group for each column.
-        var valgroup = plot.svg.selectAll("g.valgroup")
-        .data(layers)
-        .enter().append("svg:g")
-        .attr("class", "valgroup")
-        .style("fill", function(d, i) { return data[i].color; })
-        .style("stroke", function(d, i) { return d3.rgb(data[i].color).darker(); });
- 
-        // Add a rect for each date.
-        var rect = valgroup.selectAll("rect")
-        .data(function(d){return d;})
-        .enter().append("svg:rect")
-        .attr("x", function(d) { return xScale(d.x); })
-        .attr("y", function(d) { return yScale(d.y0); })
-        .attr("height", function(d) { return yScale(d.y); })
-        .attr("width", 40/*xScale.rangeBand()*/);
-    }  
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
 
 //----------------------------------------------------------------------------------------------------------------------
 
