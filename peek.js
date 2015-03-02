@@ -310,10 +310,6 @@ function Xy(container, stacked, width, height) {
         yScale.domain([0, max]);
 
         plot.axes.draw(xScale, yScale);
-        if (this.bar) {
-            //plot.selectAll(".tick").attr("transform", "translate(0,-5)");
-        }
-
 
         if (this.bar === true) {
             data.forEach(function(metric, i) {
