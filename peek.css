@@ -4,6 +4,12 @@
   margin: 0!important;
 }
 
+header > div > a div{
+  height: 42px; 
+  line-height: 42px; 
+  padding-left: 67px; /*width+25*/
+}
+
 /*
   make it easy to clear floats
 */
