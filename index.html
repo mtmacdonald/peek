@@ -1,15 +1,152 @@
-<!doctype html>
-<html>
+﻿<!doctype html>
+<!-- saved from url=(0014)about:internet -->
  <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" ><!--Prevent IE using compatibility mode on local or intranet pages. Do not put scripts before this line.-->
-  <meta name="viewport" content="initial-scale=1.0" ><!--Prevent iOS scaling-->
+  <meta name="viewport" content="width=device-width, user-scalable=yes"><!--Mobile device scaling-->
   <meta charset="UTF-8">
-  <title>Peek.js - charts based on D3.js</title>
+  <title>Peek - a chart library based on D3.js</title>
 
   <!--load stylesheets first (rationale: https://developers.google.com/speed/docs/best-practices/rtt#PutStylesBeforeScripts)-->
   <link rel="stylesheet" href="require/framework.min.css" type="text/css" />
   <link rel="stylesheet" href="require/highlight.min.css" type="text/css" />
   <link rel="stylesheet" href="peek.css" type="text/css" />
+
+<style>
+
+#banner {
+  color: #385691;
+  font-weight: bold;
+  padding-top: 30px;
+  background-color: #f7f7f7;
+  box-shadow: inset 0px 5px 5px 0px #e7e7e7;
+}
+
+#banner img {
+  padding: 25px 0 25px 0;
+}
+
+#banner-buttons {
+  background-color: #f7f7f7;
+  padding: 20px 0 20px 0;
+  background-color: #999;
+}
+
+.spaced {
+  margin-right: 15px;
+}
+
+.heading-text {
+  font-size:16px;
+  text-align:center;
+}
+
+.segment {
+  border-bottom: 2px solid #385691;
+  padding: 20px 0 20px 0;
+}
+
+.features, .quick-howto {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.features li {
+  vertical-align: top;
+  display: inline-block;
+  width: 220px;
+  margin: 10px;
+
+}
+
+.features li span {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.features li h2 {
+  margin: 0;
+  padding: 0 0 3px 0;
+  font-size: 14px;
+  border: none;
+}
+
+.features li p {
+  padding-top: 5px;
+  margin: 0;
+
+}
+
+#howto {
+  background-color: #333;
+  box-shadow: inset 0px 5px 5px 0px #4b4b4b;
+}
+
+#browser-warning {
+  background-color: #385691;
+}
+
+#browser-warning h1, #browser-warning .warning-intro, #howto h1, #howto p, #howto ul {
+  color: white;
+}
+
+#howto h1, #browser-warning h1 {
+  border: none;
+}
+
+.quick-howto li {
+  vertical-align: top;
+  display: inline-block;
+  width: 300px;
+  margin: 10px;
+}
+
+.quick-howto li span {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.quick-howto li h2 {
+  margin: 0;
+  padding: 0 0 3px 0;
+  font-size: 16px;
+  border: none;
+  color: white;
+}
+
+.quick-howto li a {
+  color: white;
+}
+
+.quick-howto li p {
+  padding-top: 5px;
+  margin: 0;
+}
+
+.quick-howto .w-icon {
+  width: 50px; height: 50px;
+}
+
+.quick-howto svg {
+  fill: white;
+}
+
+#example {
+  display: table;
+  width: 100%;
+  font-weight: normal;
+}
+
+#example-code {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.yLabel, .xLabel, .title, .legend {
+  display: none;
+}
+
+</style>
 
   <!--load scripts second-->
   <script src="require/framework.min.js"></script>
@@ -17,100 +154,243 @@
   <script src="require/highlight.min.js"></script>
   <script src="require/d3.min.js"></script>
   <script src="peek.js"></script>
-  <script src="example.js"></script>
 
   <!--inline scripts last-->
+<script>
+
+var example_data = [
+    {
+        "label": "Foo",
+        "units": "kg",
+        "color": "steelblue",
+        "values": [
+            {
+                x : "2014-03-01 00:00:00",
+                y : 6
+            },
+            {
+                x : "2014-03-02 00:00:00",
+                y : 1.43
+            },
+            {
+                x : "2014-03-03 00:00:00",
+                y : 1.38
+            },
+            {
+                x : "2014-03-04 00:00:00",
+                y : 4.14
+            },
+            {
+                x : "2014-03-05 00:00:00",
+                y : 7.14
+            }
+        ]
+    },
+    {
+        "label": "Bar",
+        "units": "m/s",
+        "color": "firebrick",
+        "values": [
+            {
+                x : "2014-03-01 00:00:00",
+                y : 2
+            },
+            {
+                x : "2014-03-02 00:00:00",
+                y : 4.4
+            },
+            {
+                x : "2014-03-03 00:00:00",
+                y : 0.8
+            },
+            {
+                x : "2014-03-04 00:00:00",
+                y : 7.24
+            },
+            {
+                x : "2014-03-05 00:00:00",
+                y : 6.0
+            }
+        ]
+    },
+    {
+        "label": "Baz",
+        "units": "l",
+        "color": "darkgreen",
+        "values": [
+            {
+                x : "2014-03-01 00:00:00",
+                y : 1
+            },
+            {
+                x : "2014-03-02 00:00:00",
+                y : 8.2
+            },
+            {
+                x : "2014-03-03 00:00:00",
+                y : 3.6
+            },
+            {
+                x : "2014-03-04 00:00:00",
+                y : 3.1
+            },
+            {
+                x : "2014-03-05 00:00:00",
+                y : 1.1
+            }
+        ]
+    },
+];
+
+ $(document).ready(function() {
+
+  var chart = new Xy("#chart", true, 600, 340);
+  chart.line.area = true;
+  chart.render(example_data);
+
+   //instantiate an svg injector to show SVG icons
+   var injector = new svgInject();
+   injector.inject();//or use injector.inject('#foo') to only inject inside the matching elements
+
+  hljs.initHighlightingOnLoad();
+
+});
+</script>
+
  </head>
 
  <body>
 
  <header>
  <div class="w-fixed-width">
-	<a href="#">
-		<div style="padding-left:0;">
-			Peek.js - charts based on D3.js <span style="font-weight:normal;">(version 1.0.0)</span>
-
+	<a href="./index.html">
+		<div style="background-image:url('docs/images/logo.png');">
+			Peek - a chart library based on D3.js<span style="font-weight:normal;"> (version 1.1.0)</span>
 		</div>
 	</a>
 	<div>
+		<a href="docs/reference.html" class="w-button-link w-colored w-small">Reference Guide</a>
+		<a href="docs/change-log.html" class="w-button-link w-colored w-small">Change Log</a>
 	</div>
  </div>
  </header>
 
+ <div id="banner" class="segment"><div class="w-fixed-width">
+   <h1 class="w-massive w-center w-no-underline">Attractive charts for the web.</h1>
+   <div id="example" class="w-clear-after">
+    <div id="chart"></div>
+    <div id="example-code">
+<pre><code>var chart = new Xy("#chart", true);
+chart.line.area = true;
+chart.render(example_data);</code></pre>
+   </div>
+   </div>   
+ </div></div>
+ 
+ <div id="banner-buttons" class="segment"><div class="w-fixed-width">
+  <span class="w-center">
+  <a href="https://github.com/mtmacdonald/peek/releases" class="w-button-link w-colored w-large spaced">Download</a>
+  <a href="https://github.com/mtmacdonald/peek/issues" class="w-button-link w-dark">Report Issues</a>
+  </span>
+ </div></div>
  <section>
- <div class="w-fixed-width">
 
-  <h1>Overview</h1>
+<div class="segment"><div class="w-fixed-width">
 
+<p class="heading-text">
+ <strong>Peek</strong> is a <strong>an object-oriented chart library</strong> for web applications, based on <a href="http://d3js.org/">D3.js</a>. 
+</p>
+
+<ul class="features">
+<li>
+  <h2><span class="w-icon" data-name="grid"></span><span>Object-oriented</span></h2>
+  <p>The benefits of <a href="http://d3js.org/">D3.js</a>, but with simpler, configurable, reusable chart objects.</p>
+</li>
+<li>
+  <h2><span class="w-icon" data-name="stats_bars"></span><span>Many chart types</span></h2>
+  <p>Supports scatter, line, area, bar, pie, and donut charts in multiple orientations and configurations.</p>
+</li>
+<li>
+  <h2><span class="w-icon" data-name="levels"></span><span>Multiple series</span></h2>
+  <p>Display and compare multiple data series with stacked and grouped charts.</p>
+</li>
+<li>
+  <h2><span class="w-icon" data-name="arrow_resize"></span><span>Automatic scaling</span></h2>
+  <p>Flexible scales (linear, log, time, ordinal), with automatic maxima detection. </p>
+</li>
+<li>
+  <h2><span class="w-icon" data-name="monitor"></span><span>Interpolation</span></h2>
+  <p>Optional best-fit curves and line smoothing with 
+    <a href="http://nickqizhu.github.io/d3-cookbook/src/chapter7/line-interpolation.html">D3 line interpolation</a>.</p>
+</li>
+<li>
+  <h2><span class="w-icon" data-name="archive"></span><span>JSON data format</span></h2>
+  <p>Easily switch chart types for the same dataset through standardised inputs.
+</p>
+</li>
+<li>
+  <h2><span class="w-icon" data-name="compose"></span><span>Labelling</span></h2>
+  <p>Support for chart titles, axis labels, and legends.</p>
+</li>
+<li>
+  <h2><span class="w-icon" data-name="flash"></span><span>Interactive</span></h2>
+  <p>Optionally show data points, with interactive tooltips displaying values.</p>
+</li>
+</ul>
+
+<p class="heading-text">Peek provides an <strong>HTML5</strong>, <strong>CSS3</strong> and <strong>JavaScript</strong> chart library for any modern web application.</p>
+
+ </div></div>
+
+<div id="howto" class="segment"><div class="w-fixed-width">
+<h1>Getting started</h1>
+<p>Peek is server-side agnostic and will work with any backend framework.</p>
+
+<ul class="quick-howto">
+<li>
+  <h2><span class="w-icon" data-name="arrow_down_a"></span><span>Download the library</span></h2>
   <p>
-    <strong>Peek.js</strong> is a chart library for web applications, 
-    based on <a href="http://d3js.org">D3.js</a>.
+    <a href="https://github.com/mtmacdonald/peek/releases">Download</a> or clone a copy of the library.
   </p>
-
-  <ul>
-   <li>Reusable charts (object-oriented)</li>
-   <li>JSON data format</li>
-   <li>Simple to understand and customize</li>
-  </ul>
-
-  <p class="test">Some test text</p>
-
+</li>
+<li>
+  <h2><span class="w-icon" data-name="compose"></span><span>Copy from examples</span></h2>
   <p>
-    To get started, clone the 
-    <a href="https://github.com/mtmacdonald/peek">repository</a> and 
-    observe <a href="example.js">example.js</a>.
+    Copy and paste from the <a href="docs/reference.html">examples</a>.
   </p>
+</li>
+<li>
+  <h2><span class="w-icon" data-name="gear_a"></span><span>Customize and publish</span></h2>
+  <p>
+    Attach to any webpage, and publish.
+  </p>
+</li>
+</ul>
 
+<p>The key point is to attach the library CSS and JavaScript files:</p>
 
+<pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;peek.css&quot; type=&quot;text/css&quot; /&gt;</code></pre>
 
-  <h1>Line chart</h1>
+<pre><code>&lt;script src=&quot;../require/d3.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;../peek.js&quot;&gt;&lt;/script&gt;
+</code></pre>
 
-  <div id="line-chart"></div>
-  <br style="clear:both;"/>
+</div></div>
 
-  <h1>Area chart</h1>
+<div id="customisation" style="padding-top:20px;"><div class="w-fixed-width">
+<h1>Overview</h1>
 
-  <div id="area-chart"></div>
-  <br style="clear:both;"/>
+</div></div>
 
-  <h1>Stacked area chart</h1>
-
-  <div id="stacked-area-chart"></div>
-  <br style="clear:both;"/>
-
-  <h1>Stacked bar chart</h1>
-
-  <div id="stacked-bar-chart"></div>
-  <br style="clear:both;"/>
-
-  <h1>Grouped bar chart</h1>
-
-  <div id="grouped-bar-chart"></div>
-  <br style="clear:both;"/>
-
-  <h1>Horizontal Bar Chart</h1>
-
-  <div id="compare-chart"></div>
-  <br style="clear:both;"/>
-
-  <h1>Pie Chart</h1>
-
-  <div id="pie-one" style="padding: 20px; float: left;"></div>
-  <div id="pie-two" style="padding: 20px; float: left;"></div>
-  <div id="pie-legend" style="padding: 20px; float: left;"></div>
-  <br style="clear:both;"/>
-
- </div>
- </section>
+ </section> 
 
  <footer>
-  <div><p class="w-fixed-width">&nbsp;</p></div>
-  <div class="w-fixed-width">
-    <p>&copy; 2014 <a href="https://github.com/mtmacdonald">Mark Macdonald</a></p>
-    <p><a href="LICENSE">MIT license</a></p>
-  </div>
+	<div><p class="w-fixed-width">&nbsp;</p></div>
+	<div class="w-fixed-width">
+    <p>&copy; 2015 <a href="https://github.com/mtmacdonald/peek">Mark Macdonald</a></p>
+		<p><a href="LICENSE">MIT license</a></p>
+	</div>
  </footer>
-
  
  </body>
 </html>

@@ -145,39 +145,4 @@ $( document ).ready(function() {
                 chart.draw();
     */
 
-    var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var line_chart = new Xy("#line-chart");
-    line_chart.line.points = true;
-    line_chart.line.area = false;
-    line_chart.render(data);
-
-    var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var area_chart = new Xy("#area-chart");
-    area_chart.line.area = true;
-    area_chart.render(data);
-
-    var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var stacked_area_chart = new Xy("#stacked-area-chart", true);
-    stacked_area_chart.line.area = true;
-    stacked_area_chart.render(data);
-
-    var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var stacked_bar_chart = new Xy("#stacked-bar-chart", true);
-    stacked_bar_chart.bar = true;
-    stacked_bar_chart.render(data);
-
-    var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var grouped_bar_chart = new Grouped("#grouped-bar-chart", true);
-    grouped_bar_chart.bar = true;
-    grouped_bar_chart.render(data);
-
-    var compare_chart = new Compare('#compare-chart');
-    compare_chart.render(horizontal_bar_data);
-
-    var pie_one = new Pie("#pie-one");
-    var pie_two = new Pie("#pie-two");
-    pie_one.render(pie_data_one);
-    pie_two.render(pie_data_two);
-    pie_one.legend("#pie-legend", pie_data_one);
-
 });

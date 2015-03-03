@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+ <head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" ><!--Prevent IE using compatibility mode on local or intranet pages. Do not put scripts before this line.-->
+  <meta name="viewport" content="initial-scale=1.0" ><!--Prevent iOS scaling-->
+  <meta charset="UTF-8">
+  <title>Peek.js - charts based on D3.js</title>
+
+  <!--load stylesheets first (rationale: https://developers.google.com/speed/docs/best-practices/rtt#PutStylesBeforeScripts)-->
+  <link rel="stylesheet" href="../require/framework.min.css" type="text/css" />
+  <link rel="stylesheet" href="../require/highlight.min.css" type="text/css" />
+  <link rel="stylesheet" href="../peek.css" type="text/css" />
+
+  <!--load scripts second-->
+  <script src="../require/framework.min.js"></script>
+  <script src="../require/framework.icons.js"></script>
+  <script src="../require/highlight.min.js"></script>
+  <script src="../require/d3.min.js"></script>
+  <script src="../peek.js"></script>
+  <script src="../example.js"></script>
+
+  <!--inline scripts last-->
+  <script>
+  $(document).ready(function() {
+
+   var initial_dom = $('body').clone(); //displaying sample code needs the original DOM
+
+   var entityMap = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': '&quot;',
+      "'": '&#39;',
+      "/": '&#x2F;'
+    };
+
+    function escapeHtml(string) {
+      return String(string).replace(/[&<>"'\/]/g, function (s) {
+        return entityMap[s];
+      });
+    }
+
+    $("body").on('click', '.code-toggle', function() {
+
+      if ($(this).text() === 'Show Code') {
+        //show code sample
+        var selector = $(this).parent().nextAll('.code').attr('id'); //get the id of the closest code block
+        var code = initial_dom.find('#'+selector).html(); //fetch the actual code sample from the initial dom
+        code = escapeHtml(code);
+        code = $.trim(code); //remove the whitespace from the beginning and end of string
+
+        var block = $('<div><div class="demo-code-block"><pre><code></code></pre></div></div>');
+        block.find('code').append(code);
+
+        $(this).parent().after(block);
+        hljs.initHighlighting.called = false;
+        hljs.initHighlighting();
+        $(this).text('Hide Code');
+      } else {
+        //hide code sample
+        $(this).parent().next().remove();
+        $(this).text('Show Code');        
+      }
+    });
+  });
+
+  </script>
+  <style>
+  .doc-heading {
+    background-color: black;
+    color: white;
+    border: 0;
+    margin: 0;
+    padding: 12px;
+  }
+
+  .code-toggle {
+    float:right;
+  }
+  </style>
+ </head>
+
+ <body>
+
+ <header>
+ <div class="w-fixed-width">
+	<a href="../index.html">
+		<div style="padding-left:0;">
+			Peek - charts based on D3.js <span style="font-weight:normal;">(version 1.1.0)</span>
+		</div>
+	</a>
+	<div>
+	</div>
+ </div>
+ </header>
+
+ <section>
+ <div class="w-fixed-width">
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Line chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-line-chart">
+<script>
+ $(document).ready(function() {
+    var data = JSON.parse(JSON.stringify(example_data)); //clone
+    var line_chart = new Xy("#line-chart");
+    line_chart.line.points = true;
+    line_chart.line.area = false;
+    line_chart.render(data);
+ });
+</script>
+
+<div id="line-chart"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Area chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-area-chart">
+<script>
+ $(document).ready(function() {
+    var data = JSON.parse(JSON.stringify(example_data)); //clone
+    var area_chart = new Xy("#area-chart");
+    area_chart.line.area = true;
+    area_chart.render(data);
+ });
+</script>
+
+<div id="area-chart"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Stacked area chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-stacled-area-chart">
+<script>
+ $(document).ready(function() {
+    var data = JSON.parse(JSON.stringify(example_data)); //clone
+    var stacked_area_chart = new Xy("#stacked-area-chart", true);
+    stacked_area_chart.line.area = true;
+    stacked_area_chart.render(data); });
+</script>
+
+<div id="stacked-area-chart"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Stacked bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-stacked-bar-chart">
+<script>
+ $(document).ready(function() {
+    var data = JSON.parse(JSON.stringify(example_data)); //clone
+    var stacked_bar_chart = new Xy("#stacked-bar-chart", true);
+    stacked_bar_chart.bar = true;
+    stacked_bar_chart.render(data);
+ });
+</script>
+
+<div id="stacked-bar-chart"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Grouped bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-grouped-bar-chart">
+<script>
+ $(document).ready(function() {
+    var data = JSON.parse(JSON.stringify(example_data)); //clone
+    var grouped_bar_chart = new Grouped("#grouped-bar-chart", true);
+    grouped_bar_chart.bar = true;
+    grouped_bar_chart.render(data);
+ });
+</script>
+
+<div id="grouped-bar-chart"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Horizontal bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-horizontal-bar-chart">
+<script>
+ $(document).ready(function() {
+    var compare_chart = new Compare('#compare-chart');
+    compare_chart.render(horizontal_bar_data);
+ });
+</script>
+
+<div id="compare-chart"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Donut chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-donut-chart">
+<script>
+ $(document).ready(function() {
+    var pie_one = new Pie("#pie-one");
+    var pie_two = new Pie("#pie-two");
+    pie_one.render(pie_data_one);
+    pie_two.render(pie_data_two);
+    pie_one.legend("#pie-legend", pie_data_one);
+ });
+</script>
+
+<div id="pie-one" style="padding: 20px; float: left;"></div>
+<div id="pie-two" style="padding: 20px; float: left;"></div>
+<div id="pie-legend" style="padding: 20px; float: left;"></div>
+<br style="clear:both;"/>
+</div>
+
+ </div>
+ </section>
+
+ <footer>
+  <div><p class="w-fixed-width">&nbsp;</p></div>
+  <div class="w-fixed-width">
+    <p>&copy; 2014 <a href="https://github.com/mtmacdonald">Mark Macdonald</a></p>
+    <p><a href="LICENSE">MIT license</a></p>
+  </div>
+ </footer>
+
+ 
+ </body>
+</html>

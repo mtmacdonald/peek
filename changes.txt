@@ -1,3 +1,0 @@
-
-- fixed a legend key background color defect (border left a gap on some browsers)
-- fixed a canvas margin defect where labels at top of chart could get truncated
