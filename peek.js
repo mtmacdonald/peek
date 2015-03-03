@@ -360,7 +360,7 @@ function Grouped(container) {
           var numberGroups = 10; // groups
           var numberSeries = 3;  // series in each group
           var data = d3.range(numberSeries).map(function () { return d3.range(numberGroups).map(Math.random); });
-
+console.log(data);
           // Third, we define our scales...
           // Groups scale, x axis
           var x0 = d3.scale.ordinal()
