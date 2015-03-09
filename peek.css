@@ -69,11 +69,11 @@ header > div > a div{
   line-height: 20px;
 }
 
-.canvas {
+.plot {
   line-height: 0;
 }
 
-.canvas svg {
+.plot svg {
   line-height: 14px;
 }
 
