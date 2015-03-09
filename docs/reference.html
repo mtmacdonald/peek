@@ -107,7 +107,7 @@
     var line_chart = new Cartesian("#line-chart");
     line_chart.line.points = true;
     line_chart.line.area = false;
-    line_chart.render(data);
+    line_chart.draw(data);
  });
 </script>
 
@@ -123,7 +123,7 @@
     var data = JSON.parse(JSON.stringify(timeData)); //clone
     var area_chart = new Cartesian("#area-chart");
     area_chart.line.area = true;
-    area_chart.render(data);
+    area_chart.draw(data);
  });
 </script>
 
@@ -139,7 +139,7 @@
     var data = JSON.parse(JSON.stringify(timeData)); //clone
     var stacked_area_chart = new Cartesian("#stacked-area-chart", true);
     stacked_area_chart.line.area = true;
-    stacked_area_chart.render(data); });
+    stacked_area_chart.draw(data); });
 </script>
 
 <div id="stacked-area-chart"></div><br style="clear:both;"/>
@@ -154,7 +154,7 @@
     var data = JSON.parse(JSON.stringify(timeData)); //clone
     var stacked_bar_chart = new Cartesian("#stacked-bar-chart", true);
     stacked_bar_chart.bar = true;
-    stacked_bar_chart.render(data);
+    stacked_bar_chart.draw(data);
  });
 </script>
 
@@ -170,7 +170,7 @@
     var data = JSON.parse(JSON.stringify(timeData)); //clone
     var grouped_bar_chart = new Grouped("#grouped-bar-chart", true);
     grouped_bar_chart.bar = true;
-    grouped_bar_chart.render(data);
+    grouped_bar_chart.draw(data);
  });
 </script>
 
@@ -184,7 +184,7 @@
 <script>
  $(document).ready(function() {
     var compare_chart = new Compare('#compare-chart');
-    compare_chart.render(horizontal_bar_data);
+    compare_chart.draw(horizontal_bar_data);
  });
 </script>
 
@@ -199,8 +199,8 @@
  $(document).ready(function() {
     var pie_one = new Pie("#pie-one");
     var pie_two = new Pie("#pie-two");
-    pie_one.render(pie_data_one);
-    pie_two.render(pie_data_two);
+    pie_one.draw(pie_data_one);
+    pie_two.draw(pie_data_two);
     pie_one.legend("#pie-legend", pie_data_one);
  });
 </script>

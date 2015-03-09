@@ -284,7 +284,7 @@ function Cartesian(container, stacked, width, height) {
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
-    this.render = function (data) {
+    this.draw = function (data) {
 
         if (this.bar) {
             var barSpacing = 20;
@@ -378,7 +378,7 @@ function Cartesian(container, stacked, width, height) {
 
 function Grouped(container) {
 
-    this.render = function (data) {
+    this.draw = function (data) {
               // First, we define sizes and colours...
           var outerW = 640; // outer width
           var outerH = 480; // outer height
@@ -465,7 +465,7 @@ function Compare(container) {
     chart.margin.left = 0;
     chart.draw();
 
-    this.render = function (data) {
+    this.draw = function (data) {
             var self = this;
 
             chart.svg.attr("width", width).attr("height", height); //dynamically update width and height
@@ -525,11 +525,11 @@ function Compare(container) {
 
     this.load = function() {
         d3.json(this.url, function (data) {
-            this.render(data);
+            this.draw(data);
         }.bind(this));
     };  
 
-    this.draw = function () {
+    this.fetch = function () {
         this.load();
     };
 }
@@ -562,7 +562,7 @@ function Pie(container) {
 
     }
 
-    this.render = function (data) {
+    this.draw = function (data) {
 
         var self = this;
 
@@ -595,11 +595,11 @@ function Pie(container) {
 
     this.load = function() {
         d3.json(this.url, function (data) {
-            this.render(data);
+            this.draw(data);
         }.bind(this));
     };
 
-    this.draw = function () {
+    this.fetch = function () {
         this.load();
     };
 
