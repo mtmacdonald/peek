@@ -4,22 +4,28 @@
 
 function Legend(container) {
 
-    var legend = d3.select(container).append("div").attr("class", "legend");
+    var legend;
+
+    this.draw = function () {
+        legend = d3.select(container).append("div").attr("class", "legend");
+    }
 
     this.push = function(series) {
-        var row = legend.append("div");
+        if (typeof legend !== 'undefined') {
+            var row = legend.append("div");
 
-        row.append("span").attr("class", "key")
-            .style('background-color', series.color)
-            .style('border-color', series.color); //show color when printing
+            row.append("span").attr("class", "key")
+                .style('background-color', series.color)
+                .style('border-color', series.color); //show color when printing
 
-        var text = [], i = -1;
-        text[++i] = series.label;
-        if (series.units) {
-            text[++i] = ' ('+series.units+')';
-        };
+            var text = [], i = -1;
+            text[++i] = series.label;
+            if (series.units) {
+                text[++i] = ' ('+series.units+')';
+            };
 
-        row.append("span").html(text.join('')).attr('class', 'key-text');
+            row.append("span").html(text.join('')).attr('class', 'key-text');
+        }
     }
 }
 
@@ -46,20 +52,20 @@ function Chart(container) {
     var xLabelHeight = this.showXLabel === true ? labelHeight : 0;
     var yLabelWidth = this.showYLabel === true ? labelHeight : 0;
 
-    var plotWidth = this.width - yLabelWidth - this.margin.left - this.margin.right;
-    var plotHeight = this.height - titleHeight - xLabelHeight - this.margin.top - this.margin.bottom;
-
     this.axes = new Axes(this);
 
     this.getPlotWidth = function() {
+        var plotWidth = this.width - yLabelWidth - this.margin.left - this.margin.right;
         return plotWidth;
     }
 
     this.getPlotHeight = function() {
+        var plotHeight = this.height - titleHeight - xLabelHeight - this.margin.top - this.margin.bottom;
         return plotHeight;
     }
 
     this.draw = function() {
+
         //chart div
         var chart = d3.select(container).insert("div").attr("class", "chart p-clear-after");
         //left container with yLabel
@@ -85,8 +91,8 @@ function Chart(container) {
         }
 
         this.svg = plot.insert("svg")
-                    .attr('width', plotWidth + this.margin.left + this.margin.right)
-                    .attr('height', plotHeight + this.margin.top + this.margin.bottom);
+                    .attr('width', this.getPlotWidth() + this.margin.left + this.margin.right)
+                    .attr('height', this.getPlotHeight() + this.margin.top + this.margin.bottom);
 
         plot.on("mousemove", function() {
             var infobox = d3.select(".infobox");
@@ -266,33 +272,36 @@ function Point (chart) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function Cartesian(container, stacked, width, height) {
+function Cartesian(container, stacked) {
+    var self = this;
 
     var stacked = typeof stacked !== 'undefined' ? stacked : false; //default
 
     this.url;
 
-    var chart = new Chart(container);
-    chart.draw();
-    this.line = new Line(chart, stacked);
+    this.chart = new Chart(container);
+    this.line = new Line(this.chart, stacked);
     var legend = new Legend(container);
 
     this.bar = false;
-
-    var xScale = d3.time.scale().range([0, chart.getPlotWidth()]);
-    var yScale = d3.scale.linear().range([chart.getPlotHeight(), 0]);
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     this.draw = function (data) {
 
+        var xScale = d3.time.scale().range([0, this.chart.getPlotWidth()]);
+        var yScale = d3.scale.linear().range([this.chart.getPlotHeight(), 0]);
+
+        this.chart.draw();
+        legend.draw();
+
         if (this.bar) {
             var barSpacing = 20;
             var barCount = data[0].values.length; //todo: don't assume all bars are in all series
-            var barWidth = (chart.getPlotWidth()-((barCount-1)*barSpacing))/barCount;
-            var barchartWidth = chart.getPlotWidth()-barWidth; //subtract the width of last bar to avoid overshooting end of chart
+            var barWidth = (this.chart.getPlotWidth()-((barCount-1)*barSpacing))/barCount;
+            var barchartWidth = this.chart.getPlotWidth()-barWidth; //subtract the width of last bar to avoid overshooting end of chart
             xScale = d3.time.scale().range([0, barchartWidth]);
-            chart.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
+            this.chart.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
         }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -349,12 +358,12 @@ function Cartesian(container, stacked, width, height) {
 
         yScale.domain([0, max]);
 
-        chart.axes.draw(xScale, yScale);
+        this.chart.axes.draw(xScale, yScale);
 
         if (this.bar === true) {
             data.forEach(function(series, i) {
                 series.values.forEach(function(value) {
-                    chart.svg.append("rect")
+                    this.chart.svg.append("rect")
                         .attr("class", "rect-line rect-area")
                         .style("fill", series.color)
                         .style("stroke", series.color)
@@ -362,9 +371,9 @@ function Cartesian(container, stacked, width, height) {
                         .attr("width", barWidth)
                         //for y-axis, d3 has a top-left coordinate system
                         //todo - account for line size / line overlap?
-                        .attr("y", function(d) { return chart.getPlotHeight()-yScale(max-value.y-value.y0); })
+                        .attr("y", function(d) { return self.chart.getPlotHeight()-yScale(max-value.y-value.y0); })
                         .attr("height", function(d) { return yScale(max-value.y); });
-                });
+                }, this);
                 legend.push(series);
             }, this);
         } else {
@@ -549,7 +558,6 @@ function Pie(container) {
     chart.width = this.width;
     chart.height = this.height;
     chart.radius = this.radius;
-    chart.draw();
     var legend = new Legend(container);
 
     this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
@@ -559,11 +567,11 @@ function Pie(container) {
         data.forEach(function(series, i) {
             legend.push(series);
         }, this);
-
     }
 
     this.draw = function (data) {
-
+        chart.draw();
+        legend.draw();
         var self = this;
 
         chart.svg.data([data]);

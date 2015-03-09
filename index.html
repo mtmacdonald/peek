@@ -244,13 +244,15 @@ var example_data = [
 
  $(document).ready(function() {
 
-  var chart = new Cartesian("#chart", true, 600, 340);
-  chart.line.area = true;
-  chart.draw(example_data);
+  var stacked = new Cartesian("#chart", true);
+  stacked.chart.width = 600;
+  stacked.chart.height = 340;
+  stacked.line.area = true;
+  stacked.draw(example_data);
 
-   //instantiate an svg injector to show SVG icons
-   var injector = new svgInject();
-   injector.inject();//or use injector.inject('#foo') to only inject inside the matching elements
+  //instantiate an svg injector to show SVG icons
+  var injector = new svgInject();
+  injector.inject();//or use injector.inject('#foo') to only inject inside the matching elements
 
   hljs.initHighlightingOnLoad();
 
