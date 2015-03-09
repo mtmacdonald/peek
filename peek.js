@@ -2,7 +2,7 @@
 
 // todo stacked line charts: http://stackoverflow.com/questions/14713503/how-to-handle-layers-with-missing-data-points-in-d3-layout-stack
 
-function Legend (container) {
+function Legend(container) {
 
     var legend = d3.select(container).append("div").attr("class", "legend");
 
@@ -42,10 +42,22 @@ function Chart(container) {
     this.xLabel = 'X Label';
     this.yLabel = 'Y Label';
 
-    this.plotWidth = this.width - this.margin.left - this.margin.right;
-    this.plotHeight = this.height - this.margin.top - this.margin.bottom;
+    var titleHeight = this.showTitle === true ? labelHeight : 0;
+    var xLabelHeight = this.showXLabel === true ? labelHeight : 0;
+    var yLabelWidth = this.showYLabel === true ? labelHeight : 0;
+
+    var plotWidth = this.width - yLabelWidth - this.margin.left - this.margin.right;
+    var plotHeight = this.height - titleHeight - xLabelHeight - this.margin.top - this.margin.bottom;
 
     this.axes = new Axes(this);
+
+    this.getPlotWidth = function() {
+        return plotWidth;
+    }
+
+    this.getPlotHeight = function() {
+        return plotHeight;
+    }
 
     this.draw = function() {
         //chart div
@@ -71,8 +83,8 @@ function Chart(container) {
         }
 
         this.svg = plot.insert("svg")
-                    .attr('width', this.plotWidth + this.margin.left + this.margin.right)
-                    .attr('height', this.plotHeight + this.margin.top + this.margin.bottom);
+                    .attr('width', plotWidth + this.margin.left + this.margin.right)
+                    .attr('height', plotHeight + this.margin.top + this.margin.bottom);
 
         plot.on("mousemove", function() {
             var infobox = d3.select(".infobox");
@@ -106,7 +118,7 @@ function Axis (chart) {
             .attr("class", "x axis");
 
         if (orient === 'bottom') {
-            rendered.attr("transform", "translate("+this.barWidth/2+"," + chart.plotHeight + ")")
+            rendered.attr("transform", "translate("+this.barWidth/2+"," + chart.getPlotHeight() + ")")
         }
 
         rendered.call(axis);
@@ -116,16 +128,16 @@ function Axis (chart) {
             if (orient === 'bottom') {
                 chart.svg.append("g")
                     .attr("class", "grid")
-                    .attr("transform", "translate("+this.barWidth/2+"," + chart.plotHeight + ")")
+                    .attr("transform", "translate("+this.barWidth/2+"," + chart.getPlotHeight() + ")")
                     .call(axis
-                        .tickSize(-chart.plotHeight, 0, 0)
+                        .tickSize(-chart.getPlotHeight(), 0, 0)
                         .tickFormat("")
                     );
             } else {
                 chart.svg.append("g")         
                     .attr("class", "grid")
                     .call(axis
-                        .tickSize(-chart.plotWidth, 0, 0)
+                        .tickSize(-chart.getPlotWidth(), 0, 0)
                         .tickFormat("")
                     );
             }
@@ -165,7 +177,7 @@ function Line (chart, stacked) {
     var area = d3.svg.area()
                 .interpolate(this.interpolation)
                 .x(function(d) { return self.xScale(d.x); })
-                .y0(chart.plotHeight)
+                .y0(chart.getPlotHeight())
                 .y1(function(d) { return self.yScale(d.y); });
 
     if (stacked === true) {
@@ -265,8 +277,8 @@ function Xy(container, stacked, width, height) {
 
     this.bar = false;
 
-    var xScale = d3.time.scale().range([0, chart.plotWidth]);
-    var yScale = d3.scale.linear().range([chart.plotHeight, 0]);
+    var xScale = d3.time.scale().range([0, chart.getPlotWidth()]);
+    var yScale = d3.scale.linear().range([chart.getPlotHeight(), 0]);
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
@@ -275,8 +287,8 @@ function Xy(container, stacked, width, height) {
         if (this.bar) {
             var barSpacing = 20;
             var barCount = data[0].values.length; //todo: don't assume all bars are in all series
-            var barWidth = (chart.plotWidth-((barCount-1)*barSpacing))/barCount;
-            var barchartWidth = chart.plotWidth-barWidth; //subtract the width of last bar to avoid overshooting end of chart
+            var barWidth = (chart.getPlotWidth()-((barCount-1)*barSpacing))/barCount;
+            var barchartWidth = chart.getPlotWidth()-barWidth; //subtract the width of last bar to avoid overshooting end of chart
             xScale = d3.time.scale().range([0, barchartWidth]);
             chart.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
         }
@@ -348,7 +360,7 @@ function Xy(container, stacked, width, height) {
                         .attr("width", barWidth)
                         //for y-axis, d3 has a top-left coordinate system
                         //todo - account for line size / line overlap?
-                        .attr("y", function(d) { return chart.plotHeight-yScale(max-value.y-value.y0); })
+                        .attr("y", function(d) { return chart.getPlotHeight()-yScale(max-value.y-value.y0); })
                         .attr("height", function(d) { return yScale(max-value.y); });
                 });
                 legend.push(series);
@@ -386,7 +398,7 @@ function Grouped(container) {
           var numberGroups = 10; // groups
           var numberSeries = 3;  // series in each group
           var data = d3.range(numberSeries).map(function () { return d3.range(numberGroups).map(Math.random); });
-console.log(data);
+
           // Third, we define our scales...
           // Groups scale, x axis
           var x0 = d3.scale.ordinal()
