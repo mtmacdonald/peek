@@ -108,10 +108,12 @@
     line_chart.line.points = true;
     line_chart.line.area = false;
     line_chart.draw(data);
+    var legend = new Legend("#line-legend");
+    legend.draw(data);
  });
 </script>
 
-<div id="line-chart"></div><br style="clear:both;"/>
+<div id="line-chart"></div><div id="line-legend"></div><br style="clear:both;"/>
 </div>
 
 <!-- **************************************************************************************************************- -->
@@ -124,10 +126,12 @@
     var area_chart = new Cartesian("#area-chart");
     area_chart.line.area = true;
     area_chart.draw(data);
+    var legend = new Legend("#area-legend");
+    legend.draw(data);
  });
 </script>
 
-<div id="area-chart"></div><br style="clear:both;"/>
+<div id="area-chart"></div><div id="area-legend"></div><br style="clear:both;"/>
 </div>
 
 <!-- **************************************************************************************************************- -->
@@ -139,10 +143,14 @@
     var data = JSON.parse(JSON.stringify(timeData)); //clone
     var stacked_area_chart = new Cartesian("#stacked-area-chart", true);
     stacked_area_chart.line.area = true;
-    stacked_area_chart.draw(data); });
+    stacked_area_chart.draw(data);
+    var legend = new Legend("#stacked-area-legend");
+    legend.draw(data);
+ });
+
 </script>
 
-<div id="stacked-area-chart"></div><br style="clear:both;"/>
+<div id="stacked-area-chart"></div><div id="stacked-area-legend"></div><br style="clear:both;"/>
 </div>
 
 <!-- **************************************************************************************************************- -->
@@ -155,10 +163,12 @@
     var stacked_bar_chart = new Cartesian("#stacked-bar-chart", true);
     stacked_bar_chart.bar = true;
     stacked_bar_chart.draw(data);
+    var legend = new Legend("#stacked-bar-legend");
+    legend.draw(data);
  });
 </script>
 
-<div id="stacked-bar-chart"></div><br style="clear:both;"/>
+<div id="stacked-bar-chart"></div><div id="stacked-bar-legend"></div><br style="clear:both;"/>
 </div>
 
 <!-- **************************************************************************************************************- -->
@@ -201,7 +211,8 @@
     var pie_two = new Pie("#pie-two");
     pie_one.draw(pie_data_one);
     pie_two.draw(pie_data_two);
-    pie_one.legend("#pie-legend", pie_data_one);
+    //var legend = new Legend("#pie");
+    //legend.draw(pie_data_one);
  });
 </script>
 

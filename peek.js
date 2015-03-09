@@ -4,14 +4,10 @@
 
 function Legend(container) {
 
-    var legend;
+    this.draw = function (data) {
 
-    this.draw = function () {
-        legend = d3.select(container).append("div").attr("class", "legend");
-    }
-
-    this.push = function(series) {
-        if (typeof legend !== 'undefined') {
+        var legend = d3.select(container).append("div").attr("class", "legend");
+        data.forEach(function(series, i) {
             var row = legend.append("div");
 
             row.append("span").attr("class", "key")
@@ -25,7 +21,7 @@ function Legend(container) {
             };
 
             row.append("span").html(text.join('')).attr('class', 'key-text');
-        }
+        });
     }
 }
 
@@ -280,7 +276,6 @@ function Cartesian(container, stacked) {
 
     this.chart = new Chart(container);
     this.line = new Line(this.chart, stacked);
-    var legend = new Legend(container);
 
     this.bar = false;
 
@@ -292,7 +287,6 @@ function Cartesian(container, stacked) {
         var yScale = d3.scale.linear().range([this.chart.getPlotHeight(), 0]);
 
         this.chart.draw();
-        legend.draw();
 
         if (this.bar) {
             var barSpacing = 20;
@@ -373,12 +367,10 @@ function Cartesian(container, stacked) {
                         .attr("y", function(d) { return self.chart.getPlotHeight()-yScale(max-value.y-value.y0); })
                         .attr("height", function(d) { return yScale(max-value.y); });
                 }, this);
-                legend.push(series);
             }, this);
         } else {
             data.forEach(function(series, i) {
                 this.line.draw(series, xScale, yScale);
-                legend.push(series);
             }, this);
         }
     }
@@ -561,16 +553,15 @@ function Pie(container) {
 
     this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
     this.pie = d3.layout.pie().value(function(d) { return d.value; });
-
+/*
     this.legend = function(container, data) {
         data.forEach(function(series, i) {
             legend.push(series);
         }, this);
     }
-
+*/
     this.draw = function (data) {
         chart.draw();
-        legend.draw();
         var self = this;
 
         chart.svg.data([data]);
