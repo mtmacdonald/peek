@@ -266,7 +266,7 @@ function Point (chart) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function Xy(container, stacked, width, height) {
+function Cartesian(container, stacked, width, height) {
 
     var stacked = typeof stacked !== 'undefined' ? stacked : false; //default
 

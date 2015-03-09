@@ -103,8 +103,8 @@
 <div class="code" id="code-sample-line-chart">
 <script>
  $(document).ready(function() {
-    var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var line_chart = new Xy("#line-chart");
+    var data = JSON.parse(JSON.stringify(timeData)); //clone
+    var line_chart = new Cartesian("#line-chart");
     line_chart.line.points = true;
     line_chart.line.area = false;
     line_chart.render(data);
@@ -120,8 +120,8 @@
 <div class="code" id="code-sample-area-chart">
 <script>
  $(document).ready(function() {
-    var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var area_chart = new Xy("#area-chart");
+    var data = JSON.parse(JSON.stringify(timeData)); //clone
+    var area_chart = new Cartesian("#area-chart");
     area_chart.line.area = true;
     area_chart.render(data);
  });
@@ -136,8 +136,8 @@
 <div class="code" id="code-sample-stacled-area-chart">
 <script>
  $(document).ready(function() {
-    var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var stacked_area_chart = new Xy("#stacked-area-chart", true);
+    var data = JSON.parse(JSON.stringify(timeData)); //clone
+    var stacked_area_chart = new Cartesian("#stacked-area-chart", true);
     stacked_area_chart.line.area = true;
     stacked_area_chart.render(data); });
 </script>
@@ -151,8 +151,8 @@
 <div class="code" id="code-sample-stacked-bar-chart">
 <script>
  $(document).ready(function() {
-    var data = JSON.parse(JSON.stringify(example_data)); //clone
-    var stacked_bar_chart = new Xy("#stacked-bar-chart", true);
+    var data = JSON.parse(JSON.stringify(timeData)); //clone
+    var stacked_bar_chart = new Cartesian("#stacked-bar-chart", true);
     stacked_bar_chart.bar = true;
     stacked_bar_chart.render(data);
  });
@@ -167,7 +167,7 @@
 <div class="code" id="code-sample-grouped-bar-chart">
 <script>
  $(document).ready(function() {
-    var data = JSON.parse(JSON.stringify(example_data)); //clone
+    var data = JSON.parse(JSON.stringify(timeData)); //clone
     var grouped_bar_chart = new Grouped("#grouped-bar-chart", true);
     grouped_bar_chart.bar = true;
     grouped_bar_chart.render(data);

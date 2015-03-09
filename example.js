@@ -4,7 +4,91 @@
     Example usage of Peek.js
 */
 
-var example_data = [
+var scalarData = [
+    {
+        "label": "Foo",
+        "units": "kg",
+        "color": "steelblue",
+        "values": [
+            {
+                x : 1,
+                y : 6
+            },
+            {
+                x : 2,
+                y : 1.43
+            },
+            {
+                x : 3,
+                y : 1.38
+            },
+            {
+                x : 4,
+                y : 4.14
+            },
+            {
+                x : 5,
+                y : 7.14
+            }
+        ]
+    },
+    {
+        "label": "Bar",
+        "units": "m/s",
+        "color": "firebrick",
+        "values": [
+            {
+                x : 1,
+                y : 2
+            },
+            {
+                x : 2,
+                y : 4.4
+            },
+            {
+                x : 3,
+                y : 0.8
+            },
+            {
+                x : 4,
+                y : 7.24
+            },
+            {
+                x : 5,
+                y : 6.0
+            }
+        ]
+    },
+    {
+        "label": "Baz",
+        "units": "l",
+        "color": "darkgreen",
+        "values": [
+            {
+                x : 1,
+                y : 1
+            },
+            {
+                x : 2,
+                y : 8.2
+            },
+            {
+                x : 3,
+                y : 3.6
+            },
+            {
+                x : 4,
+                y : 3.1
+            },
+            {
+                x : 5,
+                y : 1.1
+            }
+        ]
+    },
+];
+
+var timeData = [
     {
         "label": "Foo",
         "units": "kg",
