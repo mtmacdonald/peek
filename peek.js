@@ -48,18 +48,17 @@ function Chart(container) {
     this.xLabel = 'X Label';
     this.yLabel = 'Y Label';
 
-    var titleHeight = this.showTitle === true ? labelHeight : 0;
-    var xLabelHeight = this.showXLabel === true ? labelHeight : 0;
-    var yLabelWidth = this.showYLabel === true ? labelHeight : 0;
-
     this.axes = new Axes(this);
 
     this.getPlotWidth = function() {
+        var yLabelWidth = this.showYLabel === true ? labelHeight : 0;
         var plotWidth = this.width - yLabelWidth - this.margin.left - this.margin.right;
         return plotWidth;
     }
 
     this.getPlotHeight = function() {
+        var titleHeight = this.showTitle === true ? labelHeight : 0;
+        var xLabelHeight = this.showXLabel === true ? labelHeight : 0;
         var plotHeight = this.height - titleHeight - xLabelHeight - this.margin.top - this.margin.bottom;
         return plotHeight;
     }
