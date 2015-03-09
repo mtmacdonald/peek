@@ -6,17 +6,17 @@ function Legend (container) {
 
     var legend = d3.select(container).append("div").attr("class", "legend");
 
-    this.push = function(metric) {
+    this.push = function(series) {
         var row = legend.append("div");
 
         row.append("span").attr("class", "key")
-            .style('background-color', metric.color)
-            .style('border-color', metric.color); //show color when printing
+            .style('background-color', series.color)
+            .style('border-color', series.color); //show color when printing
 
         var text = [], i = -1;
-        text[++i] = metric.label;
-        if (metric.units) {
-            text[++i] = ' ('+metric.units+')';
+        text[++i] = series.label;
+        if (series.units) {
+            text[++i] = ' ('+series.units+')';
         };
 
         row.append("span").html(text.join('')).attr('class', 'key-text');
@@ -157,21 +157,21 @@ function Line (plot, stacked) {
             .y1(function(d) { return self.yScale(d.y0 + d.y); });
     }
 
-    this.draw = function(metric, xScale, yScale) {
+    this.draw = function(series, xScale, yScale) {
         this.xScale = xScale;
         this.yScale = yScale;
         plot.svg.append("path")
             .attr("class", "line")
-            .style("stroke", metric.color)
-            .attr("d", line(metric.values));
+            .style("stroke", series.color)
+            .attr("d", line(series.values));
         if (this.area === true) {
             plot.svg.append("path")
                     .attr("class", "area")
-                    .style("fill", metric.color)
-                    .attr("d", area(metric.values));
+                    .style("fill", series.color)
+                    .attr("d", area(series.values));
         }
         if (this.points) {
-            this.point.draw(metric, xScale, yScale);
+            this.point.draw(series, xScale, yScale);
         }
     }
 }
@@ -179,13 +179,13 @@ function Line (plot, stacked) {
 function Point (plot) {
     var plot = plot;
 
-    this.draw = function(metric, xScale, yScale) {
+    this.draw = function(series, xScale, yScale) {
         d3.select(plot.container)
             .append("div")
             .attr("class", "infobox").html("<p>Tooltip</p>");
 
         plot.svg.selectAll(".plot")
-            .data(metric.values)
+            .data(series.values)
             .enter()
             .append("circle")
               .attr("transform", function(d) { 
@@ -193,7 +193,7 @@ function Point (plot) {
             })
               .attr("r", function(d){ return 4; }) 
               .attr("fill", "white")
-              .style("stroke", metric.color)
+              .style("stroke", series.color)
               .on("mouseover", this.mouseover_circle)
               .on("mouseout", this.mouseout_circle);
     }
@@ -276,13 +276,13 @@ function Xy(container, stacked, width, height) {
        //for x-axis scale, merge all datasets and get the extent of the dates
         var merged = [];
 
-            data.forEach(function (metric) {
+            data.forEach(function (series) {
                 //first parse dates
-                metric.values.forEach(function (value) {
+                series.values.forEach(function (value) {
                     value.x = this.parseDate(value.x);
                 }, this);
                 //then merge into one array
-                merged = merged.concat(metric.values);
+                merged = merged.concat(series.values);
             }, this);
 
         xScale.domain(d3.extent(merged, function(d) { return d.x; }));
@@ -297,10 +297,10 @@ function Xy(container, stacked, width, height) {
 //----------------------------------------------------------------------------------------------------------------------
         } else {
             //y-axis domain range for regular charts
-            //for y-axis scale, get the minimum and maximum for each metric
+            //for y-axis scale, get the minimum and maximum for each series
             //todo - handle y-axis scale properly for stacking        
-            data.forEach(function(metric, i) {
-                var localMax = d3.max(metric.values, function(d) { return d.y; });
+            data.forEach(function(series, i) {
+                var localMax = d3.max(series.values, function(d) { return d.y; });
                 if (localMax > max) {
                     max = localMax;
                 }
@@ -312,12 +312,12 @@ function Xy(container, stacked, width, height) {
         plot.axes.draw(xScale, yScale);
 
         if (this.bar === true) {
-            data.forEach(function(metric, i) {
-                metric.values.forEach(function(value) {
+            data.forEach(function(series, i) {
+                series.values.forEach(function(value) {
                     plot.svg.append("rect")
                         .attr("class", "rect-line rect-area")
-                        .style("fill", metric.color)
-                        .style("stroke", metric.color)
+                        .style("fill", series.color)
+                        .style("stroke", series.color)
                         .attr("x", function(d) { return xScale(value.x); })
                         .attr("width", barWidth)
                         //for y-axis, d3 has a top-left coordinate system
@@ -325,12 +325,12 @@ function Xy(container, stacked, width, height) {
                         .attr("y", function(d) { return plot.height-yScale(max-value.y-value.y0); })
                         .attr("height", function(d) { return yScale(max-value.y); });
                 });
-                legend.push(metric);
+                legend.push(series);
             }, this);
         } else {
-            data.forEach(function(metric, i) {
-                this.line.draw(metric, xScale, yScale);
-                legend.push(metric);
+            data.forEach(function(series, i) {
+                this.line.draw(series, xScale, yScale);
+                legend.push(series);
             }, this);
         }
     }
@@ -500,8 +500,8 @@ function Pie(container) {
     this.pie = d3.layout.pie().value(function(d) { return d.value; });
 
     this.legend = function(container, data) {
-        data.forEach(function(metric, i) {
-            legend.push(metric);
+        data.forEach(function(series, i) {
+            legend.push(series);
         }, this);
 
     }
