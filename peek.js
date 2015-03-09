@@ -63,8 +63,10 @@ function Chart(container) {
         //chart div
         var chart = d3.select(container).insert("div").attr("class", "chart p-clear-after");
         //left container with yLabel
-        var leftContainer = chart.insert("div").attr("class", "left-container")
-                                .style('width', labelHeight+'px');
+        var leftContainer = chart.insert("div").attr("class", "left-container");
+        if (this.showYLabel === true) {
+            leftContainer.style('width', labelHeight+'px');
+        }
         if (this.showYLabel === true) {
             leftContainer.insert("div").html(this.yLabel).attr("class", "yLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px')
@@ -454,6 +456,13 @@ function Compare(container) {
     this.url;
 
     var chart = new Chart(container);
+    chart.showTitle = false;
+    chart.showXLabel = false;
+    chart.showYLabel = false;
+    chart.margin.top = 0;
+    chart.margin.right = 0;
+    chart.margin.bottom = 0;
+    chart.margin.left = 0;
     chart.draw();
 
     this.render = function (data) {
@@ -534,6 +543,9 @@ function Pie(container) {
 
     var chart = new Chart(container);
     chart.isRadial = true;
+    chart.showTitle = false;
+    chart.showXLabel = false;
+    chart.showYLabel = false;
     chart.width = this.width;
     chart.height = this.height;
     chart.radius = this.radius;
