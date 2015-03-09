@@ -527,10 +527,6 @@ function Compare(container) {
         d3.json(this.url, function (data) {
             this.draw(data);
         }.bind(this));
-    };  
-
-    this.fetch = function () {
-        this.load();
     };
 }
 
@@ -596,9 +592,4 @@ function Pie(container) {
             this.draw(data);
         }.bind(this));
     };
-
-    this.fetch = function () {
-        this.load();
-    };
-
 }
