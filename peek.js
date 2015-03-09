@@ -25,10 +25,12 @@ function Legend (container) {
 
 function Chart(container) {
 
+    var labelHeight = 20;
+
     this.isRadial = false;
     this.showTitle = true;
     this.showXLabel = true;
-    this.showYLabel = false;
+    this.showYLabel = true;
 
     this.container = container;
     this.margin = {top: 20, right: 20, bottom: 50, left: 50};
@@ -40,8 +42,8 @@ function Chart(container) {
     this.xLabel = 'X Label';
     this.yLabel = 'Y Label';
 
-    this.chartWidth = this.width - this.margin.left - this.margin.right;
-    this.chartHeight = this.height - this.margin.top - this.margin.bottom;
+    this.plotWidth = this.width - this.margin.left - this.margin.right;
+    this.plotHeight = this.height - this.margin.top - this.margin.bottom;
 
     this.axes = new Axes(this);
 
@@ -49,17 +51,28 @@ function Chart(container) {
         //chart div
         var chart = d3.select(container).insert("div").attr("class", "chart p-clear-after");
         //left container with yLabel
-        var leftContainer = chart.insert("div").attr("class", "left-container");
-            leftContainer.insert("div").html(this.yLabel).attr("class", "yLabel");
+        var leftContainer = chart.insert("div").attr("class", "left-container")
+                                .style('width', labelHeight+'px');
+        if (this.showYLabel === true) {
+            leftContainer.insert("div").html(this.yLabel).attr("class", "yLabel")
+                                .style('height', labelHeight+'px').style('line-height', labelHeight+'px')
+                                .style('width', '400px'); /*must be same as height of plot area*/
+        }
         //main container with xLabel and plot area
         var mainContainer = chart.insert("div").attr("class", "main-container");
-            mainContainer.insert("div").html(this.title).attr("class", "title");
+        if (this.showTitle === true) {
+            mainContainer.insert("div").html(this.title).attr("class", "title")
+                                .style('height', labelHeight+'px').style('line-height', labelHeight+'px');
+        }
         var plot = mainContainer.insert("div").attr("class", "plot");
-        mainContainer.insert("div").html(this.xLabel).attr("class", "xLabel");
+        if (this.showXLabel === true) {
+            mainContainer.insert("div").html(this.xLabel).attr("class", "xLabel")
+                                .style('height', labelHeight+'px').style('line-height', labelHeight+'px');
+        }
 
         this.svg = plot.insert("svg")
-                    .attr('width', this.chartWidth + this.margin.left + this.margin.right)
-                    .attr('height', this.chartHeight + this.margin.top + this.margin.bottom);
+                    .attr('width', this.plotWidth + this.margin.left + this.margin.right)
+                    .attr('height', this.plotHeight + this.margin.top + this.margin.bottom);
 
         plot.on("mousemove", function() {
             var infobox = d3.select(".infobox");
@@ -93,7 +106,7 @@ function Axis (chart) {
             .attr("class", "x axis");
 
         if (orient === 'bottom') {
-            rendered.attr("transform", "translate("+this.barWidth/2+"," + chart.chartHeight + ")")
+            rendered.attr("transform", "translate("+this.barWidth/2+"," + chart.plotHeight + ")")
         }
 
         rendered.call(axis);
@@ -103,16 +116,16 @@ function Axis (chart) {
             if (orient === 'bottom') {
                 chart.svg.append("g")
                     .attr("class", "grid")
-                    .attr("transform", "translate("+this.barWidth/2+"," + chart.chartHeight + ")")
+                    .attr("transform", "translate("+this.barWidth/2+"," + chart.plotHeight + ")")
                     .call(axis
-                        .tickSize(-chart.chartHeight, 0, 0)
+                        .tickSize(-chart.plotHeight, 0, 0)
                         .tickFormat("")
                     );
             } else {
                 chart.svg.append("g")         
                     .attr("class", "grid")
                     .call(axis
-                        .tickSize(-chart.chartWidth, 0, 0)
+                        .tickSize(-chart.plotWidth, 0, 0)
                         .tickFormat("")
                     );
             }
@@ -152,7 +165,7 @@ function Line (chart, stacked) {
     var area = d3.svg.area()
                 .interpolate(this.interpolation)
                 .x(function(d) { return self.xScale(d.x); })
-                .y0(chart.chartHeight)
+                .y0(chart.plotHeight)
                 .y1(function(d) { return self.yScale(d.y); });
 
     if (stacked === true) {
@@ -252,8 +265,8 @@ function Xy(container, stacked, width, height) {
 
     this.bar = false;
 
-    var xScale = d3.time.scale().range([0, chart.chartWidth]);
-    var yScale = d3.scale.linear().range([chart.chartHeight, 0]);
+    var xScale = d3.time.scale().range([0, chart.plotWidth]);
+    var yScale = d3.scale.linear().range([chart.plotHeight, 0]);
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
@@ -262,8 +275,8 @@ function Xy(container, stacked, width, height) {
         if (this.bar) {
             var barSpacing = 20;
             var barCount = data[0].values.length; //todo: don't assume all bars are in all series
-            var barWidth = (chart.chartWidth-((barCount-1)*barSpacing))/barCount;
-            var barchartWidth = chart.chartWidth-barWidth; //subtract the width of last bar to avoid overshooting end of chart
+            var barWidth = (chart.plotWidth-((barCount-1)*barSpacing))/barCount;
+            var barchartWidth = chart.plotWidth-barWidth; //subtract the width of last bar to avoid overshooting end of chart
             xScale = d3.time.scale().range([0, barchartWidth]);
             chart.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
         }
@@ -335,7 +348,7 @@ function Xy(container, stacked, width, height) {
                         .attr("width", barWidth)
                         //for y-axis, d3 has a top-left coordinate system
                         //todo - account for line size / line overlap?
-                        .attr("y", function(d) { return chart.chartHeight-yScale(max-value.y-value.y0); })
+                        .attr("y", function(d) { return chart.plotHeight-yScale(max-value.y-value.y0); })
                         .attr("height", function(d) { return yScale(max-value.y); });
                 });
                 legend.push(series);

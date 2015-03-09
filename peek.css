@@ -35,17 +35,13 @@ header > div > a div{
   display: table-cell; /*make left-container stretch to height of chart*/
   vertical-align: middle;
   position: relative; /*make container the closest positioned ancestor for yLabel: http://stackoverflow.com/questions/28741562*/
-  width: 20px; /*same as label line-height*/
 }
 
 .yLabel {
   text-align: center;
   overflow: hidden;
-  height: 20px;
-  line-height: 20px;
   position: absolute;
   bottom: 0;
-  width: 400px; /*must be same as height of container*/
   transform: rotate(-90deg);
   transform-origin: top left;
 }
@@ -57,16 +53,12 @@ header > div > a div{
 .title {
   text-align: center;
   overflow: hidden;
-  height: 20px;
-  line-height: 20px;
   font-weight: bold;
 }
 
 .xLabel {
   text-align: center;
   overflow: hidden;
-  height: 20px;
-  line-height: 20px;
 }
 
 .plot {
