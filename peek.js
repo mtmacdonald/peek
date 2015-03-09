@@ -34,7 +34,11 @@ function Chart(container) {
     this.margin = {top: 20, right: 20, bottom: 50, left: 50};
     this.width = 600;
     this.height = 400;
-    this.radius = 150;
+    this.radius = 150; //only applies to radial charts
+
+    this.title = 'Chart Title';
+    this.xLabel = 'X Label';
+    this.yLabel = 'Y Label';
 
     this.chartWidth = this.width - this.margin.left - this.margin.right;
     this.chartHeight = this.height - this.margin.top - this.margin.bottom;
@@ -46,12 +50,12 @@ function Chart(container) {
         var chart = d3.select(container).insert("div").attr("class", "chart p-clear-after");
         //left container with yLabel
         var leftContainer = chart.insert("div").attr("class", "left-container");
-            leftContainer.insert("div").html('Y Label').attr("class", "yLabel");
+            leftContainer.insert("div").html(this.yLabel).attr("class", "yLabel");
         //main container with xLabel and plot area
         var mainContainer = chart.insert("div").attr("class", "main-container");
-            mainContainer.insert("div").html('Chart Title').attr("class", "title");
+            mainContainer.insert("div").html(this.title).attr("class", "title");
         var plot = mainContainer.insert("div").attr("class", "plot");
-        mainContainer.insert("div").html('X Label').attr("class", "xLabel");
+        mainContainer.insert("div").html(this.xLabel).attr("class", "xLabel");
 
         this.svg = plot.insert("svg")
                     .attr('width', this.chartWidth + this.margin.left + this.margin.right)
