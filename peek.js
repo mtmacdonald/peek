@@ -278,6 +278,29 @@ function Series() {
         });
     }
 
+    this.stack = function (data) {
+        //layering code (only for stacked charts)
+        //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
+        //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
+            //modifies the original data array
+        var stripped_data = [];
+        data.forEach(function (series) {
+            stripped_data.push(series.values);
+        }, this);
+
+        var stack = d3.layout.stack().offset("zero");
+
+        stack(stripped_data);
+    }
+
+    this.xExtent = function (data) {
+
+    }
+
+    this.yExtent = function (data) {
+
+    }
+
 }
 
 function Cartesian(container, stacked) {
@@ -299,6 +322,10 @@ function Cartesian(container, stacked) {
 
         series.parseDates(data);
 
+        if (stacked) {
+            series.stack(data);
+        }
+
         var xScale = d3.time.scale().range([0, this.chart.getPlotWidth()]);
         var yScale = d3.scale.linear().range([this.chart.getPlotHeight(), 0]);
 
@@ -313,22 +340,6 @@ function Cartesian(container, stacked) {
             this.chart.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
         }
 
-//----------------------------------------------------------------------------------------------------------------------
-        if (stacked) {
-            //layering code (only for stacked charts)
-            //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
-            //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
-                //modifies the original data array
-            var stripped_data = [];
-            data.forEach(function (series) {
-                stripped_data.push(series.values);
-            }, this);
-
-            var stack = d3.layout.stack()
-                  .offset("zero");
-
-            var layers = stack(stripped_data);
-        }
 //----------------------------------------------------------------------------------------------------------------------
 
        //for x-axis scale, merge all datasets and get the extent of the dates
