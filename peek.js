@@ -267,6 +267,19 @@ function Point (chart) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function Series() {
+
+    this.parseDates = function (data) {
+        var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
+        data.forEach(function (series) {
+            series.values.forEach(function (value) {
+                value.x = parseDate(value.x);
+            });
+        });
+    }
+
+}
+
 function Cartesian(container, stacked) {
     var self = this;
 
@@ -276,12 +289,15 @@ function Cartesian(container, stacked) {
 
     this.chart = new Chart(container);
     this.line = new Line(this.chart, stacked);
+    var series = new Series();
 
     this.bar = false;
 
     this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     this.draw = function (data) {
+
+        series.parseDates(data);
 
         var xScale = d3.time.scale().range([0, this.chart.getPlotWidth()]);
         var yScale = d3.scale.linear().range([this.chart.getPlotHeight(), 0]);
@@ -319,11 +335,7 @@ function Cartesian(container, stacked) {
         var merged = [];
 
             data.forEach(function (series) {
-                //first parse dates
-                series.values.forEach(function (value) {
-                    value.x = this.parseDate(value.x);
-                }, this);
-                //then merge into one array
+                //merge into one array
                 merged = merged.concat(series.values);
             }, this);
 
