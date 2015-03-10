@@ -61,11 +61,11 @@ header > div > a div{
   overflow: hidden;
 }
 
-.plot {
+.svgContainer {
   line-height: 0;
 }
 
-.plot svg {
+.svgContainer svg {
   line-height: 14px;
 }
 

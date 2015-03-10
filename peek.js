@@ -79,7 +79,7 @@ function Plot(container) {
             mainContainer.insert("div").html(this.title).attr("class", "title")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px');
         }
-        var svgContainer = mainContainer.insert("div").attr("class", "plot");
+        var svgContainer = mainContainer.insert("div").attr("class", "svgContainer");
         if (this.showXLabel === true) {
             mainContainer.insert("div").html(this.xLabel).attr("class", "xLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px');
