@@ -294,7 +294,19 @@ function Series() {
     }
 
     this.xExtent = function (data) {
-
+        //get the min value from all series
+        var min = d3.min(data.map(function (series) {
+            return d3.min(series.values.map(function (point) {
+                return point.x;
+            }));
+        }));
+        //get the max value from all series
+        var max = d3.max(data.map(function (series) {
+            return d3.max(series.values.map(function (point) {
+                return point.x;
+            }));
+        }));
+        return [min, max];
     }
 
     this.yExtent = function (data) {
@@ -304,6 +316,7 @@ function Series() {
 }
 
 function Cartesian(container, stacked) {
+
     var self = this;
 
     var stacked = typeof stacked !== 'undefined' ? stacked : false; //default
@@ -320,6 +333,8 @@ function Cartesian(container, stacked) {
 
     this.draw = function (data) {
 
+        this.chart.draw();
+
         series.parseDates(data);
 
         if (stacked) {
@@ -328,8 +343,6 @@ function Cartesian(container, stacked) {
 
         var xScale = d3.time.scale().range([0, this.chart.getPlotWidth()]);
         var yScale = d3.scale.linear().range([this.chart.getPlotHeight(), 0]);
-
-        this.chart.draw();
 
         if (this.bar) {
             var barSpacing = 20;
@@ -342,15 +355,7 @@ function Cartesian(container, stacked) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-       //for x-axis scale, merge all datasets and get the extent of the dates
-        var merged = [];
-
-            data.forEach(function (series) {
-                //merge into one array
-                merged = merged.concat(series.values);
-            }, this);
-
-        xScale.domain(d3.extent(merged, function(d) { return d.x; }));
+        xScale.domain(series.xExtent(data));
 
         var max = 0;
 
