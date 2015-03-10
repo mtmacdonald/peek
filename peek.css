@@ -1,6 +1,6 @@
 /*! Peek.js (c) 2014 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
 
-.chart div, .legend div {
+.plot div, .legend div {
   margin: 0!important;
 }
 
@@ -26,7 +26,7 @@ header > div > a div{
   chart
 */
 
-.chart {
+.plot {
   float: left;
   display: table; /*make left-container stretch to height of chart*/
 }

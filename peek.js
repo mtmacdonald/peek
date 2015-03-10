@@ -62,7 +62,7 @@ function Plot(container) {
     this.draw = function() {
 
         //chart div
-        var chart = d3.select(container).insert("div").attr("class", "chart p-clear-after");
+        var chart = d3.select(container).insert("div").attr("class", "plot p-clear-after");
         //left container with yLabel
         var leftContainer = chart.insert("div").attr("class", "left-container");
         if (this.showYLabel === true) {
