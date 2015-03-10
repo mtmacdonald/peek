@@ -46,7 +46,7 @@ function Plot(container) {
 
     this.axes = new Axes(this);
 
-    this.getPlotWidth = function() {
+    this.getSvgWidth = function() {
         var yLabelWidth = this.showYLabel === true ? labelHeight : 0;
         var plotWidth = this.width - yLabelWidth - this.margin.left - this.margin.right;
         return plotWidth;
@@ -86,7 +86,7 @@ function Plot(container) {
         }
 
         this.svg = svgContainer.insert("svg")
-                    .attr('width', this.getPlotWidth() + this.margin.left + this.margin.right)
+                    .attr('width', this.getSvgWidth() + this.margin.left + this.margin.right)
                     .attr('height', this.getPlotHeight() + this.margin.top + this.margin.bottom);
 
         svgContainer.on("mousemove", function() {
@@ -140,7 +140,7 @@ function Axis (plot) {
                 plot.svg.append("g")         
                     .attr("class", "grid")
                     .call(axis
-                        .tickSize(-plot.getPlotWidth(), 0, 0)
+                        .tickSize(-plot.getSvgWidth(), 0, 0)
                         .tickFormat("")
                     );
             }
@@ -365,14 +365,14 @@ function Cartesian(container, stacked) {
             series.stack(data);
         }
 
-        var xScale = d3.time.scale().range([0, this.plot.getPlotWidth()]);
+        var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
         var yScale = d3.scale.linear().range([this.plot.getPlotHeight(), 0]);
 
         if (this.bar) {
             var barSpacing = 20;
             var barCount = data[0].values.length; //todo: don't assume all bars are in all series
-            var barWidth = (this.plot.getPlotWidth()-((barCount-1)*barSpacing))/barCount;
-            var barchartWidth = this.plot.getPlotWidth()-barWidth; //subtract the width of last bar to avoid overshooting end of chart
+            var barWidth = (this.plot.getSvgWidth()-((barCount-1)*barSpacing))/barCount;
+            var barchartWidth = this.plot.getSvgWidth()-barWidth; //subtract the width of last bar to avoid overshooting end of chart
             xScale = d3.time.scale().range([0, barchartWidth]);
             this.plot.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
         }
