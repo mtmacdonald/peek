@@ -173,6 +173,23 @@
 
 <!-- **************************************************************************************************************- -->
 
+<h1 class="doc-heading"><span>Grouped stacked bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-grouped-stacked-bar-chart">
+<script>
+ $(document).ready(function() {
+    var data = JSON.parse(JSON.stringify(timeData)); //clone
+    var grouped_stacked_bar_chart = new GroupedStacked("#grouped-stacked-bar-chart", true);
+    //grouped_stacked_bar_chart.bar = true;
+    grouped_stacked_bar_chart.draw(data);
+ });
+</script>
+
+<div id="grouped-stacked-bar-chart"></div><br style="clear:both;"/>
+</div>
+
+
+<!-- **************************************************************************************************************- -->
+
 <h1 class="doc-heading"><span>Grouped bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
 <div class="code" id="code-sample-grouped-bar-chart">
 <script>
