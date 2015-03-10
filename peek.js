@@ -407,6 +407,394 @@ function Cartesian(container, stacked) {
     }
 }
 
+var groupedData = [
+    {
+        "State": "AL",
+        "Under 5 Years": "310504",
+        "5 to 13 Years": "552339",
+        "14 to 17 Years": "259034",
+        "18 to 24 Years": "450818",
+        "25 to 44 Years": "1231572",
+        "45 to 64 Years": "1215966",
+        "65 Years and Over": "641667",
+        "columnDetails": [
+            {
+                "name": "Under 5 Years",
+                "column": "column1",
+                "yBegin": 0,
+                "yEnd": 310504
+            },
+            {
+                "name": "5 to 13 Years",
+                "column": "column1",
+                "yBegin": 310504,
+                "yEnd": 862843
+            },
+            {
+                "name": "14 to 17 Years",
+                "column": "column1",
+                "yBegin": 862843,
+                "yEnd": 1121877
+            },
+            {
+                "name": "18 to 24 Years",
+                "column": "column2",
+                "yBegin": 0,
+                "yEnd": 450818
+            },
+            {
+                "name": "25 to 44 Years",
+                "column": "column3",
+                "yBegin": 0,
+                "yEnd": 1231572
+            },
+            {
+                "name": "45 to 64 Years",
+                "column": "column4",
+                "yBegin": 0,
+                "yEnd": 1215966
+            },
+            {
+                "name": "65 Years and Over",
+                "column": "column4",
+                "yBegin": 1215966,
+                "yEnd": 1857633
+            }
+        ],
+        "total": 1857633
+    },
+    {
+        "State": "AK",
+        "Under 5 Years": "52083",
+        "5 to 13 Years": "85640",
+        "14 to 17 Years": "42153",
+        "18 to 24 Years": "74257",
+        "25 to 44 Years": "198724",
+        "45 to 64 Years": "183159",
+        "65 Years and Over": "50277",
+        "columnDetails": [
+            {
+                "name": "Under 5 Years",
+                "column": "column1",
+                "yBegin": 0,
+                "yEnd": 52083
+            },
+            {
+                "name": "5 to 13 Years",
+                "column": "column1",
+                "yBegin": 52083,
+                "yEnd": 137723
+            },
+            {
+                "name": "14 to 17 Years",
+                "column": "column1",
+                "yBegin": 137723,
+                "yEnd": 179876
+            },
+            {
+                "name": "18 to 24 Years",
+                "column": "column2",
+                "yBegin": 0,
+                "yEnd": 74257
+            },
+            {
+                "name": "25 to 44 Years",
+                "column": "column3",
+                "yBegin": 0,
+                "yEnd": 198724
+            },
+            {
+                "name": "45 to 64 Years",
+                "column": "column4",
+                "yBegin": 0,
+                "yEnd": 183159
+            },
+            {
+                "name": "65 Years and Over",
+                "column": "column4",
+                "yBegin": 183159,
+                "yEnd": 233436
+            }
+        ],
+        "total": 233436
+    },
+    {
+        "State": "AZ",
+        "Under 5 Years": "515910",
+        "5 to 13 Years": "828669",
+        "14 to 17 Years": "362642",
+        "18 to 24 Years": "601943",
+        "25 to 44 Years": "1804762",
+        "45 to 64 Years": "1523681",
+        "65 Years and Over": "862573",
+        "columnDetails": [
+            {
+                "name": "Under 5 Years",
+                "column": "column1",
+                "yBegin": 0,
+                "yEnd": 515910
+            },
+            {
+                "name": "5 to 13 Years",
+                "column": "column1",
+                "yBegin": 515910,
+                "yEnd": 1344579
+            },
+            {
+                "name": "14 to 17 Years",
+                "column": "column1",
+                "yBegin": 1344579,
+                "yEnd": 1707221
+            },
+            {
+                "name": "18 to 24 Years",
+                "column": "column2",
+                "yBegin": 0,
+                "yEnd": 601943
+            },
+            {
+                "name": "25 to 44 Years",
+                "column": "column3",
+                "yBegin": 0,
+                "yEnd": 1804762
+            },
+            {
+                "name": "45 to 64 Years",
+                "column": "column4",
+                "yBegin": 0,
+                "yEnd": 1523681
+            },
+            {
+                "name": "65 Years and Over",
+                "column": "column4",
+                "yBegin": 1523681,
+                "yEnd": 2386254
+            }
+        ],
+        "total": 2386254
+    },
+    {
+        "State": "AR",
+        "Under 5 Years": "202070",
+        "5 to 13 Years": "343207",
+        "14 to 17 Years": "157204",
+        "18 to 24 Years": "264160",
+        "25 to 44 Years": "754420",
+        "45 to 64 Years": "727124",
+        "65 Years and Over": "407205",
+        "columnDetails": [
+            {
+                "name": "Under 5 Years",
+                "column": "column1",
+                "yBegin": 0,
+                "yEnd": 202070
+            },
+            {
+                "name": "5 to 13 Years",
+                "column": "column1",
+                "yBegin": 202070,
+                "yEnd": 545277
+            },
+            {
+                "name": "14 to 17 Years",
+                "column": "column1",
+                "yBegin": 545277,
+                "yEnd": 702481
+            },
+            {
+                "name": "18 to 24 Years",
+                "column": "column2",
+                "yBegin": 0,
+                "yEnd": 264160
+            },
+            {
+                "name": "25 to 44 Years",
+                "column": "column3",
+                "yBegin": 0,
+                "yEnd": 754420
+            },
+            {
+                "name": "45 to 64 Years",
+                "column": "column4",
+                "yBegin": 0,
+                "yEnd": 727124
+            },
+            {
+                "name": "65 Years and Over",
+                "column": "column4",
+                "yBegin": 727124,
+                "yEnd": 1134329
+            }
+        ],
+        "total": 1134329
+    },
+    {
+        "State": "CA",
+        "Under 5 Years": "2704659",
+        "5 to 13 Years": "4499890",
+        "14 to 17 Years": "2159981",
+        "18 to 24 Years": "3853788",
+        "25 to 44 Years": "10604510",
+        "45 to 64 Years": "8819342",
+        "65 Years and Over": "4114496",
+        "columnDetails": [
+            {
+                "name": "Under 5 Years",
+                "column": "column1",
+                "yBegin": 0,
+                "yEnd": 2704659
+            },
+            {
+                "name": "5 to 13 Years",
+                "column": "column1",
+                "yBegin": 2704659,
+                "yEnd": 7204549
+            },
+            {
+                "name": "14 to 17 Years",
+                "column": "column1",
+                "yBegin": 7204549,
+                "yEnd": 9364530
+            },
+            {
+                "name": "18 to 24 Years",
+                "column": "column2",
+                "yBegin": 0,
+                "yEnd": 3853788
+            },
+            {
+                "name": "25 to 44 Years",
+                "column": "column3",
+                "yBegin": 0,
+                "yEnd": 10604510
+            },
+            {
+                "name": "45 to 64 Years",
+                "column": "column4",
+                "yBegin": 0,
+                "yEnd": 8819342
+            },
+            {
+                "name": "65 Years and Over",
+                "column": "column4",
+                "yBegin": 8819342,
+                "yEnd": 12933838
+            }
+        ],
+        "total": 12933838
+    },
+    {
+        "State": "CO",
+        "Under 5 Years": "358280",
+        "5 to 13 Years": "587154",
+        "14 to 17 Years": "261701",
+        "18 to 24 Years": "466194",
+        "25 to 44 Years": "1464939",
+        "45 to 64 Years": "1290094",
+        "65 Years and Over": "511094",
+        "columnDetails": [
+            {
+                "name": "Under 5 Years",
+                "column": "column1",
+                "yBegin": 0,
+                "yEnd": 358280
+            },
+            {
+                "name": "5 to 13 Years",
+                "column": "column1",
+                "yBegin": 358280,
+                "yEnd": 945434
+            },
+            {
+                "name": "14 to 17 Years",
+                "column": "column1",
+                "yBegin": 945434,
+                "yEnd": 1207135
+            },
+            {
+                "name": "18 to 24 Years",
+                "column": "column2",
+                "yBegin": 0,
+                "yEnd": 466194
+            },
+            {
+                "name": "25 to 44 Years",
+                "column": "column3",
+                "yBegin": 0,
+                "yEnd": 1464939
+            },
+            {
+                "name": "45 to 64 Years",
+                "column": "column4",
+                "yBegin": 0,
+                "yEnd": 1290094
+            },
+            {
+                "name": "65 Years and Over",
+                "column": "column4",
+                "yBegin": 1290094,
+                "yEnd": 1801188
+            }
+        ],
+        "total": 1801188
+    },
+    {
+        "State": "CT",
+        "Under 5 Years": "211637",
+        "5 to 13 Years": "403658",
+        "14 to 17 Years": "196918",
+        "18 to 24 Years": "325110",
+        "25 to 44 Years": "916955",
+        "45 to 64 Years": "968967",
+        "65 Years and Over": "478007",
+        "columnDetails": [
+            {
+                "name": "Under 5 Years",
+                "column": "column1",
+                "yBegin": 0,
+                "yEnd": 211637
+            },
+            {
+                "name": "5 to 13 Years",
+                "column": "column1",
+                "yBegin": 211637,
+                "yEnd": 615295
+            },
+            {
+                "name": "14 to 17 Years",
+                "column": "column1",
+                "yBegin": 615295,
+                "yEnd": 812213
+            },
+            {
+                "name": "18 to 24 Years",
+                "column": "column2",
+                "yBegin": 0,
+                "yEnd": 325110
+            },
+            {
+                "name": "25 to 44 Years",
+                "column": "column3",
+                "yBegin": 0,
+                "yEnd": 916955
+            },
+            {
+                "name": "45 to 64 Years",
+                "column": "column4",
+                "yBegin": 0,
+                "yEnd": 968967
+            },
+            {
+                "name": "65 Years and Over",
+                "column": "column4",
+                "yBegin": 968967,
+                "yEnd": 1446974
+            }
+        ],
+        "total": 1446974
+    }
+];
+
 function GroupedStacked(container) {
 
     this.draw = function () {
@@ -448,29 +836,9 @@ var innerColumns = {
   "column3" : ["25 to 44 Years"],
   "column4" : ["45 to 64 Years", "65 Years and Over"]
 }
-
-d3.csv("../data.csv", function(error, data) {
-  var columnHeaders = d3.keys(data[0]).filter(function(key) { return key !== "State"; });
-  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "State"; }));
-  data.forEach(function(d) {
-    var yColumn = new Array();
-    d.columnDetails = columnHeaders.map(function(name) {
-      for (ic in innerColumns) {
-        if($.inArray(name, innerColumns[ic]) >= 0){
-          if (!yColumn[ic]){
-            yColumn[ic] = 0;
-          }
-          yBegin = yColumn[ic];
-          yColumn[ic] += +d[name];
-          return {name: name, column: ic, yBegin: yBegin, yEnd: +d[name] + yBegin,};
-        }
-      }
-    });
-    d.total = d3.max(d.columnDetails, function(d) { 
-      return d.yEnd; 
-    });
-  });
  
+  data = groupedData;
+
   x0.domain(data.map(function(d) { return d.State; }));
   x1.domain(d3.keys(innerColumns)).rangeRoundBands([0, x0.rangeBand()]);
  
@@ -512,28 +880,7 @@ d3.csv("../data.csv", function(error, data) {
       .attr("height", function(d) { 
         return y(d.yBegin) - y(d.yEnd); 
       })
-      .style("fill", function(d) { return color(d.name); });
- 
-  var legend = svg.selectAll(".legend")
-      .data(columnHeaders.slice().reverse())
-    .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
- 
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", color);
- 
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) { return d; });
- 
-});
+      .style("fill", function(d) { return color(d.name); }); 
     }
 
 }
