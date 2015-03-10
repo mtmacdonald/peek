@@ -25,7 +25,7 @@ function Legend(container) {
     }
 }
 
-function Chart(container) {
+function Plot(container) {
 
     var labelHeight = 20;
 
@@ -79,17 +79,17 @@ function Chart(container) {
             mainContainer.insert("div").html(this.title).attr("class", "title")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px');
         }
-        var plot = mainContainer.insert("div").attr("class", "plot");
+        var svgContainer = mainContainer.insert("div").attr("class", "plot");
         if (this.showXLabel === true) {
             mainContainer.insert("div").html(this.xLabel).attr("class", "xLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px');
         }
 
-        this.svg = plot.insert("svg")
+        this.svg = svgContainer.insert("svg")
                     .attr('width', this.getPlotWidth() + this.margin.left + this.margin.right)
                     .attr('height', this.getPlotHeight() + this.margin.top + this.margin.bottom);
 
-        plot.on("mousemove", function() {
+        svgContainer.on("mousemove", function() {
             var infobox = d3.select(".infobox");
             var coord = d3.mouse(this);
             infobox.style("left", (d3.event.pageX) + 15 + "px" );
@@ -106,9 +106,9 @@ function Chart(container) {
     };
 }
 
-function Axis (chart) {
+function Axis (plot) {
 
-    var chart = chart;
+    var plot = plot;
     this.showTicks = true;
     this.barWidth = 0;
 
@@ -117,11 +117,11 @@ function Axis (chart) {
                     .scale(scale)
                     .orient(orient).ticks(ticks);
 
-        var rendered = chart.svg.append("g")
+        var rendered = plot.svg.append("g")
             .attr("class", "x axis");
 
         if (orient === 'bottom') {
-            rendered.attr("transform", "translate("+this.barWidth/2+"," + chart.getPlotHeight() + ")")
+            rendered.attr("transform", "translate("+this.barWidth/2+"," + plot.getPlotHeight() + ")")
         }
 
         rendered.call(axis);
@@ -129,18 +129,18 @@ function Axis (chart) {
         if (this.showTicks) {
 
             if (orient === 'bottom') {
-                chart.svg.append("g")
+                plot.svg.append("g")
                     .attr("class", "grid")
-                    .attr("transform", "translate("+this.barWidth/2+"," + chart.getPlotHeight() + ")")
+                    .attr("transform", "translate("+this.barWidth/2+"," + plot.getPlotHeight() + ")")
                     .call(axis
-                        .tickSize(-chart.getPlotHeight(), 0, 0)
+                        .tickSize(-plot.getPlotHeight(), 0, 0)
                         .tickFormat("")
                     );
             } else {
-                chart.svg.append("g")         
+                plot.svg.append("g")         
                     .attr("class", "grid")
                     .call(axis
-                        .tickSize(-chart.getPlotWidth(), 0, 0)
+                        .tickSize(-plot.getPlotWidth(), 0, 0)
                         .tickFormat("")
                     );
             }
@@ -148,11 +148,11 @@ function Axis (chart) {
     }
 }
 
-function Axes (chart) {
+function Axes (plot) {
 
-    var chart = chart;
-    this.x = new Axis(chart);
-    this.y = new Axis(chart);
+    var plot = plot;
+    this.x = new Axis(plot);
+    this.y = new Axis(plot);
 
     this.draw = function(xScale, yScale) {
         this.x.draw(xScale, 'bottom', 5);
@@ -161,8 +161,8 @@ function Axes (chart) {
 
 }
 
-function Line (chart, stacked) {
-    var chart = chart;
+function Line (plot, stacked) {
+    var plot = plot;
     var self = this;
     this.xScale;
     this.yScale;
@@ -170,7 +170,7 @@ function Line (chart, stacked) {
     this.points = false;
     this.interpolation = 'cardinal';
     this.area = false;
-    this.point = new Point(chart);
+    this.point = new Point(plot);
 
     var line = d3.svg.line()
                 .interpolate(this.interpolation) 
@@ -180,7 +180,7 @@ function Line (chart, stacked) {
     var area = d3.svg.area()
                 .interpolate(this.interpolation)
                 .x(function(d) { return self.xScale(d.x); })
-                .y0(chart.getPlotHeight())
+                .y0(plot.getPlotHeight())
                 .y1(function(d) { return self.yScale(d.y); });
 
     if (stacked === true) {
@@ -200,12 +200,12 @@ function Line (chart, stacked) {
     this.draw = function(series, xScale, yScale) {
         this.xScale = xScale;
         this.yScale = yScale;
-        chart.svg.append("path")
+        plot.svg.append("path")
             .attr("class", "line")
             .style("stroke", series.color)
             .attr("d", line(series.values));
         if (this.area === true) {
-            chart.svg.append("path")
+            plot.svg.append("path")
                     .attr("class", "area")
                     .style("fill", series.color)
                     .attr("d", area(series.values));
@@ -216,15 +216,15 @@ function Line (chart, stacked) {
     }
 }
 
-function Point (chart) {
-    var chart = chart;
+function Point (plot) {
+    var plot = plot;
 
     this.draw = function(series, xScale, yScale) {
-        d3.select(chart.container)
+        d3.select(plot.container)
             .append("div")
             .attr("class", "infobox").html("<p>Tooltip</p>");
 
-        chart.svg.selectAll(".chart")
+        plot.svg.selectAll(".chart")
             .data(series.values)
             .enter()
             .append("circle")
@@ -348,19 +348,16 @@ function Cartesian(container, stacked) {
 
     var stacked = typeof stacked !== 'undefined' ? stacked : false; //default
 
-    this.url;
-
-    this.chart = new Chart(container);
-    this.line = new Line(this.chart, stacked);
+    this.plot = new Plot(container);
+    this.line = new Line(this.plot, stacked);
     var series = new Series();
 
     this.bar = false;
 
-    this.parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     this.draw = function (data) {
 
-        this.chart.draw();
+        this.plot.draw();
 
         series.parseDates(data);
 
@@ -368,29 +365,29 @@ function Cartesian(container, stacked) {
             series.stack(data);
         }
 
-        var xScale = d3.time.scale().range([0, this.chart.getPlotWidth()]);
-        var yScale = d3.scale.linear().range([this.chart.getPlotHeight(), 0]);
+        var xScale = d3.time.scale().range([0, this.plot.getPlotWidth()]);
+        var yScale = d3.scale.linear().range([this.plot.getPlotHeight(), 0]);
 
         if (this.bar) {
             var barSpacing = 20;
             var barCount = data[0].values.length; //todo: don't assume all bars are in all series
-            var barWidth = (this.chart.getPlotWidth()-((barCount-1)*barSpacing))/barCount;
-            var barchartWidth = this.chart.getPlotWidth()-barWidth; //subtract the width of last bar to avoid overshooting end of chart
+            var barWidth = (this.plot.getPlotWidth()-((barCount-1)*barSpacing))/barCount;
+            var barchartWidth = this.plot.getPlotWidth()-barWidth; //subtract the width of last bar to avoid overshooting end of chart
             xScale = d3.time.scale().range([0, barchartWidth]);
-            this.chart.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
+            this.plot.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
         }
 
 //----------------------------------------------------------------------------------------------------------------------
 
         xScale.domain(series.xExtent(data));
         yScale.domain(series.yExtent(data));
-        this.chart.axes.draw(xScale, yScale);
+        this.plot.axes.draw(xScale, yScale);
 
         if (this.bar === true) {
             var max = series.yExtent(data)[1]; //refactor
             data.forEach(function(series, i) {
                 series.values.forEach(function(value) {
-                    this.chart.svg.append("rect")
+                    this.plot.svg.append("rect")
                         .attr("class", "rect-line rect-area")
                         .style("fill", series.color)
                         .style("stroke", series.color)
@@ -398,7 +395,7 @@ function Cartesian(container, stacked) {
                         .attr("width", barWidth)
                         //for y-axis, d3 has a top-left coordinate system
                         //todo - account for line size / line overlap?
-                        .attr("y", function(d) { return self.chart.getPlotHeight()-yScale(max-value.y-value.y0); })
+                        .attr("y", function(d) { return self.plot.getPlotHeight()-yScale(max-value.y-value.y0); })
                         .attr("height", function(d) { return yScale(max-value.y); });
                 }, this);
             }, this);
@@ -461,7 +458,7 @@ function Grouped(container) {
           // Series selection
           // We place each series into its own SVG group element. In other words,
           // each SVG group element contains one series (i.e. bars of the same colour).
-          // It might be helpful to think of each SVG group element as containing one bar chart.
+          // It might be helpful to think of each SVG group element as containing one bar plot.
           var series = vis.selectAll("g.series")
               .data(data)
             .enter().append("svg:g")
@@ -489,20 +486,20 @@ function Compare(container) {
     this.bottomPadding = 0; //only meeded when displaying x-axis
     this.url;
 
-    var chart = new Chart(container);
-    chart.showTitle = false;
-    chart.showXLabel = false;
-    chart.showYLabel = false;
-    chart.margin.top = 0;
-    chart.margin.right = 0;
-    chart.margin.bottom = 0;
-    chart.margin.left = 0;
-    chart.draw();
+    var plot = new Plot(container);
+    plot.showTitle = false;
+    plot.showXLabel = false;
+    plot.showYLabel = false;
+    plot.margin.top = 0;
+    plot.margin.right = 0;
+    plot.margin.bottom = 0;
+    plot.margin.left = 0;
+    plot.draw();
 
     this.draw = function (data) {
             var self = this;
 
-            chart.svg.attr("width", width).attr("height", height); //dynamically update width and height
+            plot.svg.attr("width", width).attr("height", height); //dynamically update width and height
 
             var max = d3.max(data, function(d) { return d.value;} );
 
@@ -511,7 +508,7 @@ function Compare(container) {
             var dy = ((height-this.bottomPadding) / data.length) - spacing;
     
             //bars
-            var bars = chart.svg.selectAll(".bar")
+            var bars = plot.svg.selectAll(".bar")
                 .data(data)
                 .enter()
                 .append("rect")
@@ -522,7 +519,7 @@ function Compare(container) {
                 .attr("fill", function(d, i) {return d.colour} );
 
             //labels
-            var text = chart.svg.selectAll("text")
+            var text = plot.svg.selectAll("text")
                 .data(data)
                 .enter()
                 .append("text")
@@ -532,7 +529,7 @@ function Compare(container) {
                     .html( function(d) {return d.label;});
 
             //text values
-            var text = chart.svg.selectAll(".compare-chart-values")
+            var text = plot.svg.selectAll(".compare-chart-values")
                 .data(data)
                 .enter()
                 .append("text")
@@ -571,14 +568,14 @@ function Pie(container) {
     this.radius = 150;
     this.innerRadius = 60;
 
-    var chart = new Chart(container);
-    chart.isRadial = true;
-    chart.showTitle = false;
-    chart.showXLabel = false;
-    chart.showYLabel = false;
-    chart.width = this.width;
-    chart.height = this.height;
-    chart.radius = this.radius;
+    var plot = new Plot(container);
+    plot.isRadial = true;
+    plot.showTitle = false;
+    plot.showXLabel = false;
+    plot.showYLabel = false;
+    plot.width = this.width;
+    plot.height = this.height;
+    plot.radius = this.radius;
     var legend = new Legend(container);
 
     this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
@@ -591,12 +588,12 @@ function Pie(container) {
     }
 */
     this.draw = function (data) {
-        chart.draw();
+        plot.draw();
         var self = this;
 
-        chart.svg.data([data]);
+        plot.svg.data([data]);
 
-        var arcs = chart.svg.selectAll("g.slice")
+        var arcs = plot.svg.selectAll("g.slice")
             .data(self.pie)
             .enter()
                 .append("svg:g")
