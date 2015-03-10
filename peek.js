@@ -269,6 +269,8 @@ function Point (chart) {
 
 function Series() {
 
+    var isStacked = false;
+
     this.parseDates = function (data) {
         var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
         data.forEach(function (series) {
@@ -279,6 +281,8 @@ function Series() {
     }
 
     this.stack = function (data) {
+        isStacked = true;
+
         //layering code (only for stacked charts)
         //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
         //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
@@ -310,7 +314,30 @@ function Series() {
     }
 
     this.yExtent = function (data) {
+        //min is either the min value from all series, or 0, whichever is lower
+        var min = d3.min(data.map(function (series) {
+            return d3.min(series.values.map(function (point) {
+                return point.y;
+            }));
+        }));
+        if (min > 0) {
+            min = 0;
+        }
 
+        //max depends on whether series are stacked
+        if (isStacked) { //if stacked, get max of y0+y in the final data series
+            var max = d3.max(data[data.length-1].values.map(function (point) {
+                return point.y0+point.y;
+            }));
+        } else { //if not stacked, get the max value from all series
+            var max = d3.max(data.map(function (series) {
+                return d3.max(series.values.map(function (point) {
+                    return point.y;
+                }));
+            }));
+        }
+
+        return [min, max];
     }
 
 }
@@ -356,32 +383,11 @@ function Cartesian(container, stacked) {
 //----------------------------------------------------------------------------------------------------------------------
 
         xScale.domain(series.xExtent(data));
-
-        var max = 0;
-
-//----------------------------------------------------------------------------------------------------------------------
-        //y-axis domain range for stacked charts
-        if (stacked) {
-            var last = data[data.length-1];
-            max = d3.max(last.values, function(d) { return d.y0+d.y; });
-//----------------------------------------------------------------------------------------------------------------------
-        } else {
-            //y-axis domain range for regular charts
-            //for y-axis scale, get the minimum and maximum for each series
-            //todo - handle y-axis scale properly for stacking        
-            data.forEach(function(series, i) {
-                var localMax = d3.max(series.values, function(d) { return d.y; });
-                if (localMax > max) {
-                    max = localMax;
-                }
-            }, this);
-        }
-
-        yScale.domain([0, max]);
-
+        yScale.domain(series.yExtent(data));
         this.chart.axes.draw(xScale, yScale);
 
         if (this.bar === true) {
+            var max = series.yExtent(data)[1]; //refactor
             data.forEach(function(series, i) {
                 series.values.forEach(function(value) {
                     this.chart.svg.append("rect")
