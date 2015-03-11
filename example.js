@@ -214,22 +214,37 @@ var pie_data_two = [
     }
 ];
 
-$( document ).ready(function() {
+function getFirstGroupData() {
+    var data = JSON.parse(JSON.stringify(timeData)); //clone
+    var firstGroupName = data[0].group;
+    var i = data.length;
+    while (i--) { //iterate data in reverse to allow safe deletion
+        if (data[i].group !== firstGroupName) {
+            data.splice(i, 1);
+        }          
+    }
+    return data;
+}
 
-    /*
-        Charts are instantiated as objects. There are two different ways to pass
-        data and draw the chart:
+function getFirstGroupFirstSeriesData() {
+    var data = JSON.parse(JSON.stringify(timeData)); //clone
+    data.splice(1, data.length);
+    return data;
+}
 
-        i) by passing a data array to render() directly
-
-                var trend_chart = new Trend("#trend-chart");
-                trend_chart.render(trend_data); 
-
-        ii) by setting the url to the data and calling draw()
-
-                var trend_chart = new Trend("#trend-chart");
-                trend_chart.url = 'trend.json'; 
-                chart.draw();
-    */
-
-});
+/*
+function getAllGroupsFirstSeriesData() {
+    var data = JSON.parse(JSON.stringify(timeData)); //clone
+    var seriesCount = 0;
+    var i = data.length;
+    while (i--) { //iterate data in reverse to allow safe deletion
+        if (seriesCount >= 1) {
+            data.splice(i, 1);
+            seriesCount = 0;
+        } else {
+            seriesCount++;
+        }
+    }
+    return data;
+}
+*/

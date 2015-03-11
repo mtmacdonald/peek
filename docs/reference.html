@@ -155,11 +155,47 @@
 
 <!-- **************************************************************************************************************- -->
 
+<h1 class="doc-heading"><span>Bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-bar-chart">
+<script>
+ $(document).ready(function() {
+    var data = getFirstGroupFirstSeriesData();
+    var chart = new Cartesian("#bar-chart", true);
+    chart.bar = true;
+    chart.draw(data);
+    var legend = new Legend("#bar-legend");
+    legend.draw(data);
+ });
+</script>
+
+<div id="bar-chart"></div><div id="bar-legend"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+<!-- 
+<h1 class="doc-heading"><span>Grouped bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-grouped-bar-chart">
+<script>
+ $(document).ready(function() {
+    var data = getAllGroupsFirstSeriesData();
+    var chart = new Cartesian("#grouped-bar-chart", true);
+    chart.bar = true;
+    chart.draw(data);
+    var legend = new Legend("#grouped-bar-legend");
+    legend.draw(data);
+ });
+</script>
+
+<div id="grouped-bar-chart"></div><div id="grouped-bar-legend"></div><br style="clear:both;"/>
+</div>
+-->
+<!-- **************************************************************************************************************- -->
+
 <h1 class="doc-heading"><span>Stacked bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
 <div class="code" id="code-sample-stacked-bar-chart">
 <script>
  $(document).ready(function() {
-    var data = JSON.parse(JSON.stringify(timeData)); //clone
+    var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-bar-chart", true);
     chart.bar = true;
     chart.draw(data);
@@ -173,35 +209,20 @@
 
 <!-- **************************************************************************************************************- -->
 
-<h1 class="doc-heading"><span>Grouped stacked bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
-<div class="code" id="code-sample-grouped-stacked-bar-chart">
+<h1 class="doc-heading"><span>Stacked grouped bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-stacked-grouped-bar-chart">
 <script>
  $(document).ready(function() {
-    //var data = JSON.parse(JSON.stringify(timeData)); //clone
-    //var grouped_stacked_bar_chart = new GroupedStacked("#grouped-stacked-bar-chart", true);
-    //grouped_stacked_bar_chart.bar = true;
-    //grouped_stacked_bar_chart.draw(data);
+    var data = JSON.parse(JSON.stringify(timeData)); //clone
+    var chart = new Cartesian("#stacked-grouped-bar-chart", true);
+    chart.bar = true;
+    chart.draw(data);
+    var legend = new Legend("#stacked-grouped-bar-legend");
+    legend.draw(data);
  });
 </script>
 
-<div id="grouped-stacked-bar-chart"></div><br style="clear:both;"/>
-</div>
-
-
-<!-- **************************************************************************************************************- -->
-
-<h1 class="doc-heading"><span>Grouped bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
-<div class="code" id="code-sample-grouped-bar-chart">
-<script>
- $(document).ready(function() {
-    //var data = JSON.parse(JSON.stringify(timeData)); //clone
-    //var grouped_bar_chart = new Grouped("#grouped-bar-chart", true);
-    //grouped_bar_chart.bar = true;
-    //grouped_bar_chart.draw(data);
- });
-</script>
-
-<div id="grouped-bar-chart"></div><br style="clear:both;"/>
+<div id="stacked-grouped-bar-chart"></div><div id="stacked-grouped-bar-legend"></div><br style="clear:both;"/>
 </div>
 
 <!-- **************************************************************************************************************- -->
