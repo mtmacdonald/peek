@@ -280,8 +280,18 @@ function Series() {
         });
     }
 
-    this.stack = function (data) {
+    this.stack = function (data, byGroup) {
+
+        var byGroup = typeof byGroup !== 'undefined' ? byGroup : false; //default
         isStacked = true;
+
+        //if (byGroup === true) {
+        //    var stacked_groups = [];
+        //    data.forEach(function (series) {
+
+                //stripped_data.push(series.values);
+        //    });
+        //}
 
         //layering code (only for stacked charts)
         //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
@@ -291,9 +301,7 @@ function Series() {
         data.forEach(function (series) {
             stripped_data.push(series.values);
         }, this);
-
         var stack = d3.layout.stack().offset("zero");
-
         stack(stripped_data);
     }
 
@@ -340,6 +348,24 @@ function Series() {
         return [min, max];
     }
 
+    this.getGroups = function (data) {
+        var groups = [];
+        data.forEach(function (series) {
+            if (!(groups.indexOf(series.group) > -1)) {
+                groups.push(series.group);
+            }
+        });
+        return groups;
+    }
+
+    this.countGroups = function (data) {
+        return this.getGroups(data).length;
+    }
+
+    this.countSamples = function (data) {
+        return data[0].values.length; //todo: don't assume all samples are the same length?
+    }
+
 }
 
 function Cartesian(container, stacked) {
@@ -354,7 +380,6 @@ function Cartesian(container, stacked) {
 
     this.bar = false;
 
-
     this.draw = function (data) {
 
         this.plot.draw();
@@ -362,28 +387,46 @@ function Cartesian(container, stacked) {
         series.parseDates(data);
 
         if (stacked) {
-            series.stack(data);
+            if (this.bar) {
+                series.stack(data, true);
+            } else {
+                series.stack(data);
+            }
         }
-
-        var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
-        var yScale = d3.scale.linear().range([this.plot.getPlotHeight(), 0]);
 
         if (this.bar) {
-            var barSpacing = 20;
-            var barCount = data[0].values.length; //todo: don't assume all bars are in all series
-            var barWidth = (this.plot.getSvgWidth()-((barCount-1)*barSpacing))/barCount;
-            var barchartWidth = this.plot.getSvgWidth()-barWidth; //subtract the width of last bar to avoid overshooting end of chart
-            xScale = d3.time.scale().range([0, barchartWidth]);
-            this.plot.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
+
+            var sampleCount = series.countSamples(data);
+            var groupCount = series.countGroups(data);
+            var outerGap = 10;
+            var innerGap = 5;
+
+            var sampleBoxWidth = this.plot.getSvgWidth() / sampleCount;
+            var groupBoxWidth = (sampleBoxWidth - (2 * outerGap));
+            var barWidth = groupBoxWidth / (groupCount) - (innerGap * groupCount);
+
+            console.log(sampleBoxWidth+' - '+groupBoxWidth+' - '+barWidth);
+
+            //var barSpacing = 20;
+            //var barCount = data[0].values.length; //todo: don't assume all bars are in all series
+            //var barWidth = (this.plot.getSvgWidth()-((barCount-1)*barSpacing))/barCount;
+            //var barchartWidth = this.plot.getSvgWidth()-barWidth; //subtract the width of last bar to avoid overshooting end of chart
+            //xScale = d3.time.scale().range([0, barchartWidth]);
+            //this.plot.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
         }
 
-//----------------------------------------------------------------------------------------------------------------------
-
+        if (this.bar) {
+            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-sampleBoxWidth]);
+        } else {
+            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
+        }
+        var yScale = d3.scale.linear().range([this.plot.getPlotHeight(), 0]);
         xScale.domain(series.xExtent(data));
         yScale.domain(series.yExtent(data));
         this.plot.axes.draw(xScale, yScale);
 
-        if (this.bar === true) {
+        if (this.bar) {
+
             var max = series.yExtent(data)[1]; //refactor
             data.forEach(function(series, i) {
                 series.values.forEach(function(value) {
@@ -391,7 +434,12 @@ function Cartesian(container, stacked) {
                         .attr("class", "rect-line rect-area")
                         .style("fill", series.color)
                         .style("stroke", series.color)
-                        .attr("x", function(d) { return xScale(value.x); })
+                        .attr("x", function(d) { 
+                            if (series.group === 'B') {
+                                return xScale(value.x)+barWidth+innerGap+outerGap;
+                            }
+                            return xScale(value.x)+outerGap;
+                        })
                         .attr("width", barWidth)
                         //for y-axis, d3 has a top-left coordinate system
                         //todo - account for line size / line overlap?
@@ -404,314 +452,6 @@ function Cartesian(container, stacked) {
                 this.line.draw(series, xScale, yScale);
             }, this);
         }
-    }
-}
-
-var groupedData = [
-    {
-        "State": "AL",
-        "columnDetails": [
-            {
-                "name": "Under 5 Years",
-                "column": "column1",
-                "yBegin": 0,
-                "yEnd": 310504
-            },
-            {
-                "name": "5 to 13 Years",
-                "column": "column1",
-                "yBegin": 310504,
-                "yEnd": 862843
-            },
-            {
-                "name": "14 to 17 Years",
-                "column": "column1",
-                "yBegin": 862843,
-                "yEnd": 1121877
-            },
-            {
-                "name": "18 to 24 Years",
-                "column": "column2",
-                "yBegin": 0,
-                "yEnd": 450818
-            },
-            {
-                "name": "25 to 44 Years",
-                "column": "column3",
-                "yBegin": 0,
-                "yEnd": 1231572
-            },
-            {
-                "name": "45 to 64 Years",
-                "column": "column4",
-                "yBegin": 0,
-                "yEnd": 1215966
-            },
-            {
-                "name": "65 Years and Over",
-                "column": "column4",
-                "yBegin": 1215966,
-                "yEnd": 1857633
-            }
-        ],
-        "total": 1857633
-    },
-    {
-        "State": "AK",
-        "columnDetails": [
-            {
-                "name": "Under 5 Years",
-                "column": "column1",
-                "yBegin": 0,
-                "yEnd": 52083
-            },
-            {
-                "name": "5 to 13 Years",
-                "column": "column1",
-                "yBegin": 52083,
-                "yEnd": 137723
-            },
-            {
-                "name": "14 to 17 Years",
-                "column": "column1",
-                "yBegin": 137723,
-                "yEnd": 179876
-            },
-            {
-                "name": "18 to 24 Years",
-                "column": "column2",
-                "yBegin": 0,
-                "yEnd": 74257
-            },
-            {
-                "name": "25 to 44 Years",
-                "column": "column3",
-                "yBegin": 0,
-                "yEnd": 198724
-            },
-            {
-                "name": "45 to 64 Years",
-                "column": "column4",
-                "yBegin": 0,
-                "yEnd": 183159
-            },
-            {
-                "name": "65 Years and Over",
-                "column": "column4",
-                "yBegin": 183159,
-                "yEnd": 233436
-            }
-        ],
-        "total": 233436
-    },
-    {
-        "State": "AZ",
-        "columnDetails": [
-            {
-                "name": "Under 5 Years",
-                "column": "column1",
-                "yBegin": 0,
-                "yEnd": 515910
-            },
-            {
-                "name": "5 to 13 Years",
-                "column": "column1",
-                "yBegin": 515910,
-                "yEnd": 1344579
-            },
-            {
-                "name": "14 to 17 Years",
-                "column": "column1",
-                "yBegin": 1344579,
-                "yEnd": 1707221
-            },
-            {
-                "name": "18 to 24 Years",
-                "column": "column2",
-                "yBegin": 0,
-                "yEnd": 601943
-            },
-            {
-                "name": "25 to 44 Years",
-                "column": "column3",
-                "yBegin": 0,
-                "yEnd": 1804762
-            },
-            {
-                "name": "45 to 64 Years",
-                "column": "column4",
-                "yBegin": 0,
-                "yEnd": 1523681
-            },
-            {
-                "name": "65 Years and Over",
-                "column": "column4",
-                "yBegin": 1523681,
-                "yEnd": 2386254
-            }
-        ],
-        "total": 2386254
-    }
-];
-
-function GroupedStacked(container) {
-
-    this.draw = function () {
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
- 
-var x0 = d3.scale.ordinal()
-    .rangeRoundBands([0, width], 0.1);
- 
-var x1 = d3.scale.ordinal();
- 
-var y = d3.scale.linear()
-    .range([height, 0]);
- 
-var xAxis = d3.svg.axis()
-    .scale(x0)
-    .orient("bottom");
- 
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left")
-    .tickFormat(d3.format(".2s"));
- 
-var color = d3.scale.ordinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
- 
-var svg = d3.select(container).append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
- 
-var yBegin;
- 
-var innerColumns = {
-  "column1" : ["Under 5 Years","5 to 13 Years","14 to 17 Years"],
-  "column2" : ["18 to 24 Years"],
-  "column3" : ["25 to 44 Years"],
-  "column4" : ["45 to 64 Years", "65 Years and Over"]
-}
- 
-  data = groupedData;
-
-  x0.domain(data.map(function(d) { return d.State; }));
-  x1.domain(d3.keys(innerColumns)).rangeRoundBands([0, x0.rangeBand()]);
- 
-  y.domain([0, d3.max(data, function(d) { 
-    return d.total; 
-  })]);
- 
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
- 
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".7em")
-      .style("text-anchor", "end")
-      .text("");
- 
-  var project_stackedbar = svg.selectAll(".project_stackedbar")
-      .data(data)
-    .enter().append("g")
-      .attr("class", "g")
-      .attr("transform", function(d) { return "translate(" + x0(d.State) + ",0)"; });
- 
-  project_stackedbar.selectAll("rect")
-      .data(function(d) { return d.columnDetails; })
-    .enter().append("rect")
-      .attr("width", x1.rangeBand())
-      .attr("x", function(d) { 
-        return x1(d.column);
-         })
-      .attr("y", function(d) { 
-        return y(d.yEnd); 
-      })
-      .attr("height", function(d) { 
-        return y(d.yBegin) - y(d.yEnd); 
-      })
-      .style("fill", function(d) { return color(d.name); }); 
-    }
-
-}
-
-function Grouped(container) {
-
-    this.draw = function (data) {
-              // First, we define sizes and colours...
-          var outerW = 640; // outer width
-          var outerH = 480; // outer height
-          var padding = { t: 0, r: 0, b: 0, l: 0 };
-          var w = outerW - padding.l - padding.r; // inner width
-          var h = outerH - padding.t - padding.b; // inner height
-          var c = [ "#E41A1C", "#377EB8", "#4DAF4A" ]; // ColorBrewer Set 1
-
-          // Second, we define our data...
-          // Create a two-dimensional array.
-          // The first dimension has as many Array elements as there are series.
-          // The second dimension has as many Number elements as there are groups.
-          // It looks something like this...
-          //  var data = [
-          //    [ 0.10, 0.09, 0.08, 0.07, 0.06, ... ], // series 1
-          //    [ 0.10, 0.09, 0.08, 0.07, 0.06, ... ], // series 2
-          //    [ 0.10, 0.09, 0.08, 0.07, 0.06, ... ]  // series 3
-          //  ];
-          var numberGroups = 10; // groups
-          var numberSeries = 3;  // series in each group
-          var data = d3.range(numberSeries).map(function () { return d3.range(numberGroups).map(Math.random); });
-
-          // Third, we define our scales...
-          // Groups scale, x axis
-          var x0 = d3.scale.ordinal()
-              .domain(d3.range(numberGroups))
-              .rangeBands([0, w], 0.2);
-
-          // Series scale, x axis
-          // It might help to think of the series scale as a child of the groups scale
-          var x1 = d3.scale.ordinal()
-              .domain(d3.range(numberSeries))
-              .rangeBands([0, x0.rangeBand()]);
-
-          // Values scale, y axis
-          var y = d3.scale.linear()
-              .domain([0, 1]) // Because Math.random returns numbers between 0 and 1
-              .range([0, h]);
-
-          // Visualisation selection
-          var vis = d3.select(container)
-              .append("svg:svg")
-              .attr("width", outerW)
-              .attr("height", outerH);
-
-          // Series selection
-          // We place each series into its own SVG group element. In other words,
-          // each SVG group element contains one series (i.e. bars of the same colour).
-          // It might be helpful to think of each SVG group element as containing one bar plot.
-          var series = vis.selectAll("g.series")
-              .data(data)
-            .enter().append("svg:g")
-              .attr("class", "series") // Not strictly necessary, but helpful when inspecting the DOM
-              .attr("fill", function (d, i) { return c[i]; })
-              .attr("transform", function (d, i) { return "translate(" + x1(i) + ")"; });
-
-          // Groups selection
-          var groups = series.selectAll("rect")
-              .data(Object) // The second dimension in the two-dimensional data array
-            .enter().append("svg:rect")
-                .attr("x", 0)
-                .attr("y", function (d) { return h - y(d); })
-                .attr("width", x1.rangeBand())
-                .attr("height", y)
-                .attr("transform", function (d, i) { return "translate(" + x0(i) + ")"; });
     }
 }
 
