@@ -77,9 +77,9 @@ header > div > a div{
 
 .axis path, .axis line{
   fill: none;
-  stroke: grey;
+  stroke: black;
   stroke-width: 1;
-  shape-rendering: crispEdges; 
+  shape-rendering: crispEdges;
 }
 
 .axis text {
@@ -88,9 +88,15 @@ header > div > a div{
 }
 
 .grid .tick {
-    stroke: lightgrey;
-    opacity: 0.7;
+  stroke: lightgrey;
 }
+
+/* color the first y tick to match the axis color, to make the shorter axis in bar charts look full sized.*/
+.y-grid .tick:first-of-type {
+  stroke: black;
+  stroke-width: 1;
+}
+
 .grid path {
     stroke-width: 0;
 }

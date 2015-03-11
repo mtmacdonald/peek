@@ -130,7 +130,7 @@ function Axis (plot) {
 
             if (orient === 'bottom') {
                 plot.svg.append("g")
-                    .attr("class", "grid")
+                    .attr("class", "grid x-grid")
                     .attr("transform", "translate("+this.offset+"," + plot.getPlotHeight() + ")")
                     .call(axis
                         .tickSize(-plot.getPlotHeight(), 0, 0)
@@ -138,7 +138,7 @@ function Axis (plot) {
                     );
             } else {
                 plot.svg.append("g")         
-                    .attr("class", "grid")
+                    .attr("class", "grid y-grid")
                     .call(axis
                         .tickSize(-plot.getSvgWidth(), 0, 0)
                         .tickFormat("")
@@ -427,8 +427,6 @@ function Cartesian(container, stacked) {
             var sampleBoxWidth = this.plot.getSvgWidth() / sampleCount;
             var groupBoxWidth = (sampleBoxWidth - (2 * outerGap));
             var barWidth = (groupBoxWidth / groupCount) - innerGap + (innerGap / groupCount); //the final bar in each groupBox should not be proceeded by a gap
-
-            console.log(sampleBoxWidth+' - '+groupBoxWidth+' - '+barWidth);
 
             this.plot.axes.x.offset = sampleBoxWidth/2; //translate the tick to the center of sampleBox
         }
