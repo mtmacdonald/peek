@@ -280,29 +280,43 @@ function Series() {
         });
     }
 
+    this.getGroupsWithSeries = function (data) {
+        var groups = {};
+        var groupNames = this.getGroups(data);
+        groupNames.forEach(function (name) {
+            groups[name] = [];
+        });
+        data.forEach(function (series) {
+            groups[series.group].push(series.values);
+        });
+        return groups;
+    }
+
     this.stack = function (data, byGroup) {
-
-        var byGroup = typeof byGroup !== 'undefined' ? byGroup : false; //default
         isStacked = true;
-
-        //if (byGroup === true) {
-        //    var stacked_groups = [];
-        //    data.forEach(function (series) {
-
-                //stripped_data.push(series.values);
-        //    });
-        //}
 
         //layering code (only for stacked charts)
         //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
         //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
             //modifies the original data array
-        var stripped_data = [];
-        data.forEach(function (series) {
-            stripped_data.push(series.values);
-        }, this);
+
+        var byGroup = typeof byGroup !== 'undefined' ? byGroup : false; //default
         var stack = d3.layout.stack().offset("zero");
-        stack(stripped_data);
+
+        if (byGroup === true) {
+            var groups = this.getGroupsWithSeries(data);
+            for (key in groups) {
+                if (groups.hasOwnProperty(key)) {
+                    stack(groups[key]);
+                }
+            }
+        } else {
+            var stripped_data = [];
+            data.forEach(function (series) {
+                stripped_data.push(series.values);
+            });
+            stack(stripped_data);
+        }
     }
 
     this.xExtent = function (data) {
@@ -332,11 +346,21 @@ function Series() {
             min = 0;
         }
 
-        //max depends on whether series are stacked
+        //max depends on whether series are not stacked, stacked, or grouped and stacked
         if (isStacked) { //if stacked, get max of y0+y in the final data series
-            var max = d3.max(data[data.length-1].values.map(function (point) {
-                return point.y0+point.y;
-            }));
+            var max = 0;
+            var groups = this.getGroupsWithSeries(data);
+            for (key in groups) {
+                if (groups.hasOwnProperty(key)) {
+                    var lastSeriesInGroup = groups[key][groups[key].length-1];
+                    var localMax = d3.max(lastSeriesInGroup.map(function (point) {
+                        return point.y0+point.y;
+                    }));
+                    if (localMax > max) {
+                        max = localMax;
+                    }
+                }
+            }
         } else { //if not stacked, get the max value from all series
             var max = d3.max(data.map(function (series) {
                 return d3.max(series.values.map(function (point) {
