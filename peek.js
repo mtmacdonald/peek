@@ -292,7 +292,7 @@ function Series() {
         return groups;
     }
 
-    this.stack = function (data, byGroup) {
+    this.stack = function (data, stackOffset, byGroup) {
         isStacked = true;
 
         //layering code (only for stacked charts)
@@ -301,7 +301,7 @@ function Series() {
             //modifies the original data array
 
         var byGroup = typeof byGroup !== 'undefined' ? byGroup : false; //default
-        var stack = d3.layout.stack().offset("zero");
+        var stack = d3.layout.stack().offset(stackOffset);
 
         if (byGroup === true) {
             var groups = this.getGroupsWithSeries(data);
@@ -403,6 +403,7 @@ function Cartesian(container, stacked) {
     var series = new Series();
 
     this.bar = false;
+    this.stackOffset = 'zero'; //default
 
     this.draw = function (data) {
 
@@ -412,9 +413,9 @@ function Cartesian(container, stacked) {
 
         if (stacked) {
             if (this.bar) {
-                series.stack(data, true);
+                series.stack(data, 'zero', true);
             } else {
-                series.stack(data);
+                series.stack(data, this.stackOffset);
             }
         }
 

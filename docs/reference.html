@@ -137,7 +137,7 @@
 <!-- **************************************************************************************************************- -->
 
 <h1 class="doc-heading"><span>Stacked area chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
-<div class="code" id="code-sample-stacled-area-chart">
+<div class="code" id="code-sample-stacked-area-chart">
 <script>
  $(document).ready(function() {
     var data = getFirstGroupData();
@@ -151,6 +151,66 @@
 </script>
 
 <div id="stacked-area-chart"></div><div id="stacked-area-legend"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Expanded stacked area chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-stacked-area-expand-chart">
+<script>
+ $(document).ready(function() {
+    var data = getFirstGroupData();
+    var chart = new Cartesian("#stacked-area-expand-chart", true);
+    chart.stackOffset = 'expand';
+    chart.line.area = true;
+    chart.draw(data);
+    var legend = new Legend("#stacked-area-expand-legend");
+    legend.draw(data);
+ });
+
+</script>
+
+<div id="stacked-area-expand-chart"></div><div id="stacked-area-expand-legend"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Stacked area chart (wiggle offset)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-stacked-area-wiggle-chart">
+<script>
+ $(document).ready(function() {
+    var data = getFirstGroupData();
+    var chart = new Cartesian("#stacked-area-wiggle-chart", true);
+    chart.stackOffset = 'wiggle';
+    chart.line.area = true;
+    chart.draw(data);
+    var legend = new Legend("#stacked-area-wiggle-legend");
+    legend.draw(data);
+ });
+
+</script>
+
+<div id="stacked-area-wiggle-chart"></div><div id="stacked-area-wiggle-legend"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Stacked area chart (silhouette offset)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-stacked-area-silhouette-chart">
+<script>
+ $(document).ready(function() {
+    var data = getFirstGroupData();
+    var chart = new Cartesian("#stacked-area-silhouette-chart", true);
+    chart.stackOffset = 'silhouette';
+    chart.line.area = true;
+    chart.draw(data);
+    var legend = new Legend("#stacked-area-silhouette-legend");
+    legend.draw(data);
+ });
+
+</script>
+
+<div id="stacked-area-silhouette-chart"></div><div id="stacked-area-silhouette-legend"></div><br style="clear:both;"/>
 </div>
 
 <!-- **************************************************************************************************************- -->
