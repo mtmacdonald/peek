@@ -103,11 +103,11 @@
 <div class="code" id="code-sample-line-chart">
 <script>
  $(document).ready(function() {
-    var data = JSON.parse(JSON.stringify(timeData)); //clone
-    var line_chart = new Cartesian("#line-chart");
-    line_chart.line.points = true;
-    line_chart.line.area = false;
-    line_chart.draw(data);
+    var data = getFirstGroupData();
+    var chart = new Cartesian("#line-chart");
+    chart.line.points = true;
+    chart.line.area = false;
+    chart.draw(data);
     var legend = new Legend("#line-legend");
     legend.draw(data);
  });
@@ -122,10 +122,10 @@
 <div class="code" id="code-sample-area-chart">
 <script>
  $(document).ready(function() {
-    var data = JSON.parse(JSON.stringify(timeData)); //clone
-    var area_chart = new Cartesian("#area-chart");
-    area_chart.line.area = true;
-    area_chart.draw(data);
+    var data = getFirstGroupData();
+    var chart = new Cartesian("#area-chart");
+    chart.line.area = true;
+    chart.draw(data);
     var legend = new Legend("#area-legend");
     legend.draw(data);
  });
@@ -140,10 +140,10 @@
 <div class="code" id="code-sample-stacled-area-chart">
 <script>
  $(document).ready(function() {
-    var data = JSON.parse(JSON.stringify(timeData)); //clone
-    var stacked_area_chart = new Cartesian("#stacked-area-chart", true);
-    stacked_area_chart.line.area = true;
-    stacked_area_chart.draw(data);
+    var data = getFirstGroupData();
+    var chart = new Cartesian("#stacked-area-chart", true);
+    chart.line.area = true;
+    chart.draw(data);
     var legend = new Legend("#stacked-area-legend");
     legend.draw(data);
  });
@@ -160,9 +160,9 @@
 <script>
  $(document).ready(function() {
     var data = JSON.parse(JSON.stringify(timeData)); //clone
-    var stacked_bar_chart = new Cartesian("#stacked-bar-chart", true);
-    stacked_bar_chart.bar = true;
-    stacked_bar_chart.draw(data);
+    var chart = new Cartesian("#stacked-bar-chart", true);
+    chart.bar = true;
+    chart.draw(data);
     var legend = new Legend("#stacked-bar-legend");
     legend.draw(data);
  });
@@ -210,8 +210,8 @@
 <div class="code" id="code-sample-horizontal-bar-chart">
 <script>
  $(document).ready(function() {
-    var compare_chart = new Compare('#compare-chart');
-    compare_chart.draw(horizontal_bar_data);
+    var chart = new Compare('#compare-chart');
+    chart.draw(horizontal_bar_data);
  });
 </script>
 
