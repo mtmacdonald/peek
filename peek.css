@@ -84,6 +84,7 @@ header > div > a div{
 
 .axis text {
   font-size: 11px;
+  fill: #444; /*match the body color*/
 }
 
 .grid .tick {
