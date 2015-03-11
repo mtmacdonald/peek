@@ -110,7 +110,7 @@ function Axis (plot) {
 
     var plot = plot;
     this.showTicks = true;
-    this.barWidth = 0;
+    this.offset = 0;
 
     this.draw = function (scale, orient, ticks) {
         var axis = d3.svg.axis()
@@ -121,7 +121,7 @@ function Axis (plot) {
             .attr("class", "x axis");
 
         if (orient === 'bottom') {
-            rendered.attr("transform", "translate("+this.barWidth/2+"," + plot.getPlotHeight() + ")")
+            rendered.attr("transform", "translate("+this.offset+"," + plot.getPlotHeight() + ")")
         }
 
         rendered.call(axis);
@@ -131,7 +131,7 @@ function Axis (plot) {
             if (orient === 'bottom') {
                 plot.svg.append("g")
                     .attr("class", "grid")
-                    .attr("transform", "translate("+this.barWidth/2+"," + plot.getPlotHeight() + ")")
+                    .attr("transform", "translate("+this.offset+"," + plot.getPlotHeight() + ")")
                     .call(axis
                         .tickSize(-plot.getPlotHeight(), 0, 0)
                         .tickFormat("")
@@ -419,24 +419,18 @@ function Cartesian(container, stacked) {
         }
 
         if (this.bar) {
-
             var sampleCount = series.countSamples(data);
             var groupCount = series.countGroups(data);
-            var outerGap = 10;
+            var outerGap = 20;
             var innerGap = 5;
 
             var sampleBoxWidth = this.plot.getSvgWidth() / sampleCount;
             var groupBoxWidth = (sampleBoxWidth - (2 * outerGap));
-            var barWidth = groupBoxWidth / (groupCount) - (innerGap * groupCount);
+            var barWidth = (groupBoxWidth / groupCount) - innerGap + (innerGap / groupCount); //the final bar in each groupBox should not be proceeded by a gap
 
             console.log(sampleBoxWidth+' - '+groupBoxWidth+' - '+barWidth);
 
-            //var barSpacing = 20;
-            //var barCount = data[0].values.length; //todo: don't assume all bars are in all series
-            //var barWidth = (this.plot.getSvgWidth()-((barCount-1)*barSpacing))/barCount;
-            //var barchartWidth = this.plot.getSvgWidth()-barWidth; //subtract the width of last bar to avoid overshooting end of chart
-            //xScale = d3.time.scale().range([0, barchartWidth]);
-            //this.plot.axes.x.barWidth = barWidth; //translate the tick to the center of the bar
+            this.plot.axes.x.offset = sampleBoxWidth/2; //translate the tick to the center of sampleBox
         }
 
         if (this.bar) {
@@ -450,7 +444,7 @@ function Cartesian(container, stacked) {
         this.plot.axes.draw(xScale, yScale);
 
         if (this.bar) {
-
+            var groups = series.getGroups(data);
             var max = series.yExtent(data)[1]; //refactor
             data.forEach(function(series, i) {
                 series.values.forEach(function(value) {
@@ -458,11 +452,13 @@ function Cartesian(container, stacked) {
                         .attr("class", "rect-line rect-area")
                         .style("fill", series.color)
                         .style("stroke", series.color)
-                        .attr("x", function(d) { 
-                            if (series.group === 'B') {
-                                return xScale(value.x)+barWidth+innerGap+outerGap;
-                            }
-                            return xScale(value.x)+outerGap;
+                        .attr("x", function(d) {
+                            var x = xScale(value.x)+outerGap;
+                            //------------------------------------------------------------------------------------------
+                            //add offset for group
+                            var offset = groups.indexOf(series.group);
+                            x += (barWidth+innerGap)*offset;
+                            return x;
                         })
                         .attr("width", barWidth)
                         //for y-axis, d3 has a top-left coordinate system
