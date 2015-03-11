@@ -167,6 +167,7 @@ function Line (plot, stacked) {
     this.xScale;
     this.yScale;
 
+    this.showLines = true;
     this.points = false;
     this.interpolation = 'cardinal';
     this.area = false;
@@ -200,10 +201,12 @@ function Line (plot, stacked) {
     this.draw = function(series, xScale, yScale) {
         this.xScale = xScale;
         this.yScale = yScale;
-        plot.svg.append("path")
-            .attr("class", "line")
-            .style("stroke", series.color)
-            .attr("d", line(series.values));
+        if (this.showLines === true) {
+            plot.svg.append("path")
+                .attr("class", "line")
+                .style("stroke", series.color)
+                .attr("d", line(series.values));
+        }
         if (this.area === true) {
             plot.svg.append("path")
                     .attr("class", "area")

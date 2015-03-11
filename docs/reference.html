@@ -118,6 +118,27 @@
 
 <!-- **************************************************************************************************************- -->
 
+<h1 class="doc-heading"><span>Scatter chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-scatter-chart">
+<script>
+ $(document).ready(function() {
+    var data = getFirstGroupData();
+    var chart = new Cartesian("#scatter-chart");
+    chart.line.showLines = false;
+    chart.line.area = false;
+    chart.line.points = true;
+    chart.draw(data);
+    var legend = new Legend("#scatter-legend");
+    legend.draw(data);
+ });
+</script>
+
+<div id="scatter-chart"></div><div id="scatter-legend"></div><br style="clear:both;"/>
+</div>
+
+
+<!-- **************************************************************************************************************- -->
+
 <h1 class="doc-heading"><span>Area chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
 <div class="code" id="code-sample-area-chart">
 <script>
