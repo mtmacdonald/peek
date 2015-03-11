@@ -232,19 +232,17 @@ function getFirstGroupFirstSeriesData() {
     return data;
 }
 
-/*
 function getAllGroupsFirstSeriesData() {
     var data = JSON.parse(JSON.stringify(timeData)); //clone
-    var seriesCount = 0;
+    var alreadyIncluded = [];
     var i = data.length;
     while (i--) { //iterate data in reverse to allow safe deletion
-        if (seriesCount >= 1) {
-            data.splice(i, 1);
-            seriesCount = 0;
+        if (!(alreadyIncluded.indexOf(data[i].group) > -1)) {
+            alreadyIncluded.push(data[i].group);
         } else {
-            seriesCount++;
+            data.splice(i, 1);
         }
     }
+    console.log(data);
     return data;
 }
-*/
