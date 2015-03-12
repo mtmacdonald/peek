@@ -285,7 +285,7 @@ function Series(data) {
     this.init = function() {
         parseDates();
         fetchGroups();
-        this.stack();
+        stack();
         fetchXExtent();
         fetchYExtent();
     }
@@ -314,7 +314,7 @@ function Series(data) {
         });
     }
 
-    this.stack = function () {
+    var stack = function () {
 
         //layering code (only for stacked charts)
         //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
