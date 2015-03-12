@@ -273,16 +273,17 @@ function Point (plot) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function Series(data) {
+function Series() {
 
     var self = this;
-    var data = data;
+    var data;
 
     this.isStacked = false;
     this.isStackedByGroup = false;
     this.stackOffset = 'zero';
 
-    this.init = function() {
+    this.init = function(dataArray) {
+        data = dataArray;
         parseDates();
         fetchGroups();
         stack();
@@ -451,7 +452,7 @@ function Cartesian(container, stacked) {
 
     this.draw = function (data) {
 
-        var series = new Series(data);
+        var series = new Series();
 
         if (this.isStacked) {
             series.isStacked = true;
@@ -461,7 +462,7 @@ function Cartesian(container, stacked) {
             }
         }
 
-        series.init();
+        series.init(data);
 
         this.plot.draw();
 
