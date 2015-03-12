@@ -282,11 +282,23 @@ function Series(data) {
     var isStacked = false;
 
     this.init = function() {
-        getGroups();
+        parseDates();
+        fetchGroups();
     }
 
     this.getData = function() {
         return data;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    var parseDates = function () {
+        var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
+        data.forEach(function (series) {
+            series.values.forEach(function (value) {
+                value.x = parseDate(value.x);
+            });
+        });
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -297,7 +309,7 @@ function Series(data) {
         return groups;
     }
 
-    var getGroups = function () {
+    var fetchGroups = function () {
         data.forEach(function (series) {
             if (!(groups.indexOf(series.group) > -1)) {
                 groups.push(series.group);
@@ -306,17 +318,6 @@ function Series(data) {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-
-
-
-    this.parseDates = function () {
-        var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-        data.forEach(function (series) {
-            series.values.forEach(function (value) {
-                value.x = parseDate(value.x);
-            });
-        });
-    }
 
     this.getGroupsWithSeries = function () {
         var groups = {};
@@ -435,7 +436,6 @@ function Cartesian(container, stacked) {
 
         var series = new Series(data);
         series.init();
-        series.parseDates();
 
         this.plot.draw();
 
