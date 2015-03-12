@@ -278,7 +278,9 @@ function Series(data) {
     var self = this;
     var data = data;
 
-    var isStacked = false;
+    this.isStacked = false;
+    this.isStackedByGroup = false;
+    this.stackOffset = 'zero';
 
     this.init = function() {
         parseDates();
@@ -315,7 +317,6 @@ function Series(data) {
     }
 
     this.stack = function (stackOffset, byGroup) {
-        isStacked = true;
 
         //layering code (only for stacked charts)
         //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
@@ -413,7 +414,7 @@ function Series(data) {
         }
 
         //max depends on whether series are not stacked, stacked, or grouped and stacked
-        if (isStacked) { //if stacked, get max of y0+y in the final data series
+        if (self.isStacked) { //if stacked, get max of y0+y in the final data series
             var max = 0;
             var groups = getGroupsWithSeries();
             for (key in groups) {
@@ -459,8 +460,10 @@ function Cartesian(container, stacked) {
         this.plot.draw();
 
         if (this.isStacked) {
+            series.isStacked = true;
+            series.stackOffset = this.stackOffset;
             if (this.bar) {
-                series.stack('zero', true);
+                series.stack(this.stackOffset, true);
             } else {
                 series.stack(this.stackOffset);
             }
