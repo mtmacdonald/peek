@@ -1,7 +1,7 @@
 /*! Peek.js (c) 2014 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
 
 /*
-    Example usage of Peek.js
+    Example input data for Peek.js
 */
 
 var timeData = [
@@ -37,6 +37,34 @@ var timeData = [
         "label": "Foo",
         "units": "kg",
         "group" : "B",
+        "color": "steelblue",
+        "values": [
+            {
+                x : "2014-03-01 00:00:00",
+                y : 2
+            },
+            {
+                x : "2014-03-02 00:00:00",
+                y : 4.5
+            },
+            {
+                x : "2014-03-03 00:00:00",
+                y : 6
+            },
+            {
+                x : "2014-03-04 00:00:00",
+                y : 1.1
+            },
+            {
+                x : "2014-03-05 00:00:00",
+                y : 0.8
+            }
+        ]
+    },
+    {
+        "label": "Foo",
+        "units": "kg",
+        "group" : "C",
         "color": "steelblue",
         "values": [
             {
@@ -118,6 +146,34 @@ var timeData = [
         ]
     },
     {
+        "label": "Foo",
+        "units": "kg",
+        "group" : "C",
+        "color": "steelblue",
+        "values": [
+            {
+                x : "2014-03-01 00:00:00",
+                y : 2
+            },
+            {
+                x : "2014-03-02 00:00:00",
+                y : 4.5
+            },
+            {
+                x : "2014-03-03 00:00:00",
+                y : 6
+            },
+            {
+                x : "2014-03-04 00:00:00",
+                y : 1.1
+            },
+            {
+                x : "2014-03-05 00:00:00",
+                y : 0.8
+            }
+        ]
+    },
+    {
         "label": "Baz",
         "units": "l",
         "group" : "A",
@@ -172,7 +228,35 @@ var timeData = [
                 y : 0.1
             }
         ]
-    }
+    },
+    {
+        "label": "Foo",
+        "units": "kg",
+        "group" : "C",
+        "color": "steelblue",
+        "values": [
+            {
+                x : "2014-03-01 00:00:00",
+                y : 2
+            },
+            {
+                x : "2014-03-02 00:00:00",
+                y : 4.5
+            },
+            {
+                x : "2014-03-03 00:00:00",
+                y : 6
+            },
+            {
+                x : "2014-03-04 00:00:00",
+                y : 1.1
+            },
+            {
+                x : "2014-03-05 00:00:00",
+                y : 0.8
+            }
+        ]
+    },
 ];
 
 var horizontal_bar_data = [

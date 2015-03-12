@@ -17,7 +17,7 @@
   <script src="../require/highlight.min.js"></script>
   <script src="../require/d3.min.js"></script>
   <script src="../peek.js"></script>
-  <script src="../example.js"></script>
+  <script src="example.js"></script>
 
   <!--inline scripts last-->
   <script>
@@ -97,6 +97,35 @@
  <section>
  <div class="w-fixed-width">
 
+<p>Peek supports the following chart types:</p>
+
+<ul>
+ <li><strong>Time-series charts</strong></li>
+  <ul>
+   <li>Line charts</li>
+   <li>Scatter charts</li>
+   <li>Area charts</li>
+   <li>Stacked area charts</li>
+   <li>Bar charts</li>
+   <li>Grouped bar charts</li>
+   <li>Stacked bar charts</li>
+   <li>Grouped stacked bar charts</li>
+  </ul>
+ <li><strong>Other charts</strong></li>
+  <ul>
+   <li>Horizontal bar chart</li>
+   <li><strong>Radial charts</strong></li>
+     <ul>
+      <li>Pie chart</li>
+      <li>Donut chart</li>
+     </ul>
+  </ul>
+</ul>
+
+<p>See the <a href="example.js">example data</a> for the input JSON format. The time-series charts are interchangeable 
+  (a common data format can be used with all chart types).
+</p>
+
 <!-- **************************************************************************************************************- -->
 
 <h1 class="doc-heading"><span>Line chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
@@ -105,6 +134,8 @@
  $(document).ready(function() {
     var data = getFirstGroupData();
     var chart = new Cartesian("#line-chart");
+    chart.plot.axes.x.showTicks = false;
+    chart.plot.axes.y.showTicks = false;
     chart.draw(data);
     var legend = new Legend("#line-legend");
     legend.draw(data);
@@ -116,7 +147,7 @@
 
 <!-- **************************************************************************************************************- -->
 
-<h1 class="doc-heading"><span>Line chart (with interpolation and data points)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<h1 class="doc-heading"><span>Line chart (with interpolation, data points and grid)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
 <p>
   See the <a href="https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate">D3.js documentation</a> 
   and this <a href="http://bl.ocks.org/mbostock/4342190">example</a> for a list of interpolation types.
