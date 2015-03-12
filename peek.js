@@ -326,7 +326,7 @@ function Series(data) {
         var stack = d3.layout.stack().offset(stackOffset);
 
         if (byGroup === true) {
-            var groups = this.getGroupsWithSeries(data);
+            var groups = getGroupsWithSeries();
             for (key in groups) {
                 if (groups.hasOwnProperty(key)) {
                     stack(groups[key]);
@@ -361,18 +361,15 @@ function Series(data) {
         });
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-
-    this.getGroupsWithSeries = function () {
-        var groups = {};
-        var groupNames = this.getGroups(data);
-        groupNames.forEach(function (name) {
-            groups[name] = [];
+    var getGroupsWithSeries = function () {
+        var groupsWithSeries = {};
+        groups.forEach(function (name) {
+            groupsWithSeries[name] = [];
         });
         data.forEach(function (series) {
-            groups[series.group].push(series.values);
+            groupsWithSeries[series.group].push(series.values);
         });
-        return groups;
+        return groupsWithSeries;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -418,7 +415,7 @@ function Series(data) {
         //max depends on whether series are not stacked, stacked, or grouped and stacked
         if (isStacked) { //if stacked, get max of y0+y in the final data series
             var max = 0;
-            var groups = self.getGroupsWithSeries(data);
+            var groups = getGroupsWithSeries();
             for (key in groups) {
                 if (groups.hasOwnProperty(key)) {
                     var lastSeriesInGroup = groups[key][groups[key].length-1];
@@ -468,7 +465,7 @@ function Cartesian(container, stacked) {
                 series.stack(this.stackOffset);
             }
         }
-        series.initExtent(); //todo - move to stack.init()
+        series.initExtent(); //todo - move to series.init()
 
         if (this.bar) {
             var sampleCount = series.countSamples();
