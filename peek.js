@@ -316,14 +316,14 @@ function Series(data) {
         });
     }
 
-    this.stack = function (stackOffset) {
+    this.stack = function () {
 
         //layering code (only for stacked charts)
         //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
         //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
             //modifies the original data array
 
-        var stack = d3.layout.stack().offset(stackOffset);
+        var stack = d3.layout.stack().offset(self.stackOffset);
 
         if (self.isStackedByGroup === true) {
             var groups = getGroupsWithSeries();
@@ -464,7 +464,7 @@ function Cartesian(container, stacked) {
             if (this.bar) {
                 series.isStackedByGroup = true;
             }
-            series.stack(this.stackOffset);
+            series.stack();
         }
         series.initExtent(); //todo - move to series.init()
 
