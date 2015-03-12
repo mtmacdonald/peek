@@ -169,36 +169,37 @@ function Line (plot, stacked) {
 
     this.showLines = true;
     this.points = false;
-    this.interpolation = 'cardinal';
+    this.interpolation = 'linear';
     this.area = false;
     this.point = new Point(plot);
 
-    var line = d3.svg.line()
-                .interpolate(this.interpolation) 
-                .x(function(d) { return self.xScale(d.x); })
-                .y(function(d) { return self.yScale(d.y); });
+    this.draw = function(series, xScale, yScale) {
 
-    var area = d3.svg.area()
-                .interpolate(this.interpolation)
-                .x(function(d) { return self.xScale(d.x); })
-                .y0(plot.getPlotHeight())
-                .y1(function(d) { return self.yScale(d.y); });
-
-    if (stacked === true) {
         var line = d3.svg.line()
                     .interpolate(this.interpolation) 
                     .x(function(d) { return self.xScale(d.x); })
-                    .y(function(d) { return self.yScale(d.y0 + d.y); });
-
+                    .y(function(d) { return self.yScale(d.y); });
 
         var area = d3.svg.area()
-            .interpolate('cardinal')
-            .x(function(d, i) { return self.xScale(d.x); })
-            .y0(function(d) { return self.yScale(d.y0); })
-            .y1(function(d) { return self.yScale(d.y0 + d.y); });
-    }
+                    .interpolate(this.interpolation)
+                    .x(function(d) { return self.xScale(d.x); })
+                    .y0(plot.getPlotHeight())
+                    .y1(function(d) { return self.yScale(d.y); });
 
-    this.draw = function(series, xScale, yScale) {
+        if (stacked === true) {
+            var line = d3.svg.line()
+                        .interpolate(this.interpolation) 
+                        .x(function(d) { return self.xScale(d.x); })
+                        .y(function(d) { return self.yScale(d.y0 + d.y); });
+
+
+            var area = d3.svg.area()
+                .interpolate('cardinal')
+                .x(function(d, i) { return self.xScale(d.x); })
+                .y0(function(d) { return self.yScale(d.y0); })
+                .y1(function(d) { return self.yScale(d.y0 + d.y); });
+        }
+
         this.xScale = xScale;
         this.yScale = yScale;
         if (this.showLines === true) {
