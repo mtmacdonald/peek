@@ -216,7 +216,7 @@
  $(document).ready(function() {
     var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-area-chart");
-    chart.isStacked = true;
+    chart.data.isStacked = true;
     chart.line.interpolation = 'cardinal';
     chart.line.showArea = true;
     chart.draw(data);
@@ -237,9 +237,9 @@
  $(document).ready(function() {
     var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-area-expand-chart");
-    chart.isStacked = true;
+    chart.data.isStacked = true;
     chart.line.interpolation = 'cardinal';
-    chart.stackOffset = 'expand';
+    chart.data.stackOffset = 'expand';
     chart.line.showArea = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-expand-legend");
@@ -259,9 +259,9 @@
  $(document).ready(function() {
     var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-area-wiggle-chart");
-    chart.isStacked = true;
+    chart.data.isStacked = true;
     chart.line.interpolation = 'cardinal';
-    chart.stackOffset = 'wiggle';
+    chart.data.stackOffset = 'wiggle';
     chart.line.showArea = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-wiggle-legend");
@@ -281,7 +281,7 @@
  $(document).ready(function() {
     var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-area-silhouette-chart");
-    chart.isStacked = true;
+    chart.data.isStacked = true;
     chart.line.interpolation = 'cardinal';
     chart.stackOffset = 'silhouette';
     chart.line.showArea = true;
@@ -303,7 +303,7 @@
  $(document).ready(function() {
     var data = getFirstGroupFirstSeriesData();
     var chart = new Cartesian("#bar-chart");
-    chart.isStacked = true;
+    chart.data.isStacked = true;
     chart.bar = true;
     chart.draw(data);
     var legend = new Legend("#bar-legend");
@@ -322,7 +322,7 @@
  $(document).ready(function() {
     var data = getAllGroupsFirstSeriesData();
     var chart = new Cartesian("#grouped-bar-chart");
-    chart.isStacked = true;
+    chart.data.isStacked = true;
     chart.bar = true;
     chart.draw(data);
     var legend = new Legend("#grouped-bar-legend");
@@ -342,7 +342,7 @@
  $(document).ready(function() {
     var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-bar-chart");
-    chart.isStacked = true;
+    chart.data.isStacked = true;
     chart.bar = true;
     chart.draw(data);
     var legend = new Legend("#stacked-bar-legend");
@@ -361,7 +361,7 @@
  $(document).ready(function() {
     var data = JSON.parse(JSON.stringify(timeData)); //clone
     var chart = new Cartesian("#stacked-grouped-bar-chart");
-    chart.isStacked = true;
+    chart.data.isStacked = true;
     chart.bar = true;
     chart.draw(data);
     var legend = new Legend("#stacked-grouped-bar-legend");

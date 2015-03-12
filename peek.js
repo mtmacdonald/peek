@@ -439,13 +439,11 @@ function Data() {
 
 }
 
-function Cartesian(container, stacked) {
+function Cartesian(container) {
 
     var self = this;
 
     this.bar = false;
-    this.isStacked = false;
-    this.stackOffset = 'zero';
 
     this.data = new Data();
     this.plot = new Plot(container);
@@ -453,18 +451,13 @@ function Cartesian(container, stacked) {
 
     this.draw = function (dataArray) {
 
-        if (this.isStacked) {
-            this.data.isStacked = true;
-            this.data.stackOffset = this.stackOffset;
-            if (this.bar) {
-                this.data.isStackedByGroup = true;
-            }
+        if (this.bar) {
+            this.data.isStackedByGroup = true; //bar charts are always stacked by group
         }
 
         this.data.init(dataArray);
 
         this.plot.draw();
-
 
         if (this.bar) {
             var sampleCount = this.data.countSamples();
@@ -515,7 +508,7 @@ function Cartesian(container, stacked) {
             }, this);
         } else {
             this.data.getData().forEach(function(series, i) {
-                this.line.draw(series, xScale, yScale, this.isStacked);
+                this.line.draw(series, xScale, yScale, this.data.isStacked);
             }, this);
         }
     }
