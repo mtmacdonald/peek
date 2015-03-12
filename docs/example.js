@@ -9,7 +9,7 @@ var timeData = [
         "label": "Foo",
         "units": "kg",
         "group" : "A",
-        "color": "steelblue",
+        "color": "#69A9CA",
         "values": [
             {
                 x : "2014-03-01 00:00:00",
@@ -37,7 +37,7 @@ var timeData = [
         "label": "Foo",
         "units": "kg",
         "group" : "B",
-        "color": "steelblue",
+        "color": "#8583C2",
         "values": [
             {
                 x : "2014-03-01 00:00:00",
@@ -65,7 +65,7 @@ var timeData = [
         "label": "Foo",
         "units": "kg",
         "group" : "C",
-        "color": "steelblue",
+        "color": "#67D1B8",
         "values": [
             {
                 x : "2014-03-01 00:00:00",
@@ -93,7 +93,7 @@ var timeData = [
         "label": "Bar",
         "units": "m/s",
         "group" : "A",
-        "color": "firebrick",
+        "color": "#C76842",
         "values": [
             {
                 x : "2014-03-01 00:00:00",
@@ -121,7 +121,7 @@ var timeData = [
         "label": "Bar",
         "units": "m/s",
         "group" : "B",
-        "color": "firebrick",
+        "color": "#C06472",
         "values": [
             {
                 x : "2014-03-01 00:00:00",
@@ -149,7 +149,7 @@ var timeData = [
         "label": "Foo",
         "units": "kg",
         "group" : "C",
-        "color": "steelblue",
+        "color": "#C99336",
         "values": [
             {
                 x : "2014-03-01 00:00:00",
@@ -177,7 +177,7 @@ var timeData = [
         "label": "Baz",
         "units": "l",
         "group" : "A",
-        "color": "darkgreen",
+        "color": "#68843C",
         "values": [
             {
                 x : "2014-03-01 00:00:00",
@@ -205,7 +205,7 @@ var timeData = [
         "label": "Baz",
         "units": "l",
         "group" : "B",
-        "color": "darkgreen",
+        "color": "#84D747",
         "values": [
             {
                 x : "2014-03-01 00:00:00",
@@ -233,7 +233,7 @@ var timeData = [
         "label": "Foo",
         "units": "kg",
         "group" : "C",
-        "color": "steelblue",
+        "color": "#6C7970",
         "values": [
             {
                 x : "2014-03-01 00:00:00",
