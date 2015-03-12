@@ -4,8 +4,9 @@
 
 function Legend(container) {
 
-    this.draw = function (data) {
+    this.showGroups = false;
 
+    this.draw = function (data) {
         var legend = d3.select(container).append("div").attr("class", "legend");
         data.forEach(function(series, i) {
             var row = legend.append("div");
@@ -16,12 +17,15 @@ function Legend(container) {
 
             var text = [], i = -1;
             text[++i] = series.label;
+            if (this.showGroups === true) {
+                text[++i] = ' - '+series.group;
+            }
             if (series.units) {
                 text[++i] = ' ('+series.units+')';
             };
 
             row.append("span").html(text.join('')).attr('class', 'key-text');
-        });
+        }, this);
     }
 }
 

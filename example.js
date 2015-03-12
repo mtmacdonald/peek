@@ -243,6 +243,5 @@ function getAllGroupsFirstSeriesData() {
             data.splice(i, 1);
         }
     }
-    console.log(data);
     return data;
 }
