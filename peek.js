@@ -439,55 +439,42 @@ function Data() {
 
 }
 
-function Cartesian(container) {
+function Bar(plot) {
 
-    var self = this;
+    var plot = plot;
+    var data;
 
-    this.type = 'line';
+    var sampleCount;
+    var groupCount;
+    var outerGap = 20;
+    var innerGap = 5;
 
-    this.data = new Data();
-    this.plot = new Plot(container);
-    this.line = new Line(this.plot);
+    var sampleBoxWidth;
+    var groupBoxWidth;
+    var barWidth;
 
-    this.draw = function (dataArray) {
+    this.getSampleBoxWidth = function () {
+        return sampleBoxWidth;
+    }
 
-        if (this.type === 'bar') {
-            this.data.isStackedByGroup = true; //bar charts are always stacked by group
-        }
+    this.init = function (dataObject) {
+        data = dataObject;
+        sampleCount =data.countSamples();
+        groupCount = data.countGroups();
 
-        this.data.init(dataArray);
+        sampleBoxWidth = plot.getSvgWidth() / sampleCount;
+        groupBoxWidth = (sampleBoxWidth - (2 * outerGap));
+        barWidth = (groupBoxWidth / groupCount) - innerGap + (innerGap / groupCount); //the final bar in each groupBox should not be proceeded by a gap
 
-        this.plot.draw();
+        plot.axes.x.offset = sampleBoxWidth/2; //translate the tick to the center of sampleBox
+    }
 
-        if (this.type === 'bar') {
-            var sampleCount = this.data.countSamples();
-            var groupCount = this.data.countGroups();
-            var outerGap = 20;
-            var innerGap = 5;
-
-            var sampleBoxWidth = this.plot.getSvgWidth() / sampleCount;
-            var groupBoxWidth = (sampleBoxWidth - (2 * outerGap));
-            var barWidth = (groupBoxWidth / groupCount) - innerGap + (innerGap / groupCount); //the final bar in each groupBox should not be proceeded by a gap
-
-            this.plot.axes.x.offset = sampleBoxWidth/2; //translate the tick to the center of sampleBox
-        }
-
-        if (this.type === 'bar') {
-            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-sampleBoxWidth]);
-        } else {
-            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
-        }
-        var yScale = d3.scale.linear().range([this.plot.getPlotHeight(), 0]);
-        xScale.domain(this.data.xExtent());
-        yScale.domain(this.data.yExtent());
-        this.plot.axes.draw(xScale, yScale);
-
-        if (this.type === 'bar') {
-            var groups = this.data.getGroups();
-            var max = this.data.yExtent()[1]; //refactor
-            this.data.getData().forEach(function(series, i) {
+    this.draw = function(xScale, yScale) {
+            var groups = data.getGroups();
+            var max = data.yExtent()[1]; //refactor
+            data.getData().forEach(function(series, i) {
                 series.values.forEach(function(value) {
-                    this.plot.svg.append("rect")
+                    plot.svg.append("rect")
                         .attr("class", "rect-line rect-area")
                         .style("fill", series.color)
                         .style("stroke", series.color)
@@ -502,10 +489,51 @@ function Cartesian(container) {
                         .attr("width", barWidth)
                         //for y-axis, d3 has a top-left coordinate system
                         //todo - account for line size / line overlap?
-                        .attr("y", function(d) { return self.plot.getPlotHeight()-yScale(max-value.y-value.y0); })
+                        .attr("y", function(d) { return plot.getPlotHeight()-yScale(max-value.y-value.y0); })
                         .attr("height", function(d) { return yScale(max-value.y); });
                 }, this);
             }, this);
+    }
+}
+
+function Cartesian(container) {
+
+    var self = this;
+
+    this.type = 'line';
+
+    this.data = new Data();
+    this.plot = new Plot(container);
+    this.line = new Line(this.plot);
+    this.bar = new Bar(this.plot);
+
+    this.draw = function (dataArray) {
+
+        if (this.type === 'bar') {
+            this.data.isStackedByGroup = true; //bar charts are always stacked by group
+        }
+
+        this.data.init(dataArray);
+
+        this.plot.draw();
+
+        if (this.type === 'bar') {
+            this.bar.init(this.data);
+        }
+
+        if (this.type === 'bar') {
+            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bar.getSampleBoxWidth()]);
+        } else {
+            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
+        }
+        var yScale = d3.scale.linear().range([this.plot.getPlotHeight(), 0]);
+        xScale.domain(this.data.xExtent());
+        yScale.domain(this.data.yExtent());
+
+        this.plot.axes.draw(xScale, yScale);
+
+        if (this.type === 'bar') {
+            this.bar.draw(xScale, yScale);
         } else {
             this.data.getData().forEach(function(series, i) {
                 this.line.draw(series, xScale, yScale, this.data.isStacked);
