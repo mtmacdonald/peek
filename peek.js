@@ -443,7 +443,7 @@ function Cartesian(container) {
 
     var self = this;
 
-    this.bar = false;
+    this.type = 'line';
 
     this.data = new Data();
     this.plot = new Plot(container);
@@ -451,7 +451,7 @@ function Cartesian(container) {
 
     this.draw = function (dataArray) {
 
-        if (this.bar) {
+        if (this.type === 'bar') {
             this.data.isStackedByGroup = true; //bar charts are always stacked by group
         }
 
@@ -459,7 +459,7 @@ function Cartesian(container) {
 
         this.plot.draw();
 
-        if (this.bar) {
+        if (this.type === 'bar') {
             var sampleCount = this.data.countSamples();
             var groupCount = this.data.countGroups();
             var outerGap = 20;
@@ -472,7 +472,7 @@ function Cartesian(container) {
             this.plot.axes.x.offset = sampleBoxWidth/2; //translate the tick to the center of sampleBox
         }
 
-        if (this.bar) {
+        if (this.type === 'bar') {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-sampleBoxWidth]);
         } else {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
@@ -482,7 +482,7 @@ function Cartesian(container) {
         yScale.domain(this.data.yExtent());
         this.plot.axes.draw(xScale, yScale);
 
-        if (this.bar) {
+        if (this.type === 'bar') {
             var groups = this.data.getGroups();
             var max = this.data.yExtent()[1]; //refactor
             this.data.getData().forEach(function(series, i) {

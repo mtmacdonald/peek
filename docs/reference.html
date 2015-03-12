@@ -304,7 +304,7 @@
     var data = getFirstGroupFirstSeriesData();
     var chart = new Cartesian("#bar-chart");
     chart.data.isStacked = true;
-    chart.bar = true;
+    chart.type = 'bar';
     chart.draw(data);
     var legend = new Legend("#bar-legend");
     legend.draw(data);
@@ -323,7 +323,7 @@
     var data = getAllGroupsFirstSeriesData();
     var chart = new Cartesian("#grouped-bar-chart");
     chart.data.isStacked = true;
-    chart.bar = true;
+    chart.type = 'bar';
     chart.draw(data);
     var legend = new Legend("#grouped-bar-legend");
     legend.showGroups = true;
@@ -343,7 +343,7 @@
     var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-bar-chart");
     chart.data.isStacked = true;
-    chart.bar = true;
+    chart.type = 'bar';
     chart.draw(data);
     var legend = new Legend("#stacked-bar-legend");
     legend.draw(data);
@@ -362,7 +362,7 @@
     var data = JSON.parse(JSON.stringify(timeData)); //clone
     var chart = new Cartesian("#stacked-grouped-bar-chart");
     chart.data.isStacked = true;
-    chart.bar = true;
+    chart.type = 'bar';
     chart.draw(data);
     var legend = new Legend("#stacked-grouped-bar-legend");
     legend.showGroups = true;
