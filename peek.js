@@ -274,14 +274,40 @@ function Point (plot) {
 //----------------------------------------------------------------------------------------------------------------------
 
 function Series(data) {
-// todo stacked charts: http://stackoverflow.com/questions/14713503/how-to-handle-layers-with-missing-data-points-in-d3-layout-stack
+
+    //todo - interpolate missing data points ... e.g. http://stackoverflow.com/questions/14713503
+
     var data = data;
 
     var isStacked = false;
 
-    this.getData = function(){
+    this.init = function() {
+        getGroups();
+    }
+
+    this.getData = function() {
         return data;
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    var groups = []; 
+
+    this.getGroups = function () {
+        return groups;
+    }
+
+    var getGroups = function () {
+        data.forEach(function (series) {
+            if (!(groups.indexOf(series.group) > -1)) {
+                groups.push(series.group);
+            }
+        });
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+
 
     this.parseDates = function () {
         var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
@@ -384,16 +410,6 @@ function Series(data) {
         return [min, max];
     }
 
-    this.getGroups = function () {
-        var groups = [];
-        data.forEach(function (series) {
-            if (!(groups.indexOf(series.group) > -1)) {
-                groups.push(series.group);
-            }
-        });
-        return groups;
-    }
-
     this.countGroups = function () {
         return this.getGroups(data).length;
     }
@@ -418,10 +434,10 @@ function Cartesian(container, stacked) {
     this.draw = function (data) {
 
         var series = new Series(data);
+        series.init();
+        series.parseDates();
 
         this.plot.draw();
-
-        series.parseDates();
 
         if (this.isStacked) {
             if (this.bar) {
