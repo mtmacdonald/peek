@@ -1,7 +1,5 @@
 /*! Peek.js (c) 2014 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
 
-// todo stacked line charts: http://stackoverflow.com/questions/14713503/how-to-handle-layers-with-missing-data-points-in-d3-layout-stack
-
 function Legend(container) {
 
     this.showGroups = false;
@@ -165,7 +163,7 @@ function Axes (plot) {
 
 }
 
-function Line (plot, stacked) {
+function Line (plot) {
     var plot = plot;
     var self = this;
     this.xScale;
@@ -177,7 +175,7 @@ function Line (plot, stacked) {
     this.interpolation = 'linear';
     this.point = new Point(plot);
 
-    this.draw = function(series, xScale, yScale) {
+    this.draw = function(series, xScale, yScale, stacked) {
 
         var line = d3.svg.line()
                     .interpolate(this.interpolation) 
@@ -276,7 +274,7 @@ function Point (plot) {
 //----------------------------------------------------------------------------------------------------------------------
 
 function Series(data) {
-
+// todo stacked charts: http://stackoverflow.com/questions/14713503/how-to-handle-layers-with-missing-data-points-in-d3-layout-stack
     var data = data;
 
     var isStacked = false;
@@ -410,14 +408,12 @@ function Cartesian(container, stacked) {
 
     var self = this;
 
-    var stacked = typeof stacked !== 'undefined' ? stacked : false; //default
+    this.bar = false;
+    this.isStacked = false;
+    this.stackOffset = 'zero';
 
     this.plot = new Plot(container);
-    this.line = new Line(this.plot, stacked);
-
-
-    this.bar = false;
-    this.stackOffset = 'zero'; //default
+    this.line = new Line(this.plot);
 
     this.draw = function (data) {
 
@@ -427,7 +423,7 @@ function Cartesian(container, stacked) {
 
         series.parseDates();
 
-        if (stacked) {
+        if (this.isStacked) {
             if (this.bar) {
                 series.stack('zero', true);
             } else {
@@ -484,7 +480,7 @@ function Cartesian(container, stacked) {
             }, this);
         } else {
             series.getData().forEach(function(series, i) {
-                this.line.draw(series, xScale, yScale);
+                this.line.draw(series, xScale, yScale, this.isStacked);
             }, this);
         }
     }
