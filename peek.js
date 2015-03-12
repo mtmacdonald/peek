@@ -275,6 +275,7 @@ function Point (plot) {
 
 function Series(data) {
 
+    var self = this;
     var data = data;
 
     var isStacked = false;
@@ -284,11 +285,16 @@ function Series(data) {
         fetchGroups();
     }
 
-    this.getData = function() {
-        return data;
+    this.initExtent = function() {
+        fetchXExtent();
+        fetchYExtent();
     }
 
     //todo - interpolate missing data points ... e.g. http://stackoverflow.com/questions/14713503
+
+    this.getData = function() {
+        return data;
+    }
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -306,6 +312,33 @@ function Series(data) {
                 value.x = parseDate(value.x);
             });
         });
+    }
+
+    this.stack = function (stackOffset, byGroup) {
+        isStacked = true;
+
+        //layering code (only for stacked charts)
+        //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
+        //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
+            //modifies the original data array
+
+        var byGroup = typeof byGroup !== 'undefined' ? byGroup : false; //default
+        var stack = d3.layout.stack().offset(stackOffset);
+
+        if (byGroup === true) {
+            var groups = this.getGroupsWithSeries(data);
+            for (key in groups) {
+                if (groups.hasOwnProperty(key)) {
+                    stack(groups[key]);
+                }
+            }
+        } else {
+            var stripped_data = [];
+            data.forEach(function (series) {
+                stripped_data.push(series.values);
+            });
+            stack(stripped_data);
+        }
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -342,34 +375,20 @@ function Series(data) {
         return groups;
     }
 
-    this.stack = function (stackOffset, byGroup) {
-        isStacked = true;
+    //------------------------------------------------------------------------------------------------------------------
 
-        //layering code (only for stacked charts)
-        //D3.layout.stack can't handle the metadata in the data array, so create a stripped-down data array
-        //Note - because objects are copied by reference, modifying the objects in the stripped-down array also 
-            //modifies the original data array
-
-        var byGroup = typeof byGroup !== 'undefined' ? byGroup : false; //default
-        var stack = d3.layout.stack().offset(stackOffset);
-
-        if (byGroup === true) {
-            var groups = this.getGroupsWithSeries(data);
-            for (key in groups) {
-                if (groups.hasOwnProperty(key)) {
-                    stack(groups[key]);
-                }
-            }
-        } else {
-            var stripped_data = [];
-            data.forEach(function (series) {
-                stripped_data.push(series.values);
-            });
-            stack(stripped_data);
-        }
-    }
+    var xExtent = 0;
+    var yExtent = 0;
 
     this.xExtent = function () {
+        return xExtent;
+    }
+
+    this.yExtent = function () {
+        return yExtent;
+    }
+
+    var fetchXExtent = function () {
         //get the min value from all series
         var min = d3.min(data.map(function (series) {
             return d3.min(series.values.map(function (point) {
@@ -382,10 +401,10 @@ function Series(data) {
                 return point.x;
             }));
         }));
-        return [min, max];
+        xExtent = [min, max];
     }
 
-    this.yExtent = function () {
+    var fetchYExtent = function () {
         //min is either the min value from all series, or 0, whichever is lower
         var min = d3.min(data.map(function (series) {
             return d3.min(series.values.map(function (point) {
@@ -399,7 +418,7 @@ function Series(data) {
         //max depends on whether series are not stacked, stacked, or grouped and stacked
         if (isStacked) { //if stacked, get max of y0+y in the final data series
             var max = 0;
-            var groups = this.getGroupsWithSeries(data);
+            var groups = self.getGroupsWithSeries(data);
             for (key in groups) {
                 if (groups.hasOwnProperty(key)) {
                     var lastSeriesInGroup = groups[key][groups[key].length-1];
@@ -419,7 +438,7 @@ function Series(data) {
             }));
         }
 
-        return [min, max];
+        yExtent = [min, max];
     }
 
 }
@@ -449,6 +468,7 @@ function Cartesian(container, stacked) {
                 series.stack(this.stackOffset);
             }
         }
+        series.initExtent(); //todo - move to stack.init()
 
         if (this.bar) {
             var sampleCount = series.countSamples();
