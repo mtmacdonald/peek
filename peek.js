@@ -275,11 +275,17 @@ function Point (plot) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function Series() {
+function Series(data) {
+
+    var data = data;
 
     var isStacked = false;
 
-    this.parseDates = function (data) {
+    this.getData = function(){
+        return data;
+    }
+
+    this.parseDates = function () {
         var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
         data.forEach(function (series) {
             series.values.forEach(function (value) {
@@ -288,7 +294,7 @@ function Series() {
         });
     }
 
-    this.getGroupsWithSeries = function (data) {
+    this.getGroupsWithSeries = function () {
         var groups = {};
         var groupNames = this.getGroups(data);
         groupNames.forEach(function (name) {
@@ -300,7 +306,7 @@ function Series() {
         return groups;
     }
 
-    this.stack = function (data, stackOffset, byGroup) {
+    this.stack = function (stackOffset, byGroup) {
         isStacked = true;
 
         //layering code (only for stacked charts)
@@ -327,7 +333,7 @@ function Series() {
         }
     }
 
-    this.xExtent = function (data) {
+    this.xExtent = function () {
         //get the min value from all series
         var min = d3.min(data.map(function (series) {
             return d3.min(series.values.map(function (point) {
@@ -343,7 +349,7 @@ function Series() {
         return [min, max];
     }
 
-    this.yExtent = function (data) {
+    this.yExtent = function () {
         //min is either the min value from all series, or 0, whichever is lower
         var min = d3.min(data.map(function (series) {
             return d3.min(series.values.map(function (point) {
@@ -380,7 +386,7 @@ function Series() {
         return [min, max];
     }
 
-    this.getGroups = function (data) {
+    this.getGroups = function () {
         var groups = [];
         data.forEach(function (series) {
             if (!(groups.indexOf(series.group) > -1)) {
@@ -390,11 +396,11 @@ function Series() {
         return groups;
     }
 
-    this.countGroups = function (data) {
+    this.countGroups = function () {
         return this.getGroups(data).length;
     }
 
-    this.countSamples = function (data) {
+    this.countSamples = function () {
         return data[0].values.length; //todo: don't assume all samples are the same length?
     }
 
@@ -408,28 +414,30 @@ function Cartesian(container, stacked) {
 
     this.plot = new Plot(container);
     this.line = new Line(this.plot, stacked);
-    var series = new Series();
+
 
     this.bar = false;
     this.stackOffset = 'zero'; //default
 
     this.draw = function (data) {
 
+        var series = new Series(data);
+
         this.plot.draw();
 
-        series.parseDates(data);
+        series.parseDates();
 
         if (stacked) {
             if (this.bar) {
-                series.stack(data, 'zero', true);
+                series.stack('zero', true);
             } else {
-                series.stack(data, this.stackOffset);
+                series.stack(this.stackOffset);
             }
         }
 
         if (this.bar) {
-            var sampleCount = series.countSamples(data);
-            var groupCount = series.countGroups(data);
+            var sampleCount = series.countSamples();
+            var groupCount = series.countGroups();
             var outerGap = 20;
             var innerGap = 5;
 
@@ -446,14 +454,14 @@ function Cartesian(container, stacked) {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
         }
         var yScale = d3.scale.linear().range([this.plot.getPlotHeight(), 0]);
-        xScale.domain(series.xExtent(data));
-        yScale.domain(series.yExtent(data));
+        xScale.domain(series.xExtent());
+        yScale.domain(series.yExtent());
         this.plot.axes.draw(xScale, yScale);
 
         if (this.bar) {
-            var groups = series.getGroups(data);
-            var max = series.yExtent(data)[1]; //refactor
-            data.forEach(function(series, i) {
+            var groups = series.getGroups();
+            var max = series.yExtent()[1]; //refactor
+            series.getData().forEach(function(series, i) {
                 series.values.forEach(function(value) {
                     this.plot.svg.append("rect")
                         .attr("class", "rect-line rect-area")
@@ -475,7 +483,7 @@ function Cartesian(container, stacked) {
                 }, this);
             }, this);
         } else {
-            data.forEach(function(series, i) {
+            series.getData().forEach(function(series, i) {
                 this.line.draw(series, xScale, yScale);
             }, this);
         }
