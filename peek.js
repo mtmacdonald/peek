@@ -286,9 +286,6 @@ function Series(data) {
         parseDates();
         fetchGroups();
         this.stack();
-    }
-
-    this.initExtent = function() {
         fetchXExtent();
         fetchYExtent();
     }
@@ -468,7 +465,6 @@ function Cartesian(container, stacked) {
 
         this.plot.draw();
 
-        series.initExtent(); //todo - move to series.init()
 
         if (this.bar) {
             var sampleCount = series.countSamples();
