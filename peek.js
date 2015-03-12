@@ -275,8 +275,6 @@ function Point (plot) {
 
 function Series(data) {
 
-    //todo - interpolate missing data points ... e.g. http://stackoverflow.com/questions/14713503
-
     var data = data;
 
     var isStacked = false;
@@ -288,6 +286,15 @@ function Series(data) {
 
     this.getData = function() {
         return data;
+    }
+
+    //todo - interpolate missing data points ... e.g. http://stackoverflow.com/questions/14713503
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    this.countSamples = function () {
+        
+        return data[0].values.length; //todo: don't assume each series is the same length
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -307,6 +314,10 @@ function Series(data) {
 
     this.getGroups = function () {
         return groups;
+    }
+
+    this.countGroups = function () {
+        return groups.length;
     }
 
     var fetchGroups = function () {
@@ -409,14 +420,6 @@ function Series(data) {
         }
 
         return [min, max];
-    }
-
-    this.countGroups = function () {
-        return this.getGroups(data).length;
-    }
-
-    this.countSamples = function () {
-        return data[0].values.length; //todo: don't assume all samples are the same length?
     }
 
 }
