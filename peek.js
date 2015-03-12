@@ -273,7 +273,7 @@ function Point (plot) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function Series() {
+function Data() {
 
     var self = this;
     var data;
@@ -450,26 +450,26 @@ function Cartesian(container, stacked) {
     this.plot = new Plot(container);
     this.line = new Line(this.plot);
 
-    this.draw = function (data) {
+    this.draw = function (dataArray) {
 
-        var series = new Series();
+        var data = new Data();
 
         if (this.isStacked) {
-            series.isStacked = true;
-            series.stackOffset = this.stackOffset;
+            data.isStacked = true;
+            data.stackOffset = this.stackOffset;
             if (this.bar) {
-                series.isStackedByGroup = true;
+                data.isStackedByGroup = true;
             }
         }
 
-        series.init(data);
+        data.init(dataArray);
 
         this.plot.draw();
 
 
         if (this.bar) {
-            var sampleCount = series.countSamples();
-            var groupCount = series.countGroups();
+            var sampleCount = data.countSamples();
+            var groupCount = data.countGroups();
             var outerGap = 20;
             var innerGap = 5;
 
@@ -486,14 +486,14 @@ function Cartesian(container, stacked) {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
         }
         var yScale = d3.scale.linear().range([this.plot.getPlotHeight(), 0]);
-        xScale.domain(series.xExtent());
-        yScale.domain(series.yExtent());
+        xScale.domain(data.xExtent());
+        yScale.domain(data.yExtent());
         this.plot.axes.draw(xScale, yScale);
 
         if (this.bar) {
-            var groups = series.getGroups();
-            var max = series.yExtent()[1]; //refactor
-            series.getData().forEach(function(series, i) {
+            var groups = data.getGroups();
+            var max = data.yExtent()[1]; //refactor
+            data.getData().forEach(function(series, i) {
                 series.values.forEach(function(value) {
                     this.plot.svg.append("rect")
                         .attr("class", "rect-line rect-area")
@@ -515,7 +515,7 @@ function Cartesian(container, stacked) {
                 }, this);
             }, this);
         } else {
-            series.getData().forEach(function(series, i) {
+            data.getData().forEach(function(series, i) {
                 this.line.draw(series, xScale, yScale, this.isStacked);
             }, this);
         }
