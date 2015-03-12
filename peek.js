@@ -172,9 +172,9 @@ function Line (plot, stacked) {
     this.yScale;
 
     this.showLines = true;
-    this.points = false;
+    this.showPoints = false;
+    this.showArea = false;
     this.interpolation = 'linear';
-    this.area = false;
     this.point = new Point(plot);
 
     this.draw = function(series, xScale, yScale) {
@@ -212,13 +212,13 @@ function Line (plot, stacked) {
                 .style("stroke", series.color)
                 .attr("d", line(series.values));
         }
-        if (this.area === true) {
+        if (this.showArea === true) {
             plot.svg.append("path")
                     .attr("class", "area")
                     .style("fill", series.color)
                     .attr("d", area(series.values));
         }
-        if (this.points) {
+        if (this.showPoints === true) {
             this.point.draw(series, xScale, yScale);
         }
     }
