@@ -285,6 +285,7 @@ function Series(data) {
     this.init = function() {
         parseDates();
         fetchGroups();
+        this.stack();
     }
 
     this.initExtent = function() {
@@ -454,9 +455,6 @@ function Cartesian(container, stacked) {
     this.draw = function (data) {
 
         var series = new Series(data);
-        series.init();
-
-        this.plot.draw();
 
         if (this.isStacked) {
             series.isStacked = true;
@@ -464,8 +462,12 @@ function Cartesian(container, stacked) {
             if (this.bar) {
                 series.isStackedByGroup = true;
             }
-            series.stack();
         }
+
+        series.init();
+
+        this.plot.draw();
+
         series.initExtent(); //todo - move to series.init()
 
         if (this.bar) {
