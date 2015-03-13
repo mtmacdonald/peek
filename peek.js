@@ -640,18 +640,12 @@ function Pie(container) {
     plot.width = this.width;
     plot.height = this.height;
     plot.radius = this.radius;
-    var legend = new Legend(container);
 
-    this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
-    this.pie = d3.layout.pie().value(function(d) { return d.value; });
-/*
-    this.legend = function(container, data) {
-        data.forEach(function(series, i) {
-            legend.push(series);
-        }, this);
-    }
-*/
     this.draw = function (data) {
+
+        this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
+        this.pie = d3.layout.pie().value(function(d) { return d.value; });
+
         plot.draw();
         var self = this;
 

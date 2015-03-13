@@ -394,6 +394,7 @@
 <script>
  $(document).ready(function() {
     var chart = new Pie("#pie");
+    chart.innerRadius = 0;
     chart.draw(radialData);
     var legend = new Legend("#pie-legend");
     legend.draw(radialData);
