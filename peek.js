@@ -544,11 +544,8 @@ function Cartesian(container) {
 
 function Compare(container) {
 
-    var width = 950;
-    this.rightPadding = 100;
-    var height = 300;
-    this.bottomPadding = 0; //only meeded when displaying x-axis
-    this.url;
+    this.barHeight = 50;
+    this.barSpacing = 10;
 
     var plot = new Plot(container);
     plot.showTitle = false;
@@ -563,13 +560,15 @@ function Compare(container) {
     this.draw = function (data) {
             var self = this;
 
-            //plot.svg.attr("width", width).attr("height", height); //dynamically update width and height
+            var width = 600;
+            var rightPadding = 400;
+            var height = 300;
 
             var max = d3.max(data, function(d) { return d.value;} );
 
-            var spacing = 10;
-            var dx = (width - this.rightPadding) / max;
-            var dy = ((height-this.bottomPadding) / data.length) - spacing;
+            var spacing = this.barSpacing;
+            var dx = (width - rightPadding) / max;
+            var dy = ((height) / data.length) - spacing;
     
             //bars
             var bars = plot.svg.selectAll(".bar")

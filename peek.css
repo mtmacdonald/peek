@@ -27,6 +27,7 @@ header > div > a div{
 */
 
 .plot {
+  border: 1px solid red;
   margin: 0;
   float: left;
   display: table; /*make left-container stretch to height of chart*/
