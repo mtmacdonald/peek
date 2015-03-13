@@ -631,6 +631,11 @@ function Pie(container) {
     this.height = 300;
     this.radius = 150;
     this.innerRadius = 60;
+    this.hasBorder = false;
+    this.borderWidth = 2;
+    this.hasOpacity = false;
+    this.opacity = 0.4;
+
 
     var plot = new Plot(container);
     plot.isRadial = true;
@@ -657,9 +662,16 @@ function Pie(container) {
                 .append("svg:g")
                     .attr("class", "slice");
 
-        arcs.append("svg:path")
-                .attr("fill", function(d, i) { return data[i].color; } ) 
-                .attr("d", self.arc);
+        var segments = arcs.append("svg:path");
+        if (this.hasBorder === true) {
+            segments.attr("stroke", function(d, i) { return data[i].color; } );
+            segments.style("stroke-width", this.borderWidth) 
+        }
+        segments.attr("fill", function(d, i) { return data[i].color; } );
+        if (this.hasOpacity === true) {
+            segments.style('fill-opacity', this.opacity);
+        }
+        segments.attr("d", self.arc);
 
         arcs.append("svg:text")
                 .attr("transform", function(d) { 
@@ -674,11 +686,5 @@ function Pie(container) {
                    return Math.round(data[i].value)+'%';
                 }
             });
-    };
-
-    this.load = function() {
-        d3.json(this.url, function (data) {
-            this.draw(data);
-        }.bind(this));
     };
 }

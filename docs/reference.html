@@ -77,6 +77,10 @@
   .code-toggle {
     float:right;
   }
+
+  #pie, #pie-legend, #donut, #donut-legend {
+    margin: 0;
+  }
   </style>
  </head>
 
@@ -401,8 +405,8 @@
  });
 </script>
 
-<div id="pie" style="padding: 20px; float: left;"></div>
-<div id="pie-legend" style="padding: 20px; float: left;"></div>
+<div id="pie"></div>
+<div id="pie-legend"></div>
 <br style="clear:both;"/>
 </div>
 
@@ -419,11 +423,30 @@
  });
 </script>
 
-<div id="donut" style="padding: 20px; float: left;"></div>
-<div id="donut-legend" style="padding: 20px; float: left;"></div>
+<div id="donut"></div>
+<div id="donut-legend"></div>
 <br style="clear:both;"/>
 </div>
 
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Donut chart (with border and transparency)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-donut-border-chart">
+<script>
+ $(document).ready(function() {
+    var chart = new Pie("#donut-border");
+    chart.hasOpacity = true;
+    chart.hasBorder = true;
+    chart.draw(radialData);
+    var legend = new Legend("#donut-border-legend");
+    legend.draw(radialData);
+ });
+</script>
+
+<div id="donut-border"></div>
+<div id="donut-border-legend"></div>
+<br style="clear:both;"/>
+</div>
 
  </div>
  </section>
