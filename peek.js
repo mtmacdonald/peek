@@ -557,12 +557,34 @@ function Compare(container) {
     plot.margin.left = 0;
     plot.draw();
 
+    var getMaxLabelWidth = function (data) {
+        var longestLabel = 0;
+        var longestRowIndex = 0;
+        data.forEach(function(row, index) {
+            if (longestLabel < row.label.length) {
+                longestLabel = row.label.length;
+                longestRowIndex = index;
+            }
+        });
+        var fakeLabel = plot.svg.append("text")
+            .attr("x", 0)
+            .attr("y", 0)
+            .style("visibility", "hidden")
+            .text(data[longestRowIndex].label);
+        var result = fakeLabel.node().getComputedTextLength();
+        fakeLabel.remove();
+        return result;
+    }
+
     this.draw = function (data) {
             var self = this;
 
+            var maxLabelWidth = getMaxLabelWidth(data);
+            var rightPadding = maxLabelWidth+10;
+
             var width = 600;
-            var rightPadding = 400;
             var height = 300;
+
 
             var max = d3.max(data, function(d) { return d.value;} );
 
