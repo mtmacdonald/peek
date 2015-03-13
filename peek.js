@@ -112,10 +112,10 @@ function Plot(container) {
                     .attr('height', this.getPlotHeight() + this.margin.top + this.margin.bottom);
 
         svgContainer.on("mousemove", function() {
-            var infobox = d3.select(".infobox");
+            var tooltip = d3.select(".tooltip");
             var coord = d3.mouse(this);
-            infobox.style("left", (d3.event.pageX) + 15 + "px" );
-            infobox.style("top", (d3.event.pageY) + "px");     
+            tooltip.style("left", (d3.event.pageX) + 15 + "px" );
+            tooltip.style("top", (d3.event.pageY) + "px");     
         });
 
         if (this.isRadial === false) {
@@ -248,7 +248,7 @@ function Point (plot) {
     this.draw = function(series, xScale, yScale) {
         d3.select(plot.container)
             .append("div")
-            .attr("class", "infobox").html("<p>Tooltip</p>");
+            .attr("class", "tooltip").html("<p>Tooltip</p>");
 
         plot.svg.selectAll(".chart")
             .data(series.values)
@@ -269,12 +269,12 @@ function Point (plot) {
         var circle = d3.select(this);
         circle.transition().duration(500).attr("r", 16);
 
-        d3.select(".infobox")
+        d3.select(".tooltip")
         .style("display", "block")
         .style('opacity', 0)
         .transition().delay(200).duration(500).style('opacity', 1);  
           
-        d3.select(".infobox p")
+        d3.select(".tooltip p")
             .html("<strong>Date:</strong> " 
                 + formatDate(new Date(data.x)) 
                 + "<br/>" 
@@ -286,7 +286,7 @@ function Point (plot) {
     this.mouseout_circle = function() {
         var circle = d3.select(this);
         circle.transition().duration(500).attr("r", 4);
-        d3.select(".infobox").style("display", "none"); 
+        d3.select(".tooltip").style("display", "none"); 
     }
 
 }
