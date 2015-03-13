@@ -588,9 +588,8 @@ function Compare(container) {
 
             var max = d3.max(data, function(d) { return d.value;} );
 
-            var spacing = this.barSpacing;
             var dx = (plot.width - rightPadding) / max;
-            var dy = ((plot.height) / data.length) - spacing;
+            var dy = ((plot.height) / data.length) - this.barSpacing;
     
             //bars
             var bars = plot.svg.selectAll(".bar")
@@ -598,7 +597,7 @@ function Compare(container) {
                 .enter()
                 .append("rect")
                 .attr("x", function(d, i) {return 0;})
-                .attr("y", function(d, i) {return dy*i + spacing*i;})
+                .attr("y", function(d, i) {return dy*i + self.barSpacing*i;})
                 .attr("width", function(d, i) {return dx*d.value})
                 .attr("height", dy)
                 .attr("fill", function(d, i) {return d.color} );
@@ -610,7 +609,7 @@ function Compare(container) {
                 .append("text")
                     .attr('class', 'label')
                     .attr("x", function(d, i) {return (dx*d.value)+5})
-                    .attr("y", function(d, i) {return dy*i + spacing*i + (dy/2) + 4;}) //4 accounts for text height
+                    .attr("y", function(d, i) {return dy*i + self.barSpacing*i + (dy/2) + 4;}) //4 accounts for text height
                     .html( function(d) {return d.label;});
 
             //text values
@@ -625,7 +624,7 @@ function Compare(container) {
                         var width = this.getComputedTextLength() + 10;
                         return (dx*d.value)-(width);
                     })
-                    .attr("y", function(d, i) {return dy*i + spacing*i + (dy/2) + 4;}) //4 accounts for text height
+                    .attr("y", function(d, i) {return dy*i + self.barSpacing*i + (dy/2) + 4;}) //4 accounts for text height
                     //.style("display", function(d, i){
                         //only display the values when there is space inside the bar
                         //var width = this.getComputedTextLength() + 10;
