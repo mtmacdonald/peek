@@ -625,7 +625,7 @@ function Compare(container) {
     };
 }
 
-function Pie(container) {
+function Radial(container) {
 
     this.width = 300;
     this.height = 300;

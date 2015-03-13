@@ -397,7 +397,7 @@
 <div class="code" id="code-sample-pie-chart">
 <script>
  $(document).ready(function() {
-    var chart = new Pie("#pie");
+    var chart = new Radial("#pie");
     chart.innerRadius = 0;
     chart.draw(radialData);
     var legend = new Legend("#pie-legend");
@@ -416,7 +416,7 @@
 <div class="code" id="code-sample-donut-chart">
 <script>
  $(document).ready(function() {
-    var chart = new Pie("#donut");
+    var chart = new Radial("#donut");
     chart.draw(radialData);
     var legend = new Legend("#donut-legend");
     legend.draw(radialData);
@@ -434,7 +434,7 @@
 <div class="code" id="code-sample-donut-border-chart">
 <script>
  $(document).ready(function() {
-    var chart = new Pie("#donut-border");
+    var chart = new Radial("#donut-border");
     chart.hasOpacity = true;
     chart.hasBorder = true;
     chart.draw(radialData);
