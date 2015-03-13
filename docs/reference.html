@@ -430,13 +430,13 @@
 
 <!-- **************************************************************************************************************- -->
 
-<h1 class="doc-heading"><span>Donut chart (with border and transparency)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<h1 class="doc-heading"><span>Donut chart (with outline and transparency)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
 <div class="code" id="code-sample-donut-border-chart">
 <script>
  $(document).ready(function() {
     var chart = new Radial("#donut-border");
     chart.hasOpacity = true;
-    chart.hasBorder = true;
+    chart.hasOutline = true;
     chart.draw(radialData);
     var legend = new Legend("#donut-border-legend");
     legend.draw(radialData);

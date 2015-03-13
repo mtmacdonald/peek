@@ -629,8 +629,8 @@ function Radial(container) {
 
     this.radius = 150;
     this.innerRadius = 60;
-    this.hasBorder = false;
-    this.borderWidth = 2;
+    this.hasOutline = false;
+    this.outlineWidth = 2;
     this.hasOpacity = false;
     this.opacity = 0.4;
 
@@ -646,8 +646,8 @@ function Radial(container) {
     this.draw = function (data) {
 
         var outerRadius = this.radius;
-        if (this.hasBorder === true) {
-            outerRadius = this.radius - this.borderWidth;
+        if (this.hasOutline === true) {
+            outerRadius = this.radius - this.outlineWidth;
         }
         this.arc = d3.svg.arc().outerRadius(outerRadius).innerRadius(this.innerRadius);
         this.pie = d3.layout.pie().value(function(d) { return d.value; });
@@ -664,9 +664,9 @@ function Radial(container) {
                     .attr("class", "slice");
 
         var segments = arcs.append("svg:path");
-        if (this.hasBorder === true) {
+        if (this.hasOutline === true) {
             segments.attr("stroke", function(d, i) { return data[i].color; } );
-            segments.style("stroke-width", this.borderWidth) 
+            segments.style("stroke-width", this.outlineWidth) 
         }
         segments.attr("fill", function(d, i) { return data[i].color; } );
         if (this.hasOpacity === true) {
