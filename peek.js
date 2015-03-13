@@ -627,8 +627,6 @@ function Compare(container) {
 
 function Radial(container) {
 
-    this.width = 300;
-    this.height = 300;
     this.radius = 150;
     this.innerRadius = 60;
     this.hasBorder = false;
@@ -636,19 +634,22 @@ function Radial(container) {
     this.hasOpacity = false;
     this.opacity = 0.4;
 
-
     var plot = new Plot(container);
     plot.isRadial = true;
     plot.showTitle = false;
     plot.showXLabel = false;
     plot.showYLabel = false;
-    plot.width = this.width;
-    plot.height = this.height;
+    plot.width = this.radius*2;
+    plot.height = this.radius*2;
     plot.radius = this.radius;
 
     this.draw = function (data) {
 
-        this.arc = d3.svg.arc().outerRadius(this.radius).innerRadius(this.innerRadius);
+        var outerRadius = this.radius;
+        if (this.hasBorder === true) {
+            outerRadius = this.radius - this.borderWidth;
+        }
+        this.arc = d3.svg.arc().outerRadius(outerRadius).innerRadius(this.innerRadius);
         this.pie = d3.layout.pie().value(function(d) { return d.value; });
 
         plot.draw();
