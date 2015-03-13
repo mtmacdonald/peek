@@ -544,7 +544,7 @@ function Cartesian(container) {
 
 function Compare(container) {
 
-    this.barHeight = 50;
+    this.barHeight = 60;
     this.barSpacing = 10;
 
     var plot = new Plot(container);
@@ -555,7 +555,6 @@ function Compare(container) {
     plot.margin.right = 0;
     plot.margin.bottom = 0;
     plot.margin.left = 0;
-    plot.draw();
 
     var getMaxLabelWidth = function (data) {
         var longestLabel = 0;
@@ -579,18 +578,19 @@ function Compare(container) {
     this.draw = function (data) {
             var self = this;
 
+            //dynamically set the plot height based on the length of the input data
+            plot.height = data.length*(this.barHeight+this.barSpacing);
+            plot.draw();
+
+            //dynamically find the space needed for labels, from the maximum label width
             var maxLabelWidth = getMaxLabelWidth(data);
             var rightPadding = maxLabelWidth+10;
-
-            var width = 600;
-            var height = 300;
-
 
             var max = d3.max(data, function(d) { return d.value;} );
 
             var spacing = this.barSpacing;
-            var dx = (width - rightPadding) / max;
-            var dy = ((height) / data.length) - spacing;
+            var dx = (plot.width - rightPadding) / max;
+            var dy = ((plot.height) / data.length) - spacing;
     
             //bars
             var bars = plot.svg.selectAll(".bar")
@@ -637,6 +637,7 @@ function Compare(container) {
                     //})
                     .style("font-weight", "bold")
                     .attr("fill", "white");
+
     };
 }
 
