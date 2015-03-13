@@ -563,7 +563,7 @@ function Compare(container) {
     this.draw = function (data) {
             var self = this;
 
-            plot.svg.attr("width", width).attr("height", height); //dynamically update width and height
+            //plot.svg.attr("width", width).attr("height", height); //dynamically update width and height
 
             var max = d3.max(data, function(d) { return d.value;} );
 
@@ -580,7 +580,7 @@ function Compare(container) {
                 .attr("y", function(d, i) {return dy*i + spacing*i;})
                 .attr("width", function(d, i) {return dx*d.value})
                 .attr("height", dy)
-                .attr("fill", function(d, i) {return d.colour} );
+                .attr("fill", function(d, i) {return d.color} );
 
             //labels
             var text = plot.svg.selectAll("text")
@@ -605,23 +605,17 @@ function Compare(container) {
                         return (dx*d.value)-(width);
                     })
                     .attr("y", function(d, i) {return dy*i + spacing*i + (dy/2) + 4;}) //4 accounts for text height
-                    .style("display", function(d, i){
+                    //.style("display", function(d, i){
                         //only display the values when there is space inside the bar
-                        var width = this.getComputedTextLength() + 10;
-                        if (dx*d.value < width) {
-                            return "none";
-                        } else {
-                            return "initial";
-                        }
-                    })
+                        //var width = this.getComputedTextLength() + 10;
+                        //if (dx*d.value < width) {
+                        //    return "none";
+                        //} else {
+                        //    return "initial";
+                        //}
+                    //})
                     .style("font-weight", "bold")
                     .attr("fill", "white");
-    };
-
-    this.load = function() {
-        d3.json(this.url, function (data) {
-            this.draw(data);
-        }.bind(this));
     };
 }
 

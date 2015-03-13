@@ -259,23 +259,37 @@ var timeData = [
     },
 ];
 
-var horizontal_bar_data = [
-    {
+var horizontalBarData = [
+    {    
         "label": "Foo",
-        "value": 55,
-        "colour": "steelblue"
+        "units" : "",
+        "color": "#69A9CA",
+        "value": 80,
+    },
+    {
+        "label": "Bar",
+        "units" : "",
+        "color": "#C76842",
+        "value": 50,
     },
     {
         "label": "Baz",
-        "value": 10,
-        "colour": "firebrick"
-    }
+        "units" : "",
+        "color": "#68843C",
+        "value": 30,
+    },
+    {     
+        "label": "Qux",
+        "units" : "",
+        "color": "#8583C2",
+        "value": 2,
+    },
 ];
 
 var radialData = [
     {     
         "label": "Foo",
-        "units" : "", 
+        "units" : "",
         "color": "#69A9CA",
         "value": 50,
     },
@@ -290,7 +304,7 @@ var radialData = [
         "units" : "",
         "color": "#68843C",
         "value": 25,
-    },  
+    },
 ];
 
 function getFirstGroupData() {
