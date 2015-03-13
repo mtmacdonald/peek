@@ -8,8 +8,8 @@ function Legend(container) {
     this.opacity = 0.4;
 
     var outlineWidth = 2;
-    var keyWidth = 24;
-    var keyHeight = 18;
+    var keyWidth = 22;
+    var keyHeight = 16;
 
     this.draw = function (data) {
         var legend = d3.select(container).append("div").attr("class", "legend");
