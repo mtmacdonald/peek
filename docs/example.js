@@ -272,30 +272,25 @@ var horizontal_bar_data = [
     }
 ];
 
-var pie_data_one = [
+var radialData = [
     {     
         "label": "Foo",
-        "value": 90.1,
-        "color": "steelblue"
+        "units" : "", 
+        "color": "#69A9CA",
+        "value": 50,
+    },
+    {     
+        "label": "Bar",
+        "units" : "",
+        "color": "#C76842",
+        "value": 25,
     },
     {     
         "label": "Baz",
-        "value": 9.9,
-        "color": "firebrick"
-    }     
-];
-
-var pie_data_two = [
-    {     
-        "label": "Foo",
-        "value": 49.9,
-        "color": "steelblue"
-    },    
-    {
-        "label": "Baz",
-        "value": 50.1,
-        "color": "firebrick"
-    }
+        "units" : "",
+        "color": "#68843C",
+        "value": 25,
+    },  
 ];
 
 function getFirstGroupData() {

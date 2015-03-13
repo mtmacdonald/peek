@@ -389,24 +389,40 @@
 
 <!-- **************************************************************************************************************- -->
 
+<h1 class="doc-heading"><span>Pie chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-pie-chart">
+<script>
+ $(document).ready(function() {
+    var chart = new Pie("#pie");
+    chart.draw(radialData);
+    var legend = new Legend("#pie-legend");
+    legend.draw(radialData);
+ });
+</script>
+
+<div id="pie" style="padding: 20px; float: left;"></div>
+<div id="pie-legend" style="padding: 20px; float: left;"></div>
+<br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
 <h1 class="doc-heading"><span>Donut chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
 <div class="code" id="code-sample-donut-chart">
 <script>
  $(document).ready(function() {
-    var pie_one = new Pie("#pie-one");
-    var pie_two = new Pie("#pie-two");
-    pie_one.draw(pie_data_one);
-    pie_two.draw(pie_data_two);
-    //var legend = new Legend("#pie");
-    //legend.draw(pie_data_one);
+    var chart = new Pie("#donut");
+    chart.draw(radialData);
+    var legend = new Legend("#donut-legend");
+    legend.draw(radialData);
  });
 </script>
 
-<div id="pie-one" style="padding: 20px; float: left;"></div>
-<div id="pie-two" style="padding: 20px; float: left;"></div>
-<div id="pie-legend" style="padding: 20px; float: left;"></div>
+<div id="donut" style="padding: 20px; float: left;"></div>
+<div id="donut-legend" style="padding: 20px; float: left;"></div>
 <br style="clear:both;"/>
 </div>
+
 
  </div>
  </section>
