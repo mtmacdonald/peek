@@ -3,15 +3,35 @@
 function Legend(container) {
 
     this.showGroups = false;
+    this.hasOutline = true;
+    this.hasOpacity = false;
+    this.opacity = 0.4;
+
+    var outlineWidth = 2;
+    var keyWidth = 24;
+    var keyHeight = 18;
 
     this.draw = function (data) {
         var legend = d3.select(container).append("div").attr("class", "legend");
         data.forEach(function(series, i) {
             var row = legend.append("div");
 
-            row.append("span").attr("class", "key")
-                .style('background-color', series.color)
-                .style('border-color', series.color); //show color when printing
+            var keyContainer = row.append("div").attr("class", "keyContainer")
+                                .insert("svg").attr('width', keyWidth).attr('height', keyHeight);
+
+            var key = keyContainer.append("rect")
+                .attr("x", 0+outlineWidth/2)
+                .attr("y", 0+outlineWidth/2).attr("rx", 3).attr("ry", 3)
+                .attr("width", (keyWidth - outlineWidth))
+                .attr("height", (keyHeight - outlineWidth))
+                .style("fill", series.color);
+            if (this.hasOutline === true) {
+                key.attr("stroke", series.color );
+                key.style("stroke-width", outlineWidth) 
+            }
+            if (this.hasOpacity === true) {
+                key.style('fill-opacity', this.opacity);
+            }
 
             var text = [], i = -1;
             text[++i] = series.label;
