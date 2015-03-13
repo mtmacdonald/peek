@@ -625,15 +625,15 @@ function Compare(container) {
                         return (dx*d.value)-(width);
                     })
                     .attr("y", function(d, i) {return dy*i + self.barSpacing*i + (dy/2) + 4;}) //4 accounts for text height
-                    //.style("display", function(d, i){
+                    .style("display", function(d, i){
                         //only display the values when there is space inside the bar
-                        //var width = this.getComputedTextLength() + 10;
-                        //if (dx*d.value < width) {
-                        //    return "none";
-                        //} else {
-                        //    return "initial";
-                        //}
-                    //})
+                        var width = this.getComputedTextLength() + 10;
+                        if (dx*d.value < width) {
+                            return "none";
+                        } else {
+                            return "initial";
+                        }
+                    })
                     .style("font-weight", "bold")
                     .attr("fill", "white");
 
