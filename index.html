@@ -154,101 +154,22 @@
   <script src="require/highlight.min.js"></script>
   <script src="require/d3.min.js"></script>
   <script src="peek.js"></script>
+  <script src="docs/example.js"></script>
 
   <!--inline scripts last-->
 <script>
 
-var example_data = [
-    {
-        "label": "Foo",
-        "units": "kg",
-        "color": "steelblue",
-        "values": [
-            {
-                x : "2014-03-01 00:00:00",
-                y : 6
-            },
-            {
-                x : "2014-03-02 00:00:00",
-                y : 1.43
-            },
-            {
-                x : "2014-03-03 00:00:00",
-                y : 1.38
-            },
-            {
-                x : "2014-03-04 00:00:00",
-                y : 4.14
-            },
-            {
-                x : "2014-03-05 00:00:00",
-                y : 7.14
-            }
-        ]
-    },
-    {
-        "label": "Bar",
-        "units": "m/s",
-        "color": "firebrick",
-        "values": [
-            {
-                x : "2014-03-01 00:00:00",
-                y : 2
-            },
-            {
-                x : "2014-03-02 00:00:00",
-                y : 4.4
-            },
-            {
-                x : "2014-03-03 00:00:00",
-                y : 0.8
-            },
-            {
-                x : "2014-03-04 00:00:00",
-                y : 7.24
-            },
-            {
-                x : "2014-03-05 00:00:00",
-                y : 6.0
-            }
-        ]
-    },
-    {
-        "label": "Baz",
-        "units": "l",
-        "color": "darkgreen",
-        "values": [
-            {
-                x : "2014-03-01 00:00:00",
-                y : 1
-            },
-            {
-                x : "2014-03-02 00:00:00",
-                y : 8.2
-            },
-            {
-                x : "2014-03-03 00:00:00",
-                y : 3.6
-            },
-            {
-                x : "2014-03-04 00:00:00",
-                y : 3.1
-            },
-            {
-                x : "2014-03-05 00:00:00",
-                y : 1.1
-            }
-        ]
-    },
-];
 
  $(document).ready(function() {
 
-  var stacked = new Cartesian("#chart", true);
-  stacked.chart.width = 600;
-  stacked.chart.height = 340;
-  stacked.line.area = true;
-  stacked.draw(example_data);
+  var data = getFirstGroupData();
+  var chart = new Cartesian("#chart");
+  chart.data.isStacked = true;
+  chart.plot.width = 600;
+  chart.plot.height = 340;
+  chart.line.interpolation = 'cardinal';
+  chart.line.showArea = true;
+  chart.draw(data);
 
   //instantiate an svg injector to show SVG icons
   var injector = new svgInject();
@@ -282,9 +203,13 @@ var example_data = [
    <div id="example" class="w-clear-after">
     <div id="chart"></div>
     <div id="example-code">
-<pre><code>var chart = new Xy("#chart", true);
-chart.line.area = true;
-chart.render(example_data);</code></pre>
+<pre><code>var chart = new Cartesian("#chart");
+chart.data.isStacked = true;
+chart.plot.width = 600;
+chart.plot.height = 340;
+chart.line.interpolation = 'cardinal';
+chart.line.showArea = true;
+chart.draw(data);</code></pre>
    </div>
    </div>   
  </div></div>
