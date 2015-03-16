@@ -5,7 +5,7 @@ function Legend(container) {
     this.showGroups = false;
     this.hasOutline = true;
     this.hasOpacity = false;
-    this.opacity = 0.4;
+    this.opacity = 0.6;
 
     var outlineWidth = 2;
     var keyWidth = 22;
@@ -467,7 +467,7 @@ function Bar(plot) {
     this.hasOutline = true;
     this.outlineWidth = 2;
     this.hasOpacity = false;
-    this.opacity = 0.4;
+    this.opacity = 0.6;
 
     var sampleCount;
     var groupCount;
@@ -577,6 +577,10 @@ function Compare(container) {
 
     this.barHeight = 60;
     this.barSpacing = 10;
+    this.hasOutline = true;
+    this.outlineWidth = 2;
+    this.hasOpacity = false;
+    this.opacity = 0.6;
 
     var plot = new Plot(container);
     plot.showTitle = false;
@@ -620,19 +624,25 @@ function Compare(container) {
             var max = d3.max(data, function(d) { return d.value;} );
 
             var dx = (plot.width - rightPadding) / max;
-            var dy = ((plot.height) / data.length) - this.barSpacing;
+            var dy = (plot.height / data.length) - (this.barSpacing);
     
             //bars
             var bars = plot.svg.selectAll(".bar")
                 .data(data)
                 .enter()
                 .append("rect")
-                .attr("x", function(d, i) {return 0;})
-                .attr("y", function(d, i) {return dy*i + self.barSpacing*i;})
+                .attr("x", function(d, i) {return self.outlineWidth-1;})
+                .attr("y", function(d, i) {return dy*i + self.barSpacing*i +(self.outlineWidth-1);})
                 .attr("width", function(d, i) {return dx*d.value})
                 .attr("height", dy)
                 .attr("fill", function(d, i) {return d.color} );
-
+                if (this.hasOutline === true) {
+                    bars.style("stroke", function(d, i) {return d.color});
+                    bars.style("stroke-width", this.outlineWidth);
+                }
+                if (this.hasOpacity === true) {
+                    bars.style('fill-opacity', this.opacity);
+                }
             //labels
             var text = plot.svg.selectAll("text")
                 .data(data)
@@ -640,7 +650,7 @@ function Compare(container) {
                 .append("text")
                     .attr('class', 'label')
                     .attr("x", function(d, i) {return (dx*d.value)+5})
-                    .attr("y", function(d, i) {return dy*i + self.barSpacing*i + (dy/2) + 4;}) //4 accounts for text height
+                    .attr("y", function(d, i) {return dy*i + self.barSpacing*i + (dy/2) + 4 + self.outlineWidth;}) //4 accounts for text height
                     .html( function(d) {return d.label;});
 
             //text values
@@ -655,7 +665,7 @@ function Compare(container) {
                         var width = this.getComputedTextLength() + 10;
                         return (dx*d.value)-(width);
                     })
-                    .attr("y", function(d, i) {return dy*i + self.barSpacing*i + (dy/2) + 4;}) //4 accounts for text height
+                    .attr("y", function(d, i) {return dy*i + self.barSpacing*i + (dy/2) + 4 + self.outlineWidth;}) //4 accounts for text height
                     .style("display", function(d, i){
                         //only display the values when there is space inside the bar
                         var width = this.getComputedTextLength() + 10;
@@ -678,7 +688,7 @@ function Radial(container) {
     this.hasOutline = false;
     this.outlineWidth = 2;
     this.hasOpacity = false;
-    this.opacity = 0.4;
+    this.opacity = 0.6;
 
     var plot = new Plot(container);
     plot.isRadial = true;

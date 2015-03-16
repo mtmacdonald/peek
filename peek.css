@@ -147,10 +147,6 @@ header > div > a div{
   fill-opacity: 0.6;
 }
 
-.rect-line {
-  stroke-width: 2px;
-}
-
 circle {
   stroke-width: 2px;
 }
