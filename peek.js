@@ -209,85 +209,92 @@ function Axes (plot) {
 }
 
 function Lines (plot) {
+    var data;
     var plot = plot;
     var self = this;
-    this.xScale;
-    this.yScale;
 
     this.visible = true;
     this.interpolation = 'linear';
     this.lineWidth = 2;
 
-    this.draw = function(series, xScale, yScale, stacked) {
+    this.init = function (dataObject) {
+        if (this.visible === true) {
+            data = dataObject;
+        }
+    }
 
-        var line = d3.svg.line()
-                    .interpolate(this.interpolation) 
-                    .x(function(d) { return self.xScale(d.x); })
-                    .y(function(d) { return self.yScale(d.y); });
-
-        if (stacked === true) {
+    this.draw = function(xScale, yScale) {
+        if (this.visible === true) {
             var line = d3.svg.line()
                         .interpolate(this.interpolation) 
-                        .x(function(d) { return self.xScale(d.x); })
-                        .y(function(d) { return self.yScale(d.y0 + d.y); });
-        }
+                        .x(function(d) { return xScale(d.x); })
+                        .y(function(d) { return yScale(d.y); });
 
-        this.xScale = xScale;
-        this.yScale = yScale;
-        if (this.visible === true) {
-            var line = plot.svg.append("path")
-                .attr("class", "pk-line")
-                .style("stroke", series.color)
-                .style("stroke-width", this.lineWidth)
-                .attr("d", line(series.values));
+            if (data.isStacked === true) {
+                var line = d3.svg.line()
+                            .interpolate(this.interpolation) 
+                            .x(function(d) { return xScale(d.x); })
+                            .y(function(d) { return yScale(d.y0 + d.y); });
+            }
+
+            data.getData().forEach(function (series) {     
+                var element = plot.svg.append("path")
+                    .attr("class", "pk-line")
+                    .style("stroke", series.color)
+                    .style("stroke-width", this.lineWidth)
+                    .attr("d", line(series.values));
+            }, this);
         }
     }
 }
 
 function Areas (plot) {
+    var data;
     var plot = plot;
     var self = this;
-    this.xScale;
-    this.yScale;
 
     this.visible = false;
     this.interpolation = 'linear';
     this.hasOpacity = false;
     this.opacity = 0.6;
 
-    this.draw = function(series, xScale, yScale, stacked) {
-
-        var area = d3.svg.area()
-                    .interpolate(this.interpolation)
-                    .x(function(d) { return self.xScale(d.x); })
-                    .y0(plot.getSvgHeight())
-                    .y1(function(d) { return self.yScale(d.y); });
-
-        if (stacked === true) {
-
-            var area = d3.svg.area()
-                .interpolate('cardinal')
-                .x(function(d, i) { return self.xScale(d.x); })
-                .y0(function(d) { return self.yScale(d.y0); })
-                .y1(function(d) { return self.yScale(d.y0 + d.y); });
-        }
-
-        this.xScale = xScale;
-        this.yScale = yScale;
-
+    this.init = function (dataObject) {
         if (this.visible === true) {
-            var area = plot.svg.append("path")
-                    .attr("class", "pk-area")
-                    .style("fill", series.color)
-                    .attr("d", area(series.values));
-            if (this.hasOpacity === true) {
-                area.style('fill-opacity', this.opacity);
+            data = dataObject;
+        }
+    }
+
+    this.draw = function(xScale, yScale) {
+        if (this.visible === true) {
+            var area = d3.svg.area()
+                        .interpolate(this.interpolation)
+                        .x(function(d) { return xScale(d.x); })
+                        .y0(plot.getSvgHeight())
+                        .y1(function(d) { return yScale(d.y); });
+
+            if (data.isStacked === true) {
+                var area = d3.svg.area()
+                    .interpolate('cardinal')
+                    .x(function(d, i) { return xScale(d.x); })
+                    .y0(function(d) { return yScale(d.y0); })
+                    .y1(function(d) { return yScale(d.y0 + d.y); });
             }
+
+            data.getData().forEach(function (series) {     
+                var element = plot.svg.append("path")
+                        .attr("class", "pk-area")
+                        .style("fill", series.color)
+                        .attr("d", area(series.values));
+                if (this.hasOpacity === true) {
+                    element.style('fill-opacity', this.opacity);
+                }
+            }, this);
         }
     }
 }
 
 function Points (plot) {
+    var data;
     var self = this;
     var plot = plot;
 
@@ -295,29 +302,39 @@ function Points (plot) {
     this.size = 3;
     this.fill = false;
 
-    this.draw = function(series, xScale, yScale) {
+    this.init = function (dataObject) {
         if (this.visible === true) {
-            d3.select(plot.container)
-                .append("div")
-                .attr("class", "pk-tooltip").html("<p>Tooltip</p>");
+            data = dataObject;
+        }
+    }
 
-            var point = plot.svg.selectAll(".chart")
-                .data(series.values)
-                .enter()
-                .append("circle")
-                  .attr("transform", function(d) { 
-                    return "translate(" + xScale(d.x) + ", " + yScale(d.y) + ")"; 
-                })
-                .attr("r", function(d){ return self.size; }) 
-                .style("stroke", series.color)
-                .on("mouseover", this.mouseover_circle)
-                .on("mouseout", this.mouseout_circle);
+    this.draw = function(xScale, yScale) {
+        if (this.visible === true) {
+            data.getData().forEach(function (series) {     
+                //------------------------------------------------------------------------------------------------------
+                d3.select(plot.container)
+                    .append("div")
+                    .attr("class", "pk-tooltip").html("<p>Tooltip</p>");
 
-            if (this.fill) {
-                point.attr("fill", series.color);
-            } else {
-                point.attr("fill", "white");
-            }
+                var point = plot.svg.selectAll(".chart")
+                    .data(series.values)
+                    .enter()
+                    .append("circle")
+                      .attr("transform", function(d) { 
+                        return "translate(" + xScale(d.x) + ", " + yScale(d.y) + ")"; 
+                    })
+                    .attr("r", function(d){ return self.size; }) 
+                    .style("stroke", series.color)
+                    .on("mouseover", this.mouseover_circle)
+                    .on("mouseout", this.mouseout_circle);
+
+                if (this.fill) {
+                    point.attr("fill", series.color);
+                } else {
+                    point.attr("fill", "white");
+                }
+                //------------------------------------------------------------------------------------------------------
+            }, this);
         }
     }
 
@@ -373,15 +390,17 @@ function Bars(plot) {
     }
 
     this.init = function (dataObject) {
-        data = dataObject;
-        sampleCount =data.countSamples();
-        groupCount = data.countGroups();
+        if (this.visible === true) {
+            data = dataObject;
+            sampleCount =data.countSamples();
+            groupCount = data.countGroups();
 
-        sampleBoxWidth = plot.getSvgWidth() / sampleCount;
-        groupBoxWidth = (sampleBoxWidth - (2 * outerGap));
-        barWidth = (groupBoxWidth / groupCount) - innerGap + (innerGap / groupCount); //the final bar in each groupBox should not be proceeded by a gap
+            sampleBoxWidth = plot.getSvgWidth() / sampleCount;
+            groupBoxWidth = (sampleBoxWidth - (2 * outerGap));
+            barWidth = (groupBoxWidth / groupCount) - innerGap + (innerGap / groupCount); //the final bar in each groupBox should not be proceeded by a gap
 
-        plot.axes.x.offset = sampleBoxWidth/2; //translate the tick to the center of sampleBox
+            plot.axes.x.offset = sampleBoxWidth/2; //translate the tick to the center of sampleBox
+        }
     }
 
     this.draw = function(xScale, yScale) {
@@ -608,9 +627,10 @@ function Cartesian(container) {
 
         this.plot.draw();
 
-        if (this.bars.visible === true) {
-            this.bars.init(this.data);
-        }
+        this.bars.init(this.data);
+        this.lines.init(this.data);
+        this.points.init(this.data);
+        this.areas.init(this.data);
 
         if (this.bars.visible === true) {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
@@ -622,21 +642,10 @@ function Cartesian(container) {
         yScale.domain(this.data.yExtent());
 
         this.plot.axes.drawGrid(xScale, yScale);
-
         this.bars.draw(xScale, yScale);
-
-        this.data.getData().forEach(function(series, i) {
-            this.lines.draw(series, xScale, yScale, this.data.isStacked);
-        }, this);
-
-        this.data.getData().forEach(function(series, i) {
-            this.points.draw(series, xScale, yScale, this.data.isStacked);
-        }, this);
-
-        this.data.getData().forEach(function(series, i) {
-            this.areas.draw(series, xScale, yScale, this.data.isStacked);
-        }, this);
-
+        this.lines.draw(xScale, yScale);
+        this.points.draw(xScale, yScale);
+        this.areas.draw(xScale, yScale);
         this.plot.axes.draw(xScale, yScale);
     }
 }
