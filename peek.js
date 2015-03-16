@@ -332,6 +332,74 @@ function Points (plot) {
 
 }
 
+function Bars(plot) {
+
+    var plot = plot;
+    var data;
+
+    this.hasOutline = true;
+    this.outlineWidth = 2;
+    this.hasOpacity = false;
+    this.opacity = 0.6;
+
+    var sampleCount;
+    var groupCount;
+    var outerGap = 20;
+    var innerGap = 5;
+
+    var sampleBoxWidth;
+    var groupBoxWidth;
+    var barWidth;
+
+    this.getSampleBoxWidth = function () {
+        return sampleBoxWidth;
+    }
+
+    this.init = function (dataObject) {
+        data = dataObject;
+        sampleCount =data.countSamples();
+        groupCount = data.countGroups();
+
+        sampleBoxWidth = plot.getSvgWidth() / sampleCount;
+        groupBoxWidth = (sampleBoxWidth - (2 * outerGap));
+        barWidth = (groupBoxWidth / groupCount) - innerGap + (innerGap / groupCount); //the final bar in each groupBox should not be proceeded by a gap
+
+        plot.axes.x.offset = sampleBoxWidth/2; //translate the tick to the center of sampleBox
+    }
+
+    this.draw = function(xScale, yScale) {
+        var groups = data.getGroups();
+        var max = data.yExtent()[1]; //refactor
+        data.getData().forEach(function(series, i) {
+            series.values.forEach(function(value) {
+                var bar = plot.svg.append("rect")
+                    .attr("class", "pk-rect-line pk-rect-area")
+                    .style("fill", series.color)
+                    .attr("x", function(d) {
+                        var x = xScale(value.x)+outerGap;
+                        //------------------------------------------------------------------------------------------
+                        //add offset for group
+                        var offset = groups.indexOf(series.group);
+                        x += (barWidth+innerGap)*offset;
+                        return x;
+                    })
+                    .attr("width", barWidth)
+                    //for y-axis, d3 has a top-left coordinate system
+                    //todo - account for line size / line overlap?
+                    .attr("y", function(d) { return plot.getSvgHeight()-yScale(max-value.y-value.y0); })
+                    .attr("height", function(d) { return yScale(max-value.y); });
+                if (this.hasOutline === true) {
+                    bar.style("stroke", series.color);
+                    bar.style("stroke-width", this.outlineWidth);
+                }
+                if (this.hasOpacity === true) {
+                    bar.style('fill-opacity', this.opacity);
+                }
+            }, this);
+        }, this);
+    }
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 function Data() {
@@ -498,74 +566,6 @@ function Data() {
         yExtent = [min, max];
     }
 
-}
-
-function Bars(plot) {
-
-    var plot = plot;
-    var data;
-
-    this.hasOutline = true;
-    this.outlineWidth = 2;
-    this.hasOpacity = false;
-    this.opacity = 0.6;
-
-    var sampleCount;
-    var groupCount;
-    var outerGap = 20;
-    var innerGap = 5;
-
-    var sampleBoxWidth;
-    var groupBoxWidth;
-    var barWidth;
-
-    this.getSampleBoxWidth = function () {
-        return sampleBoxWidth;
-    }
-
-    this.init = function (dataObject) {
-        data = dataObject;
-        sampleCount =data.countSamples();
-        groupCount = data.countGroups();
-
-        sampleBoxWidth = plot.getSvgWidth() / sampleCount;
-        groupBoxWidth = (sampleBoxWidth - (2 * outerGap));
-        barWidth = (groupBoxWidth / groupCount) - innerGap + (innerGap / groupCount); //the final bar in each groupBox should not be proceeded by a gap
-
-        plot.axes.x.offset = sampleBoxWidth/2; //translate the tick to the center of sampleBox
-    }
-
-    this.draw = function(xScale, yScale) {
-        var groups = data.getGroups();
-        var max = data.yExtent()[1]; //refactor
-        data.getData().forEach(function(series, i) {
-            series.values.forEach(function(value) {
-                var bar = plot.svg.append("rect")
-                    .attr("class", "pk-rect-line pk-rect-area")
-                    .style("fill", series.color)
-                    .attr("x", function(d) {
-                        var x = xScale(value.x)+outerGap;
-                        //------------------------------------------------------------------------------------------
-                        //add offset for group
-                        var offset = groups.indexOf(series.group);
-                        x += (barWidth+innerGap)*offset;
-                        return x;
-                    })
-                    .attr("width", barWidth)
-                    //for y-axis, d3 has a top-left coordinate system
-                    //todo - account for line size / line overlap?
-                    .attr("y", function(d) { return plot.getSvgHeight()-yScale(max-value.y-value.y0); })
-                    .attr("height", function(d) { return yScale(max-value.y); });
-                if (this.hasOutline === true) {
-                    bar.style("stroke", series.color);
-                    bar.style("stroke-width", this.outlineWidth);
-                }
-                if (this.hasOpacity === true) {
-                    bar.style('fill-opacity', this.opacity);
-                }
-            }, this);
-        }, this);
-    }
 }
 
 function Cartesian(container) {
