@@ -193,6 +193,9 @@ function Line (plot) {
     this.showPoints = false;
     this.showArea = false;
     this.interpolation = 'linear';
+    this.lineWidth = 2;
+    this.hasAreaOpacity = false;
+    this.opacity = 0.6;
     this.point = new Point(plot);
 
     this.draw = function(series, xScale, yScale, stacked) {
@@ -225,16 +228,20 @@ function Line (plot) {
         this.xScale = xScale;
         this.yScale = yScale;
         if (this.showLines === true) {
-            plot.svg.append("path")
+            var line = plot.svg.append("path")
                 .attr("class", "line")
                 .style("stroke", series.color)
+                .style("stroke-width", this.lineWidth)
                 .attr("d", line(series.values));
         }
         if (this.showArea === true) {
-            plot.svg.append("path")
+            var area = plot.svg.append("path")
                     .attr("class", "area")
                     .style("fill", series.color)
                     .attr("d", area(series.values));
+            if (this.hasAreaOpacity === true) {
+                area.style('fill-opacity', this.opacity);
+            }
         }
         if (this.showPoints === true) {
             this.point.draw(series, xScale, yScale);

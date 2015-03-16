@@ -139,12 +139,10 @@ header > div > a div{
 
 .line {
   fill: none;
-  stroke-width: 2px;
 }
 
 .area {
   stroke-width: 0;
-  fill-opacity: 0.6;
 }
 
 circle {

@@ -203,6 +203,7 @@
     var chart = new Cartesian("#area-chart");
     chart.line.interpolation = 'cardinal';
     chart.line.showArea = true;
+    chart.line.hasAreaOpacity = true;
     chart.draw(data);
     var legend = new Legend("#area-legend");
     legend.hasOpacity = true;
@@ -226,13 +227,35 @@
     chart.line.showArea = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-legend");
-    legend.hasOpacity = true;
     legend.draw(data);
  });
 
 </script>
 
 <div id="stacked-area-chart"></div><div id="stacked-area-legend"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Stacked area chart (with opacity)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-stacked-area-chart-opacity">
+<script>
+ $(document).ready(function() {
+    var data = getFirstGroupData();
+    var chart = new Cartesian("#stacked-area-chart-opacity");
+    chart.data.isStacked = true;
+    chart.line.interpolation = 'cardinal';
+    chart.line.showArea = true;
+    chart.line.hasAreaOpacity = true;
+    chart.draw(data);
+    var legend = new Legend("#stacked-area-opacity-legend");
+    legend.hasOpacity = true;
+    legend.draw(data);
+ });
+
+</script>
+
+<div id="stacked-area-chart-opacity"></div><div id="stacked-area-opacity-legend"></div><br style="clear:both;"/>
 </div>
 
 <!-- **************************************************************************************************************- -->
@@ -247,6 +270,7 @@
     chart.line.interpolation = 'cardinal';
     chart.data.stackOffset = 'expand';
     chart.line.showArea = true;
+    chart.line.hasAreaOpacity = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-expand-legend");
     legend.hasOpacity = true;
@@ -270,6 +294,7 @@
     chart.line.interpolation = 'cardinal';
     chart.data.stackOffset = 'wiggle';
     chart.line.showArea = true;
+    chart.line.hasAreaOpacity = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-wiggle-legend");
     legend.hasOpacity = true;
@@ -293,6 +318,7 @@
     chart.line.interpolation = 'cardinal';
     chart.stackOffset = 'silhouette';
     chart.line.showArea = true;
+    chart.line.hasAreaOpacity = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-silhouette-legend");
     legend.hasOpacity = true;
