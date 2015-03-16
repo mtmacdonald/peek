@@ -96,7 +96,7 @@ function Plot(container) {
         if (this.showYLabel === true) {
             leftContainer.insert("div").html(this.yLabel).attr("class", "pk-yLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px')
-                                .style('width', '400px'); /*must be same as height of plot area*/
+                                .style('width', (this.getSvgHeight()+this.margin.top+this.margin.bottom)+'px'); /*must be same as height of svg area+margins*/
         }
         //main container with xLabel and plot area
         var mainContainer = chart.insert("div").attr("class", "pk-mainContainer");
