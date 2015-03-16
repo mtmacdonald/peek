@@ -1,4 +1,4 @@
-/*! Peek.js (c) 2014 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
+/*! Peek.js (c) 2015 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
 
 function Legend(container) {
 
@@ -353,6 +353,7 @@ function Bars(plot) {
     var plot = plot;
     var data;
 
+    this.visible = false;
     this.hasOutline = true;
     this.outlineWidth = 2;
     this.hasOpacity = false;
@@ -384,35 +385,37 @@ function Bars(plot) {
     }
 
     this.draw = function(xScale, yScale) {
-        var groups = data.getGroups();
-        var max = data.yExtent()[1]; //refactor
-        data.getData().forEach(function(series, i) {
-            series.values.forEach(function(value) {
-                var bar = plot.svg.append("rect")
-                    .attr("class", "pk-rect-line pk-rect-area")
-                    .style("fill", series.color)
-                    .attr("x", function(d) {
-                        var x = xScale(value.x)+outerGap;
-                        //------------------------------------------------------------------------------------------
-                        //add offset for group
-                        var offset = groups.indexOf(series.group);
-                        x += (barWidth+innerGap)*offset;
-                        return x;
-                    })
-                    .attr("width", barWidth)
-                    //for y-axis, d3 has a top-left coordinate system
-                    //todo - account for line size / line overlap?
-                    .attr("y", function(d) { return plot.getSvgHeight()-yScale(max-value.y-value.y0); })
-                    .attr("height", function(d) { return yScale(max-value.y); });
-                if (this.hasOutline === true) {
-                    bar.style("stroke", series.color);
-                    bar.style("stroke-width", this.outlineWidth);
-                }
-                if (this.hasOpacity === true) {
-                    bar.style('fill-opacity', this.opacity);
-                }
+        if (this.visible === true) {
+            var groups = data.getGroups();
+            var max = data.yExtent()[1]; //refactor
+            data.getData().forEach(function(series, i) {
+                series.values.forEach(function(value) {
+                    var bar = plot.svg.append("rect")
+                        .attr("class", "pk-rect-line pk-rect-area")
+                        .style("fill", series.color)
+                        .attr("x", function(d) {
+                            var x = xScale(value.x)+outerGap;
+                            //------------------------------------------------------------------------------------------
+                            //add offset for group
+                            var offset = groups.indexOf(series.group);
+                            x += (barWidth+innerGap)*offset;
+                            return x;
+                        })
+                        .attr("width", barWidth)
+                        //for y-axis, d3 has a top-left coordinate system
+                        //todo - account for line size / line overlap?
+                        .attr("y", function(d) { return plot.getSvgHeight()-yScale(max-value.y-value.y0); })
+                        .attr("height", function(d) { return yScale(max-value.y); });
+                    if (this.hasOutline === true) {
+                        bar.style("stroke", series.color);
+                        bar.style("stroke-width", this.outlineWidth);
+                    }
+                    if (this.hasOpacity === true) {
+                        bar.style('fill-opacity', this.opacity);
+                    }
+                }, this);
             }, this);
-        }, this);
+        }
     }
 }
 
@@ -588,8 +591,6 @@ function Cartesian(container) {
 
     var self = this;
 
-    this.type = 'line';
-
     this.data = new Data();
     this.plot = new Plot(container);
     this.lines = new Lines(this.plot);
@@ -599,7 +600,7 @@ function Cartesian(container) {
 
     this.draw = function (dataArray) {
 
-        if (this.type === 'bar') {
+        if (this.bars.visible === true) {
             this.data.isStackedByGroup = true; //bar charts are always stacked by group
         }
 
@@ -607,11 +608,11 @@ function Cartesian(container) {
 
         this.plot.draw();
 
-        if (this.type === 'bar') {
+        if (this.bars.visible === true) {
             this.bars.init(this.data);
         }
 
-        if (this.type === 'bar') {
+        if (this.bars.visible === true) {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
         } else {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
@@ -622,21 +623,19 @@ function Cartesian(container) {
 
         this.plot.axes.drawGrid(xScale, yScale);
 
-        if (this.type === 'bar') {
-            this.bars.draw(xScale, yScale);
-        } else {
-            this.data.getData().forEach(function(series, i) {
-                this.lines.draw(series, xScale, yScale, this.data.isStacked);
-            }, this);
+        this.bars.draw(xScale, yScale);
 
-            this.data.getData().forEach(function(series, i) {
-                this.points.draw(series, xScale, yScale, this.data.isStacked);
-            }, this);
+        this.data.getData().forEach(function(series, i) {
+            this.lines.draw(series, xScale, yScale, this.data.isStacked);
+        }, this);
 
-            this.data.getData().forEach(function(series, i) {
-                this.areas.draw(series, xScale, yScale, this.data.isStacked);
-            }, this);
-        }
+        this.data.getData().forEach(function(series, i) {
+            this.points.draw(series, xScale, yScale, this.data.isStacked);
+        }, this);
+
+        this.data.getData().forEach(function(series, i) {
+            this.areas.draw(series, xScale, yScale, this.data.isStacked);
+        }, this);
 
         this.plot.axes.draw(xScale, yScale);
     }
