@@ -208,7 +208,7 @@ function Axes (plot) {
     };
 }
 
-function Line (plot) {
+function Lines (plot) {
     var plot = plot;
     var self = this;
     this.xScale;
@@ -221,7 +221,7 @@ function Line (plot) {
     this.lineWidth = 2;
     this.hasAreaOpacity = false;
     this.opacity = 0.6;
-    this.point = new Point(plot);
+    this.point = new Points(plot);
 
     this.draw = function(series, xScale, yScale, stacked) {
 
@@ -274,7 +274,7 @@ function Line (plot) {
     }
 }
 
-function Point (plot) {
+function Points (plot) {
     var self = this;
     var plot = plot;
 
@@ -500,7 +500,7 @@ function Data() {
 
 }
 
-function Bar(plot) {
+function Bars(plot) {
 
     var plot = plot;
     var data;
@@ -576,8 +576,8 @@ function Cartesian(container) {
 
     this.data = new Data();
     this.plot = new Plot(container);
-    this.line = new Line(this.plot);
-    this.bar = new Bar(this.plot);
+    this.lines = new Lines(this.plot);
+    this.bars = new Bars(this.plot);
 
     this.draw = function (dataArray) {
 
@@ -590,11 +590,11 @@ function Cartesian(container) {
         this.plot.draw();
 
         if (this.type === 'bar') {
-            this.bar.init(this.data);
+            this.bars.init(this.data);
         }
 
         if (this.type === 'bar') {
-            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bar.getSampleBoxWidth()]);
+            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
         } else {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
         }
@@ -605,10 +605,10 @@ function Cartesian(container) {
         this.plot.axes.drawGrid(xScale, yScale);
 
         if (this.type === 'bar') {
-            this.bar.draw(xScale, yScale);
+            this.bars.draw(xScale, yScale);
         } else {
             this.data.getData().forEach(function(series, i) {
-                this.line.draw(series, xScale, yScale, this.data.isStacked);
+                this.lines.draw(series, xScale, yScale, this.data.isStacked);
             }, this);
         }
 

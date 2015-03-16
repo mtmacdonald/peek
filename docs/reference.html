@@ -163,8 +163,8 @@
  $(document).ready(function() {
     var data = getFirstGroupData();
     var chart = new Cartesian("#line-chart-interpolation");
-    chart.line.interpolation = 'cardinal';
-    chart.line.showPoints = true;
+    chart.lines.interpolation = 'cardinal';
+    chart.lines.showPoints = true;
     chart.draw(data);
     var legend = new Legend("#line-legend-interpolation");
     legend.draw(data);
@@ -185,11 +185,11 @@
     var chart = new Cartesian("#scatter-chart");
     chart.plot.axes.x.showTicks = false;
     chart.plot.axes.y.showTicks = false;
-    chart.line.showLines = false;
-    chart.line.area = false;
-    chart.line.showPoints = true;
-    chart.line.point.size = 8;
-    chart.line.point.fill = true;
+    chart.lines.showLines = false;
+    chart.lines.area = false;
+    chart.lines.showPoints = true;
+    chart.lines.point.size = 8;
+    chart.lines.point.fill = true;
     chart.draw(data);
     var legend = new Legend("#scatter-legend");
     legend.draw(data);
@@ -208,9 +208,9 @@
  $(document).ready(function() {
     var data = getFirstGroupData();
     var chart = new Cartesian("#area-chart");
-    chart.line.interpolation = 'cardinal';
-    chart.line.showArea = true;
-    chart.line.hasAreaOpacity = true;
+    chart.lines.interpolation = 'cardinal';
+    chart.lines.showArea = true;
+    chart.lines.hasAreaOpacity = true;
     chart.draw(data);
     var legend = new Legend("#area-legend");
     legend.hasOpacity = true;
@@ -231,8 +231,8 @@
     var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-area-chart");
     chart.data.isStacked = true;
-    chart.line.interpolation = 'cardinal';
-    chart.line.showArea = true;
+    chart.lines.interpolation = 'cardinal';
+    chart.lines.showArea = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-legend");
     legend.draw(data);
@@ -253,9 +253,9 @@
     var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-area-chart-opacity");
     chart.data.isStacked = true;
-    chart.line.interpolation = 'cardinal';
-    chart.line.showArea = true;
-    chart.line.hasAreaOpacity = true;
+    chart.lines.interpolation = 'cardinal';
+    chart.lines.showArea = true;
+    chart.lines.hasAreaOpacity = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-opacity-legend");
     legend.hasOpacity = true;
@@ -277,10 +277,10 @@
     var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-area-expand-chart");
     chart.data.isStacked = true;
-    chart.line.interpolation = 'cardinal';
+    chart.lines.interpolation = 'cardinal';
     chart.data.stackOffset = 'expand';
-    chart.line.showArea = true;
-    chart.line.hasAreaOpacity = true;
+    chart.lines.showArea = true;
+    chart.lines.hasAreaOpacity = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-expand-legend");
     legend.hasOpacity = true;
@@ -302,10 +302,10 @@
     var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-area-wiggle-chart");
     chart.data.isStacked = true;
-    chart.line.interpolation = 'cardinal';
+    chart.lines.interpolation = 'cardinal';
     chart.data.stackOffset = 'wiggle';
-    chart.line.showArea = true;
-    chart.line.hasAreaOpacity = true;
+    chart.lines.showArea = true;
+    chart.lines.hasAreaOpacity = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-wiggle-legend");
     legend.hasOpacity = true;
@@ -327,10 +327,10 @@
     var data = getFirstGroupData();
     var chart = new Cartesian("#stacked-area-silhouette-chart");
     chart.data.isStacked = true;
-    chart.line.interpolation = 'cardinal';
+    chart.lines.interpolation = 'cardinal';
     chart.stackOffset = 'silhouette';
-    chart.line.showArea = true;
-    chart.line.hasAreaOpacity = true;
+    chart.lines.showArea = true;
+    chart.lines.hasAreaOpacity = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-silhouette-legend");
     legend.hasOpacity = true;
@@ -373,7 +373,7 @@
     var chart = new Cartesian("#bar-chart-opaque");
     chart.data.isStacked = true;
     chart.type = 'bar';
-    chart.bar.hasOpacity = true;
+    chart.bars.hasOpacity = true;
     chart.draw(data);
     var legend = new Legend("#bar-legend-opaque");
     legend.hasOpacity = true;
@@ -395,7 +395,7 @@
     var chart = new Cartesian("#grouped-bar-chart");
     chart.data.isStacked = true;
     chart.type = 'bar';
-    chart.bar.hasOpacity = true;
+    chart.bars.hasOpacity = true;
     chart.draw(data);
     var legend = new Legend("#grouped-bar-legend");
     legend.showGroups = true;
@@ -418,7 +418,7 @@
     var chart = new Cartesian("#stacked-bar-chart");
     chart.data.isStacked = true;
     chart.type = 'bar';
-    chart.bar.hasOpacity = true;
+    chart.bars.hasOpacity = true;
     chart.draw(data);
     var legend = new Legend("#stacked-bar-legend");
     legend.hasOpacity = true;
@@ -440,7 +440,7 @@
     var chart = new Cartesian("#stacked-grouped-bar-chart");
     chart.data.isStacked = true;
     chart.type = 'bar';
-    chart.bar.hasOpacity = true;
+    chart.bars.hasOpacity = true;
     chart.draw(data);
     var legend = new Legend("#stacked-grouped-bar-legend");
     legend.hasOpacity = true;
