@@ -57,7 +57,7 @@ function Plot(container) {
     this.showYLabel = true;
 
     this.container = container;
-    this.margin = {top: 20, right: 20, bottom: 50, left: 50};
+    this.margin = {top: 14, right: 25, bottom: 35, left: 45};
     this.width = 600;
     this.height = 400;
     this.radius = 150; //only applies to radial charts
