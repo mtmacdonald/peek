@@ -299,7 +299,7 @@ function Points (plot) {
     var plot = plot;
 
     this.visible = false;
-    this.size = 3;
+    this.size = 4;
     this.fill = false;
 
     this.init = function (dataObject) {
@@ -644,9 +644,9 @@ function Cartesian(container) {
         this.plot.axes.drawGrid(xScale, yScale);
         this.bars.draw(xScale, yScale);
         this.lines.draw(xScale, yScale);
-        this.points.draw(xScale, yScale);
         this.areas.draw(xScale, yScale);
         this.plot.axes.draw(xScale, yScale);
+        this.points.draw(xScale, yScale);
     }
 }
 
