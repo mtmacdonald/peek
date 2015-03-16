@@ -12,11 +12,11 @@ function Legend(container) {
     var keyHeight = 16;
 
     this.draw = function (data) {
-        var legend = d3.select(container).append("div").attr("class", "legend");
+        var legend = d3.select(container).append("div").attr("class", "pk-legend");
         data.forEach(function(series, i) {
             var row = legend.append("div");
 
-            var keyContainer = row.append("div").attr("class", "keyContainer")
+            var keyContainer = row.append("div").attr("class", "pk-keyContainer")
                                 .insert("svg").attr('width', keyWidth).attr('height', keyHeight);
 
             var key = keyContainer.append("rect")
@@ -42,7 +42,7 @@ function Legend(container) {
                 text[++i] = ' ('+series.units+')';
             };
 
-            row.append("span").html(text.join('')).attr('class', 'key-text');
+            row.append("span").html(text.join('')).attr('class', 'pk-keyText');
         }, this);
     }
 }
@@ -84,26 +84,26 @@ function Plot(container) {
     this.draw = function() {
 
         //chart div
-        var chart = d3.select(container).insert("div").attr("class", "plot p-clear-after");
+        var chart = d3.select(container).insert("div").attr("class", "pk-plot pk-clear-after");
         //left container with yLabel
-        var leftContainer = chart.insert("div").attr("class", "left-container");
+        var leftContainer = chart.insert("div").attr("class", "pk-leftContainer");
         if (this.showYLabel === true) {
             leftContainer.style('width', labelHeight+'px');
         }
         if (this.showYLabel === true) {
-            leftContainer.insert("div").html(this.yLabel).attr("class", "yLabel")
+            leftContainer.insert("div").html(this.yLabel).attr("class", "pk-yLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px')
                                 .style('width', '400px'); /*must be same as height of plot area*/
         }
         //main container with xLabel and plot area
-        var mainContainer = chart.insert("div").attr("class", "main-container");
+        var mainContainer = chart.insert("div").attr("class", "pk-mainContainer");
         if (this.showTitle === true) {
-            mainContainer.insert("div").html(this.title).attr("class", "title")
+            mainContainer.insert("div").html(this.title).attr("class", "pk-title")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px');
         }
-        var svgContainer = mainContainer.insert("div").attr("class", "svgContainer");
+        var svgContainer = mainContainer.insert("div").attr("class", "pk-svgContainer");
         if (this.showXLabel === true) {
-            mainContainer.insert("div").html(this.xLabel).attr("class", "xLabel")
+            mainContainer.insert("div").html(this.xLabel).attr("class", "pk-xLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px');
         }
 
@@ -112,7 +112,7 @@ function Plot(container) {
                     .attr('height', this.getSvgHeight() + this.margin.top + this.margin.bottom);
 
         svgContainer.on("mousemove", function() {
-            var tooltip = d3.select(".tooltip");
+            var tooltip = d3.select(".pk-tooltip");
             var coord = d3.mouse(this);
             tooltip.style("left", (d3.event.pageX) + 15 + "px" );
             tooltip.style("top", (d3.event.pageY) + "px");     
@@ -143,7 +143,7 @@ function Axis (plot) {
                 .attr('y1', plot.getSvgHeight())
                 .attr('x2', plot.getSvgWidth())
                 .attr('y2', plot.getSvgHeight())
-                .attr('class', 'fakeAxis');
+                .attr('class', 'pk-fakeAxis');
         }
 
         //real axes:
@@ -152,7 +152,7 @@ function Axis (plot) {
                     .orient(orient).ticks(ticks);
 
         var rendered = plot.svg.append("g")
-            .attr("class", "axis");
+            .attr("class", "pk-axis");
 
         if (orient === 'bottom') {
             rendered.attr('transform', 'translate('+this.offset+',' + plot.getSvgHeight() + ')');
@@ -170,7 +170,7 @@ function Axis (plot) {
 
             if (orient === 'bottom') {
                 plot.svg.append('g')
-                    .attr('class', 'grid x-grid')
+                    .attr('class', 'pk-grid pk-xGrid')
                     .attr('transform', "translate("+this.offset+"," + plot.getSvgHeight() + ")")
                     .call(axis
                         .tickSize(-plot.getSvgHeight(), 0, 0)
@@ -178,7 +178,7 @@ function Axis (plot) {
                     );
             } else {
                 plot.svg.append('g')         
-                    .attr('class', 'grid y-grid')
+                    .attr('class', 'pk-grid pk-yGrid')
                     .call(axis
                         .tickSize(-plot.getSvgWidth(), 0, 0)
                         .tickFormat('')
@@ -251,14 +251,14 @@ function Line (plot) {
         this.yScale = yScale;
         if (this.showLines === true) {
             var line = plot.svg.append("path")
-                .attr("class", "line")
+                .attr("class", "pk-line")
                 .style("stroke", series.color)
                 .style("stroke-width", this.lineWidth)
                 .attr("d", line(series.values));
         }
         if (this.showArea === true) {
             var area = plot.svg.append("path")
-                    .attr("class", "area")
+                    .attr("class", "pk-area")
                     .style("fill", series.color)
                     .attr("d", area(series.values));
             if (this.hasAreaOpacity === true) {
@@ -277,7 +277,7 @@ function Point (plot) {
     this.draw = function(series, xScale, yScale) {
         d3.select(plot.container)
             .append("div")
-            .attr("class", "tooltip").html("<p>Tooltip</p>");
+            .attr("class", "pk-tooltip").html("<p>Tooltip</p>");
 
         plot.svg.selectAll(".chart")
             .data(series.values)
@@ -298,12 +298,12 @@ function Point (plot) {
         var circle = d3.select(this);
         circle.transition().duration(500).attr("r", 16);
 
-        d3.select(".tooltip")
+        d3.select(".pk-tooltip")
         .style("display", "block")
         .style('opacity', 0)
         .transition().delay(200).duration(500).style('opacity', 1);  
           
-        d3.select(".tooltip p")
+        d3.select(".pk-tooltip p")
             .html("<strong>Date:</strong> " 
                 + formatDate(new Date(data.x)) 
                 + "<br/>" 
@@ -315,7 +315,7 @@ function Point (plot) {
     this.mouseout_circle = function() {
         var circle = d3.select(this);
         circle.transition().duration(500).attr("r", 4);
-        d3.select(".tooltip").style("display", "none"); 
+        d3.select(".pk-tooltip").style("display", "none"); 
     }
 
 }
@@ -529,7 +529,7 @@ function Bar(plot) {
         data.getData().forEach(function(series, i) {
             series.values.forEach(function(value) {
                 var bar = plot.svg.append("rect")
-                    .attr("class", "rect-line rect-area")
+                    .attr("class", "pk-rect-line pk-rect-area")
                     .style("fill", series.color)
                     .attr("x", function(d) {
                         var x = xScale(value.x)+outerGap;
@@ -679,7 +679,7 @@ function Compare(container) {
                 .data(data)
                 .enter()
                 .append("text")
-                    .attr('class', 'label')
+                    .attr('class', 'pk-label')
                     .attr("x", function(d, i) {return (dx*d.value)+5})
                     .attr("y", function(d, i) {return dy*i + self.barSpacing*i + (dy/2) + 4 + self.outlineWidth;}) //4 accounts for text height
                     .html( function(d) {return d.label;});

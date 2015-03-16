@@ -181,6 +181,8 @@
  $(document).ready(function() {
     var data = getFirstGroupData();
     var chart = new Cartesian("#scatter-chart");
+    chart.plot.axes.x.showTicks = false;
+    chart.plot.axes.y.showTicks = false;
     chart.line.showLines = false;
     chart.line.area = false;
     chart.line.showPoints = true;

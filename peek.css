@@ -1,6 +1,6 @@
 /*! Peek.js (c) 2014 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
 
-.plot div, .legend div {
+.pk-plot div, .pk-legend div {
   margin: 0!important;
 }
 
@@ -14,7 +14,7 @@ header > div > a div{
   make it easy to clear floats
 */
 
-.p-clear-after::after {
+.pk-clear-after::after {
   clear: both;
   height: 0;
   visibility: hidden;
@@ -26,19 +26,19 @@ header > div > a div{
   chart
 */
 
-.plot {
+.pk-plot {
   margin: 0;
   float: left;
   display: table; /*make left-container stretch to height of chart*/
 }
 
-.left-container {
+.pk-leftContainer {
   display: table-cell; /*make left-container stretch to height of chart*/
   vertical-align: middle;
   position: relative; /*make container the closest positioned ancestor for yLabel: http://stackoverflow.com/questions/28741562*/
 }
 
-.yLabel {
+.pk-yLabel {
   text-align: center;
   overflow: hidden;
   position: absolute;
@@ -47,26 +47,26 @@ header > div > a div{
   transform-origin: top left;
 }
 
-.main-container {
+.pk-mainContainer {
   /*display: table-cell;*/
 }
 
-.title {
+.pk-title {
   text-align: center;
   overflow: hidden;
   font-weight: bold;
 }
 
-.xLabel {
+.pk-xLabel {
   text-align: center;
   overflow: hidden;
 }
 
-.svgContainer {
+.pk-svgContainer {
   line-height: 0;
 }
 
-.svgContainer svg {
+.pk-svgContainer svg {
   line-height: 14px;
 }
 
@@ -76,23 +76,24 @@ header > div > a div{
   axes
 */
 
-.axis path, .axis line, .fakeAxis {
+.pk-axis path, .pk-axis line, .pk-fakeAxis {
   fill: none;
   stroke: black;
   stroke-width: 1;
   shape-rendering: crispEdges;
 }
 
-.axis text {
+.pk-axis text {
   font-size: 11px;
   fill: #444; /*match the body color*/
 }
 
-.grid .tick {
+.pk-grid {
   stroke: lightgrey;
+  shape-rendering: crispEdges;
 }
 
-.grid path {
+.pk-grid path {
     stroke-width: 0;
 }
 
@@ -102,24 +103,24 @@ header > div > a div{
   legends
 */
 
-.legend {
+.pk-legend {
   margin: 0;
   float: left;
   padding-left: 10px;
 	width: 300px;
 }
 
-.legend div {
+.pk-legend div {
   /*inherited line height*/
 }
 
-.keyContainer {
+.pk-keyContainer {
   display: inline-block;
   vertical-align: middle;
   height: 16px;
 }
 
-.key-text {
+.pk-keyText {
   margin 0;
 	padding-left: 4px;
   vertical-align: middle;
@@ -131,11 +132,11 @@ header > div > a div{
   lines
 */
 
-.line {
+.pk-line {
   fill: none;
 }
 
-.area {
+.pk-area {
   stroke-width: 0;
 }
 
@@ -143,7 +144,7 @@ circle {
   stroke-width: 2px;
 }
 
-.tooltip {
+.pk-tooltip {
   position: absolute;
   min-width: 100px;
   padding: 4px;
@@ -152,6 +153,6 @@ circle {
   display: none;
 }
 
-.tooltip p {
+.pk-tooltip p {
   margin: 0;
 }
