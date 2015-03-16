@@ -114,7 +114,7 @@ function Plot(container) {
         svgContainer.on("mousemove", function() {
             var tooltip = d3.select(".pk-tooltip");
             var coord = d3.mouse(this);
-            tooltip.style("left", (d3.event.pageX) + 15 + "px" );
+            tooltip.style("left", (d3.event.pageX) + "px" );
             tooltip.style("top", (d3.event.pageY) + "px");     
         });
 
@@ -272,31 +272,40 @@ function Line (plot) {
 }
 
 function Point (plot) {
+    var self = this;
     var plot = plot;
+
+    this.size = 3;
+    this.fill = false;
 
     this.draw = function(series, xScale, yScale) {
         d3.select(plot.container)
             .append("div")
             .attr("class", "pk-tooltip").html("<p>Tooltip</p>");
 
-        plot.svg.selectAll(".chart")
+        var point = plot.svg.selectAll(".chart")
             .data(series.values)
             .enter()
             .append("circle")
               .attr("transform", function(d) { 
                 return "translate(" + xScale(d.x) + ", " + yScale(d.y) + ")"; 
             })
-              .attr("r", function(d){ return 4; }) 
-              .attr("fill", "white")
-              .style("stroke", series.color)
-              .on("mouseover", this.mouseover_circle)
-              .on("mouseout", this.mouseout_circle);
+            .attr("r", function(d){ return self.size; }) 
+            .style("stroke", series.color)
+            .on("mouseover", this.mouseover_circle)
+            .on("mouseout", this.mouseout_circle);
+
+        if (this.fill) {
+            point.attr("fill", series.color);
+        } else {
+            point.attr("fill", "white");
+        }
     }
 
     this.mouseover_circle = function(data,i) {     
         var formatDate = d3.time.format("%A %d. %B %Y");
         var circle = d3.select(this);
-        circle.transition().duration(500).attr("r", 16);
+        circle.transition().duration(500).attr("r", 10);
 
         d3.select(".pk-tooltip")
         .style("display", "block")
@@ -314,7 +323,7 @@ function Point (plot) {
 
     this.mouseout_circle = function() {
         var circle = d3.select(this);
-        circle.transition().duration(500).attr("r", 4);
+        circle.transition().duration(500).attr("r", self.size);
         d3.select(".pk-tooltip").style("display", "none"); 
     }
 
