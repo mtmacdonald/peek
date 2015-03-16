@@ -27,6 +27,7 @@ header > div > a div{
 */
 
 .pk-chart {
+  margin: 0;
   overflow: hidden;
   display: inline-block;
 }
@@ -109,6 +110,7 @@ header > div > a div{
 */
 
 .pk-legendContainer {
+  margin: 0;
   overflow: hidden;
   display: inline-block;
   vertical-align: top;
