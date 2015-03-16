@@ -26,6 +26,11 @@ header > div > a div{
   chart
 */
 
+.pk-chart {
+  overflow: hidden;
+  display: inline-block;
+}
+
 .pk-plot {
   margin: 0;
   float: left;
@@ -102,6 +107,12 @@ header > div > a div{
 /*
   legends
 */
+
+.pk-legendContainer {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
+}
 
 .pk-legend {
   margin: 0;

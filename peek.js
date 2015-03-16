@@ -12,7 +12,9 @@ function Legend(container) {
     var keyHeight = 16;
 
     this.draw = function (data) {
-        var legend = d3.select(container).append("div").attr("class", "pk-legend");
+        var legendContainer = d3.select(container).attr('class', 'pk-legendContainer');
+
+        var legend = legendContainer.append("div").attr("class", "pk-legend");
         data.forEach(function(series, i) {
             var row = legend.append("div");
 
@@ -83,8 +85,9 @@ function Plot(container) {
 
     this.draw = function() {
 
-        //chart div
-        var chart = d3.select(container).insert("div").attr("class", "pk-plot pk-clear-after");
+        var chartContainer = d3.select(container).attr('class', 'pk-chart');
+
+        var chart = chartContainer.insert("div").attr("class", "pk-plot pk-clear-after");
         //left container with yLabel
         var leftContainer = chart.insert("div").attr("class", "pk-leftContainer");
         if (this.showYLabel === true) {
