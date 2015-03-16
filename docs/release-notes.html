@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" ><!--Prevent IE using compatibility mode on local or intranet pages. Do not put scripts before this line.-->
   <meta name="viewport" content="width=device-width, user-scalable=yes"><!--Mobile device scaling-->
   <meta charset="UTF-8">
-  <title>Change log</title>
+  <title>Peek - a chart library based on D3.js</title>
 
   <!--load stylesheets first (rationale: https://developers.google.com/speed/docs/best-practices/rtt#PutStylesBeforeScripts)-->
   <link rel="stylesheet" href="../require/framework.min.css" type="text/css" />
@@ -24,7 +24,7 @@
  <div class="w-fixed-width">
 	<a href="../index.html">
     <div style="background-image:url('images/logo.png');">
-      Change log<span style="font-weight:normal;"> (version 1.1.0)</span>
+      Peek - a chart library based on D3.js<span style="font-weight:normal;"> (version 1.1.0)</span>
     </div>
 	</a>
  </div>
@@ -33,20 +33,39 @@
  <section>
  <div class="w-fixed-width">
 
- <h2>1.1.0 released XX/XX/XXXX</h2>
+<h1>Release Notes</h1>
 
- <ul>
-  <li>Scatter charts</li>
-  <li>Area charts</li>
-  <li>Stacked area charts (offsets: expand, silhouete, wiggle, zero)</li>
-  <li>Stacked bar charts</li>
-  <li>Grouped bar charts</li>
-  <li>Stacked grouped bar charts</li>
-  <li>Pie charts</li>
-  <li>Chart title and axis labels</li>
-  <li>Fixed a legend key background color defect (border left a gap on some browsers)</li>
-  <li>Fixed a canvas margin defect where labels at top of chart could get truncated</li>
- </ul> 
+<h2>1.1.0 released XX/XX/XXXX</h2>
+
+<ul>
+ <li>New time-series chart types</li>
+  <ul>
+   <li>Scatter charts</li>
+   <li>Area charts</li>
+   <li>Stacked area charts</li>
+   <li>Bar charts</li>
+   <li>Grouped bar charts</li>
+   <li>Stacked bar charts</li>
+   <li>Grouped stacked bar charts</li>
+  </ul>
+  <li>New radial chart types</li>
+  <ul>
+     <li>Pie charts</li>
+  </ul>
+  <li>Charts now reuse common objects (plot, grid, axes, labels, legend)</li>
+  <li>Uniform data format for all time-series charts</li>
+  <li>Common data handler for all time-series charts</li>
+  <li>Added support for chart title</li>
+  <li>Added support for chart axis labels</li>
+  <li>Added support for fill transparency/opacity</li>
+  <li>Line widths and borders are now configurable</li>
+  <li>Restyled the point tooltip</li>
+  <li>Added a user guide</li>
+  <li>Improved configurability</li>
+  <li>Fixed draw layer ordering (grid, then series, then axis)</li>
+  <li>Fixed legend key defects (key now uses SVG, solving print and display issues)</li>
+  <li>Fixed an SVG margin defect where labels and points could sometimes get truncated</li>
+ </ul>
 
  <h2>1.0.0 released 22/09/2014</h2>
 
