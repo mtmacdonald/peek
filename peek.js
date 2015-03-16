@@ -221,7 +221,6 @@ function Lines (plot) {
     this.lineWidth = 2;
     this.hasAreaOpacity = false;
     this.opacity = 0.6;
-    this.point = new Points(plot);
 
     this.draw = function(series, xScale, yScale, stacked) {
 
@@ -268,9 +267,6 @@ function Lines (plot) {
                 area.style('fill-opacity', this.opacity);
             }
         }
-        if (this.showPoints === true) {
-            this.point.draw(series, xScale, yScale);
-        }
     }
 }
 
@@ -278,30 +274,33 @@ function Points (plot) {
     var self = this;
     var plot = plot;
 
+    this.visible = false;
     this.size = 3;
     this.fill = false;
 
     this.draw = function(series, xScale, yScale) {
-        d3.select(plot.container)
-            .append("div")
-            .attr("class", "pk-tooltip").html("<p>Tooltip</p>");
+        if (this.visible === true) {
+            d3.select(plot.container)
+                .append("div")
+                .attr("class", "pk-tooltip").html("<p>Tooltip</p>");
 
-        var point = plot.svg.selectAll(".chart")
-            .data(series.values)
-            .enter()
-            .append("circle")
-              .attr("transform", function(d) { 
-                return "translate(" + xScale(d.x) + ", " + yScale(d.y) + ")"; 
-            })
-            .attr("r", function(d){ return self.size; }) 
-            .style("stroke", series.color)
-            .on("mouseover", this.mouseover_circle)
-            .on("mouseout", this.mouseout_circle);
+            var point = plot.svg.selectAll(".chart")
+                .data(series.values)
+                .enter()
+                .append("circle")
+                  .attr("transform", function(d) { 
+                    return "translate(" + xScale(d.x) + ", " + yScale(d.y) + ")"; 
+                })
+                .attr("r", function(d){ return self.size; }) 
+                .style("stroke", series.color)
+                .on("mouseover", this.mouseover_circle)
+                .on("mouseout", this.mouseout_circle);
 
-        if (this.fill) {
-            point.attr("fill", series.color);
-        } else {
-            point.attr("fill", "white");
+            if (this.fill) {
+                point.attr("fill", series.color);
+            } else {
+                point.attr("fill", "white");
+            }
         }
     }
 
@@ -577,6 +576,7 @@ function Cartesian(container) {
     this.data = new Data();
     this.plot = new Plot(container);
     this.lines = new Lines(this.plot);
+    this.points = new Points(this.plot);
     this.bars = new Bars(this.plot);
 
     this.draw = function (dataArray) {
@@ -609,6 +609,10 @@ function Cartesian(container) {
         } else {
             this.data.getData().forEach(function(series, i) {
                 this.lines.draw(series, xScale, yScale, this.data.isStacked);
+            }, this);
+
+            this.data.getData().forEach(function(series, i) {
+                this.points.draw(series, xScale, yScale, this.data.isStacked);
             }, this);
         }
 

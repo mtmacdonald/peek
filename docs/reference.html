@@ -164,7 +164,7 @@
     var data = getFirstGroupData();
     var chart = new Cartesian("#line-chart-interpolation");
     chart.lines.interpolation = 'cardinal';
-    chart.lines.showPoints = true;
+    chart.points.visible = true;
     chart.draw(data);
     var legend = new Legend("#line-legend-interpolation");
     legend.draw(data);
@@ -187,9 +187,9 @@
     chart.plot.axes.y.showTicks = false;
     chart.lines.showLines = false;
     chart.lines.area = false;
-    chart.lines.showPoints = true;
-    chart.lines.point.size = 8;
-    chart.lines.point.fill = true;
+    chart.points.visible = true;
+    chart.points.size = 8;
+    chart.points.fill = true;
     chart.draw(data);
     var legend = new Legend("#scatter-legend");
     legend.draw(data);
