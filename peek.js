@@ -147,8 +147,14 @@ function Axis (plot) {
         }
 
         rendered.call(axis);
+    }
 
+    this.drawGrid = function (scale, orient, ticks) {
         if (this.showTicks) {
+
+            var axis = d3.svg.axis()
+                        .scale(scale)
+                        .orient(orient).ticks(ticks);
 
             if (orient === 'bottom') {
                 plot.svg.append("g")
@@ -181,6 +187,10 @@ function Axes (plot) {
         this.y.draw(yScale, 'left', 5);
     };
 
+    this.drawGrid = function(xScale, yScale) {
+        this.x.drawGrid(xScale, 'bottom', 5);
+        this.y.drawGrid(yScale, 'left', 5);
+    };
 }
 
 function Line (plot) {
@@ -554,6 +564,7 @@ function Cartesian(container) {
         this.data.init(dataArray);
 
         this.plot.draw();
+        
 
         if (this.type === 'bar') {
             this.bar.init(this.data);
@@ -568,7 +579,7 @@ function Cartesian(container) {
         xScale.domain(this.data.xExtent());
         yScale.domain(this.data.yExtent());
 
-        this.plot.axes.draw(xScale, yScale);
+        this.plot.axes.drawGrid(xScale, yScale);
 
         if (this.type === 'bar') {
             this.bar.draw(xScale, yScale);
@@ -577,6 +588,8 @@ function Cartesian(container) {
                 this.line.draw(series, xScale, yScale, this.data.isStacked);
             }, this);
         }
+
+        this.plot.axes.draw(xScale, yScale);
     }
 }
 
