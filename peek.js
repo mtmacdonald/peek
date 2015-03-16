@@ -74,7 +74,7 @@ function Plot(container) {
         return plotWidth;
     }
 
-    this.getPlotHeight = function() {
+    this.getSvgHeight = function() {
         var titleHeight = this.showTitle === true ? labelHeight : 0;
         var xLabelHeight = this.showXLabel === true ? labelHeight : 0;
         var plotHeight = this.height - titleHeight - xLabelHeight - this.margin.top - this.margin.bottom;
@@ -109,7 +109,7 @@ function Plot(container) {
 
         this.svg = svgContainer.insert("svg")
                     .attr('width', this.getSvgWidth() + this.margin.left + this.margin.right)
-                    .attr('height', this.getPlotHeight() + this.margin.top + this.margin.bottom);
+                    .attr('height', this.getSvgHeight() + this.margin.top + this.margin.bottom);
 
         svgContainer.on("mousemove", function() {
             var tooltip = d3.select(".tooltip");
@@ -135,15 +135,27 @@ function Axis (plot) {
     this.offset = 0;
 
     this.draw = function (scale, orient, ticks) {
+
+        //fake x-axis: (line at bottom of chart hides the 'gaps' from the bar chart x-axis being shorter)
+        if (orient === 'bottom') {
+            plot.svg.append('line')
+                .attr('x1', 0)
+                .attr('y1', plot.getSvgHeight())
+                .attr('x2', plot.getSvgWidth())
+                .attr('y2', plot.getSvgHeight())
+                .attr('class', 'fakeAxis');
+        }
+
+        //real axes:
         var axis = d3.svg.axis()
                     .scale(scale)
                     .orient(orient).ticks(ticks);
 
         var rendered = plot.svg.append("g")
-            .attr("class", "x axis");
+            .attr("class", "axis");
 
         if (orient === 'bottom') {
-            rendered.attr("transform", "translate("+this.offset+"," + plot.getPlotHeight() + ")")
+            rendered.attr('transform', 'translate('+this.offset+',' + plot.getSvgHeight() + ')');
         }
 
         rendered.call(axis);
@@ -157,19 +169,19 @@ function Axis (plot) {
                         .orient(orient).ticks(ticks);
 
             if (orient === 'bottom') {
-                plot.svg.append("g")
-                    .attr("class", "grid x-grid")
-                    .attr("transform", "translate("+this.offset+"," + plot.getPlotHeight() + ")")
+                plot.svg.append('g')
+                    .attr('class', 'grid x-grid')
+                    .attr('transform', "translate("+this.offset+"," + plot.getSvgHeight() + ")")
                     .call(axis
-                        .tickSize(-plot.getPlotHeight(), 0, 0)
+                        .tickSize(-plot.getSvgHeight(), 0, 0)
                         .tickFormat("")
                     );
             } else {
-                plot.svg.append("g")         
-                    .attr("class", "grid y-grid")
+                plot.svg.append('g')         
+                    .attr('class', 'grid y-grid')
                     .call(axis
                         .tickSize(-plot.getSvgWidth(), 0, 0)
-                        .tickFormat("")
+                        .tickFormat('')
                     );
             }
         }
@@ -218,7 +230,7 @@ function Line (plot) {
         var area = d3.svg.area()
                     .interpolate(this.interpolation)
                     .x(function(d) { return self.xScale(d.x); })
-                    .y0(plot.getPlotHeight())
+                    .y0(plot.getSvgHeight())
                     .y1(function(d) { return self.yScale(d.y); });
 
         if (stacked === true) {
@@ -530,7 +542,7 @@ function Bar(plot) {
                     .attr("width", barWidth)
                     //for y-axis, d3 has a top-left coordinate system
                     //todo - account for line size / line overlap?
-                    .attr("y", function(d) { return plot.getPlotHeight()-yScale(max-value.y-value.y0); })
+                    .attr("y", function(d) { return plot.getSvgHeight()-yScale(max-value.y-value.y0); })
                     .attr("height", function(d) { return yScale(max-value.y); });
                 if (this.hasOutline === true) {
                     bar.style("stroke", series.color);
@@ -564,7 +576,6 @@ function Cartesian(container) {
         this.data.init(dataArray);
 
         this.plot.draw();
-        
 
         if (this.type === 'bar') {
             this.bar.init(this.data);
@@ -575,7 +586,7 @@ function Cartesian(container) {
         } else {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
         }
-        var yScale = d3.scale.linear().range([this.plot.getPlotHeight(), 0]);
+        var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
         xScale.domain(this.data.xExtent());
         yScale.domain(this.data.yExtent());
 

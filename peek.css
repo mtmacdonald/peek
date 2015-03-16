@@ -76,7 +76,7 @@ header > div > a div{
   axes
 */
 
-.axis path, .axis line{
+.axis path, .axis line, .fakeAxis {
   fill: none;
   stroke: black;
   stroke-width: 1;
@@ -90,12 +90,6 @@ header > div > a div{
 
 .grid .tick {
   stroke: lightgrey;
-}
-
-/* color the first y tick to match the axis color, to make the shorter axis in bar charts look full sized.*/
-.y-grid .tick:first-of-type {
-  stroke: black;
-  stroke-width: 1;
 }
 
 .grid path {
