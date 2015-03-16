@@ -214,13 +214,9 @@ function Lines (plot) {
     this.xScale;
     this.yScale;
 
-    this.showLines = true;
-    this.showPoints = false;
-    this.showArea = false;
+    this.visible = true;
     this.interpolation = 'linear';
     this.lineWidth = 2;
-    this.hasAreaOpacity = false;
-    this.opacity = 0.6;
 
     this.draw = function(series, xScale, yScale, stacked) {
 
@@ -229,6 +225,38 @@ function Lines (plot) {
                     .x(function(d) { return self.xScale(d.x); })
                     .y(function(d) { return self.yScale(d.y); });
 
+        if (stacked === true) {
+            var line = d3.svg.line()
+                        .interpolate(this.interpolation) 
+                        .x(function(d) { return self.xScale(d.x); })
+                        .y(function(d) { return self.yScale(d.y0 + d.y); });
+        }
+
+        this.xScale = xScale;
+        this.yScale = yScale;
+        if (this.visible === true) {
+            var line = plot.svg.append("path")
+                .attr("class", "pk-line")
+                .style("stroke", series.color)
+                .style("stroke-width", this.lineWidth)
+                .attr("d", line(series.values));
+        }
+    }
+}
+
+function Areas (plot) {
+    var plot = plot;
+    var self = this;
+    this.xScale;
+    this.yScale;
+
+    this.visible = false;
+    this.interpolation = 'linear';
+    this.hasOpacity = false;
+    this.opacity = 0.6;
+
+    this.draw = function(series, xScale, yScale, stacked) {
+
         var area = d3.svg.area()
                     .interpolate(this.interpolation)
                     .x(function(d) { return self.xScale(d.x); })
@@ -236,11 +264,6 @@ function Lines (plot) {
                     .y1(function(d) { return self.yScale(d.y); });
 
         if (stacked === true) {
-            var line = d3.svg.line()
-                        .interpolate(this.interpolation) 
-                        .x(function(d) { return self.xScale(d.x); })
-                        .y(function(d) { return self.yScale(d.y0 + d.y); });
-
 
             var area = d3.svg.area()
                 .interpolate('cardinal')
@@ -251,19 +274,13 @@ function Lines (plot) {
 
         this.xScale = xScale;
         this.yScale = yScale;
-        if (this.showLines === true) {
-            var line = plot.svg.append("path")
-                .attr("class", "pk-line")
-                .style("stroke", series.color)
-                .style("stroke-width", this.lineWidth)
-                .attr("d", line(series.values));
-        }
-        if (this.showArea === true) {
+
+        if (this.visible === true) {
             var area = plot.svg.append("path")
                     .attr("class", "pk-area")
                     .style("fill", series.color)
                     .attr("d", area(series.values));
-            if (this.hasAreaOpacity === true) {
+            if (this.hasOpacity === true) {
                 area.style('fill-opacity', this.opacity);
             }
         }
@@ -577,6 +594,7 @@ function Cartesian(container) {
     this.plot = new Plot(container);
     this.lines = new Lines(this.plot);
     this.points = new Points(this.plot);
+    this.areas = new Areas(this.plot);
     this.bars = new Bars(this.plot);
 
     this.draw = function (dataArray) {
@@ -613,6 +631,10 @@ function Cartesian(container) {
 
             this.data.getData().forEach(function(series, i) {
                 this.points.draw(series, xScale, yScale, this.data.isStacked);
+            }, this);
+
+            this.data.getData().forEach(function(series, i) {
+                this.areas.draw(series, xScale, yScale, this.data.isStacked);
             }, this);
         }
 
