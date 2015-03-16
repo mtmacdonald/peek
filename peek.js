@@ -464,6 +464,11 @@ function Bar(plot) {
     var plot = plot;
     var data;
 
+    this.hasOutline = true;
+    this.outlineWidth = 2;
+    this.hasOpacity = false;
+    this.opacity = 0.4;
+
     var sampleCount;
     var groupCount;
     var outerGap = 20;
@@ -490,29 +495,35 @@ function Bar(plot) {
     }
 
     this.draw = function(xScale, yScale) {
-            var groups = data.getGroups();
-            var max = data.yExtent()[1]; //refactor
-            data.getData().forEach(function(series, i) {
-                series.values.forEach(function(value) {
-                    plot.svg.append("rect")
-                        .attr("class", "rect-line rect-area")
-                        .style("fill", series.color)
-                        .style("stroke", series.color)
-                        .attr("x", function(d) {
-                            var x = xScale(value.x)+outerGap;
-                            //------------------------------------------------------------------------------------------
-                            //add offset for group
-                            var offset = groups.indexOf(series.group);
-                            x += (barWidth+innerGap)*offset;
-                            return x;
-                        })
-                        .attr("width", barWidth)
-                        //for y-axis, d3 has a top-left coordinate system
-                        //todo - account for line size / line overlap?
-                        .attr("y", function(d) { return plot.getPlotHeight()-yScale(max-value.y-value.y0); })
-                        .attr("height", function(d) { return yScale(max-value.y); });
-                }, this);
+        var groups = data.getGroups();
+        var max = data.yExtent()[1]; //refactor
+        data.getData().forEach(function(series, i) {
+            series.values.forEach(function(value) {
+                var bar = plot.svg.append("rect")
+                    .attr("class", "rect-line rect-area")
+                    .style("fill", series.color)
+                    .attr("x", function(d) {
+                        var x = xScale(value.x)+outerGap;
+                        //------------------------------------------------------------------------------------------
+                        //add offset for group
+                        var offset = groups.indexOf(series.group);
+                        x += (barWidth+innerGap)*offset;
+                        return x;
+                    })
+                    .attr("width", barWidth)
+                    //for y-axis, d3 has a top-left coordinate system
+                    //todo - account for line size / line overlap?
+                    .attr("y", function(d) { return plot.getPlotHeight()-yScale(max-value.y-value.y0); })
+                    .attr("height", function(d) { return yScale(max-value.y); });
+                if (this.hasOutline === true) {
+                    bar.style("stroke", series.color);
+                    bar.style("stroke-width", this.outlineWidth);
+                }
+                if (this.hasOpacity === true) {
+                    bar.style('fill-opacity', this.opacity);
+                }
             }, this);
+        }, this);
     }
 }
 
@@ -701,7 +712,7 @@ function Radial(container) {
         var segments = arcs.append("svg:path");
         if (this.hasOutline === true) {
             segments.attr("stroke", function(d, i) { return data[i].color; } );
-            segments.style("stroke-width", this.outlineWidth) 
+            segments.style("stroke-width", this.outlineWidth);
         }
         segments.attr("fill", function(d, i) { return data[i].color; } );
         if (this.hasOpacity === true) {

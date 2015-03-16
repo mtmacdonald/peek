@@ -316,12 +316,32 @@
     chart.type = 'bar';
     chart.draw(data);
     var legend = new Legend("#bar-legend");
-    legend.hasOpacity = true;
     legend.draw(data);
  });
 </script>
 
 <div id="bar-chart"></div><div id="bar-legend"></div><br style="clear:both;"/>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Bar chart (with opacity)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-bar-chart-opaque">
+<script>
+ $(document).ready(function() {
+    var data = getFirstGroupFirstSeriesData();
+    var chart = new Cartesian("#bar-chart-opaque");
+    chart.data.isStacked = true;
+    chart.type = 'bar';
+    chart.bar.hasOpacity = true;
+    chart.draw(data);
+    var legend = new Legend("#bar-legend-opaque");
+    legend.hasOpacity = true;
+    legend.draw(data);
+ });
+</script>
+
+<div id="bar-chart-opaque"></div><div id="bar-legend-opaque"></div><br style="clear:both;"/>
 </div>
 
 <!-- **************************************************************************************************************- -->
@@ -334,6 +354,7 @@
     var chart = new Cartesian("#grouped-bar-chart");
     chart.data.isStacked = true;
     chart.type = 'bar';
+    chart.bar.hasOpacity = true;
     chart.draw(data);
     var legend = new Legend("#grouped-bar-legend");
     legend.showGroups = true;
@@ -355,6 +376,7 @@
     var chart = new Cartesian("#stacked-bar-chart");
     chart.data.isStacked = true;
     chart.type = 'bar';
+    chart.bar.hasOpacity = true;
     chart.draw(data);
     var legend = new Legend("#stacked-bar-legend");
     legend.hasOpacity = true;
@@ -375,6 +397,7 @@
     var chart = new Cartesian("#stacked-grouped-bar-chart");
     chart.data.isStacked = true;
     chart.type = 'bar';
+    chart.bar.hasOpacity = true;
     chart.draw(data);
     var legend = new Legend("#stacked-grouped-bar-legend");
     legend.hasOpacity = true;
