@@ -325,7 +325,7 @@ function getFirstGroupFirstSeriesData() {
     return data;
 }
 
-function getAllGroupsFirstSeriesData() {
+function getAllGroupsLastSeriesData() {
     var data = JSON.parse(JSON.stringify(timeData)); //clone
     var alreadyIncluded = [];
     var i = data.length;
