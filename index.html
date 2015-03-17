@@ -135,6 +135,7 @@
   display: table;
   width: 100%;
   font-weight: normal;
+  margin: 50px 0 0px 0;
 }
 
 #example-code {
@@ -142,9 +143,11 @@
   vertical-align: middle;
 }
 
-.pk-yLabel, .pk-xLabel, .pk-title, .pk-legend {
+/*
+.pk-leftContainer, .pk-yLabel, .pk-xLabel, .pk-title, .pk-legend {
   display: none;
 }
+*/
 
 </style>
 
@@ -166,10 +169,16 @@
   var chart = new Cartesian("#chart");
   chart.data.isStacked = true;
   chart.plot.width = 600;
-  chart.plot.height = 340;
-  chart.line.interpolation = 'cardinal';
-  chart.line.showArea = true;
-  chart.line.hasAreaOpacity = true;
+  chart.plot.height = 315;
+  chart.lines.interpolation = 'cardinal';
+  chart.areas.interpolation = 'cardinal';
+  chart.areas.visible = true;
+  chart.areas.hasOpacity = true;
+  //------------------------------------------------
+  chart.plot.showTitle = false;
+  chart.plot.showXLabel = false;
+  chart.plot.showYLabel = false;
+  //------------------------------------------------
   chart.draw(data);
 
   //instantiate an svg injector to show SVG icons
@@ -208,9 +217,10 @@
 chart.data.isStacked = true;
 chart.plot.width = 600;
 chart.plot.height = 340;
-chart.line.interpolation = 'cardinal';
-chart.line.showArea = true;
-chart.line.hasAreaOpacity = true;
+chart.lines.interpolation = 'cardinal';
+chart.areas.interpolation = 'cardinal';
+chart.lines.showArea = true;
+chart.lines.hasAreaOpacity = true;
 chart.draw(data);</code></pre>
    </div>
    </div>   
