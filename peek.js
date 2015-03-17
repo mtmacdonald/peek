@@ -228,7 +228,7 @@ function Lines (plot) {
         if (this.visible === true) {
 
             var line = d3.svg.line().interpolate(this.interpolation).x(function(d) { return xScale(d.x); });
-            if (data.isStacked) {
+            if (data.isStacked === true) {
                 line.y(function(d) { return yScale(d.y0 + d.y); });
             } else {
                 line.y(function(d) { return yScale(d.y); });
@@ -265,7 +265,7 @@ function Areas (plot) {
         if (this.visible === true) {
 
             var area = d3.svg.area().interpolate(this.interpolation).x(function(d) { return xScale(d.x); });
-            if (data.isStacked) {
+            if (data.isStacked === true) {
                 area.y0(function(d) { return yScale(d.y0); })
                 area.y1(function(d) { return yScale(d.y0 + d.y); });
             } else {
@@ -313,8 +313,12 @@ function Points (plot) {
                     .data(series.values)
                     .enter()
                     .append("circle")
-                      .attr("transform", function(d) { 
-                        return "translate(" + xScale(d.x) + ", " + yScale(d.y) + ")"; 
+                      .attr("transform", function(d) {
+                        if (data.isStacked === true) {
+                            return "translate(" + xScale(d.x) + ", " + yScale(d.y0+d.y) + ")";
+                        } else {
+                            return "translate(" + xScale(d.x) + ", " + yScale(d.y) + ")";
+                        }
                     })
                     .attr("r", function(d){ return self.size; }) 
                     .style("stroke", series.color)

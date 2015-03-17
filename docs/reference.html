@@ -245,7 +245,7 @@
 
 <!-- **************************************************************************************************************- -->
 
-<h1 class="doc-heading"><span>Stacked area chart (with opacity)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<h1 class="doc-heading"><span>Stacked area chart (with opacity and data points)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
 <div class="code" id="code-sample-stacked-area-chart-opacity">
 <script>
  $(document).ready(function() {
@@ -255,6 +255,7 @@
     chart.lines.interpolation = chart.areas.interpolation = 'cardinal';
     chart.areas.visible = true;
     chart.areas.hasOpacity = true;
+    chart.points.visible = true;
     chart.draw(data);
     var legend = new Legend("#stacked-area-opacity-legend");
     legend.hasOpacity = true;
