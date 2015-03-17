@@ -226,16 +226,12 @@ function Lines (plot) {
 
     this.draw = function(xScale, yScale) {
         if (this.visible === true) {
-            var line = d3.svg.line()
-                        .interpolate(this.interpolation) 
-                        .x(function(d) { return xScale(d.x); })
-                        .y(function(d) { return yScale(d.y); });
 
-            if (data.isStacked === true) {
-                var line = d3.svg.line()
-                            .interpolate(this.interpolation) 
-                            .x(function(d) { return xScale(d.x); })
-                            .y(function(d) { return yScale(d.y0 + d.y); });
+            var line = d3.svg.line().interpolate(this.interpolation).x(function(d) { return xScale(d.x); });
+            if (data.isStacked) {
+                line.y(function(d) { return yScale(d.y0 + d.y); });
+            } else {
+                line.y(function(d) { return yScale(d.y); });
             }
 
             data.getData().forEach(function (series) {     
@@ -267,18 +263,14 @@ function Areas (plot) {
 
     this.draw = function(xScale, yScale) {
         if (this.visible === true) {
-            var area = d3.svg.area()
-                        .interpolate(this.interpolation)
-                        .x(function(d) { return xScale(d.x); })
-                        .y0(plot.getSvgHeight())
-                        .y1(function(d) { return yScale(d.y); });
 
-            if (data.isStacked === true) {
-                var area = d3.svg.area()
-                    .interpolate('cardinal')
-                    .x(function(d, i) { return xScale(d.x); })
-                    .y0(function(d) { return yScale(d.y0); })
-                    .y1(function(d) { return yScale(d.y0 + d.y); });
+            var area = d3.svg.area().interpolate(this.interpolation).x(function(d) { return xScale(d.x); });
+            if (data.isStacked) {
+                area.y0(function(d) { return yScale(d.y0); })
+                area.y1(function(d) { return yScale(d.y0 + d.y); });
+            } else {
+                area.y0(plot.getSvgHeight())
+                area.y1(function(d) { return yScale(d.y); });
             }
 
             data.getData().forEach(function (series) {     
