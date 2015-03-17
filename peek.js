@@ -242,6 +242,7 @@ function Lines (plot) {
         if (this.visible === true) {
 
             var line = d3.svg.line().interpolate(this.interpolation).x(function(d) { return xScale(d.x); });
+            line.defined(function(d) { return d.y != null; }); //handle null values
             if (data.isStacked === true) {
                 line.y(function(d) { return yScale(d.y0 + d.y); });
             } else {
@@ -279,6 +280,7 @@ function Areas (plot) {
         if (this.visible === true) {
 
             var area = d3.svg.area().interpolate(this.interpolation).x(function(d) { return xScale(d.x); });
+            area.defined(function(d) { return d.y != null; }); //handle null values
             if (data.isStacked === true) {
                 area.y0(function(d) { return yScale(d.y0); })
                 area.y1(function(d) { return yScale(d.y0 + d.y); });
