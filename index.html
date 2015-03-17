@@ -1,5 +1,4 @@
 ﻿<!doctype html>
-<!-- saved from url=(0014)about:internet -->
  <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" ><!--Prevent IE using compatibility mode on local or intranet pages. Do not put scripts before this line.-->
   <meta name="viewport" content="width=device-width, user-scalable=yes"><!--Mobile device scaling-->
@@ -256,7 +255,7 @@ chart.draw(data);</code></pre>
 <ul class="features">
 <li>
   <h2><span class="w-icon" data-name="grid"></span><span>Object-oriented</span></h2>
-  <p>The benefits of <a href="http://d3js.org/">D3.js</a>, but with simpler, configurable, reusable chart objects.</p>
+  <p>The benefits of <a href="http://d3js.org/">D3.js</a>, but with easier, configurable, reusable chart objects.</p>
 </li>
 <li>
   <h2><span class="w-icon" data-name="stats_bars"></span><span>Many chart types</span></h2>
@@ -268,7 +267,7 @@ chart.draw(data);</code></pre>
 </li>
 <li>
   <h2><span class="w-icon" data-name="arrow_resize"></span><span>Automatic scaling</span></h2>
-  <p>Flexible scales (linear, log, time, ordinal), with automatic maxima detection. </p>
+  <p>Scales and axis tick labels are handled automatically, with input data maxima detection.</p>
 </li>
 <li>
   <h2><span class="w-icon" data-name="monitor"></span><span>Interpolation</span></h2>
@@ -277,16 +276,16 @@ chart.draw(data);</code></pre>
 </li>
 <li>
   <h2><span class="w-icon" data-name="archive"></span><span>JSON data format</span></h2>
-  <p>Easily switch chart types for the same dataset through standardised inputs.
+  <p>Standardised data inputs allow the same dataset to easily be displayed in multiple chart types.
 </p>
 </li>
 <li>
   <h2><span class="w-icon" data-name="compose"></span><span>Labelling</span></h2>
-  <p>Support for chart titles, axis labels, and legends.</p>
+  <p>Support for configurable chart titles, axis labels, and legends.</p>
 </li>
 <li>
   <h2><span class="w-icon" data-name="flash"></span><span>Interactive</span></h2>
-  <p>Optionally show data points, with interactive tooltips displaying values.</p>
+  <p>Optionally show data points, with interactive tooltips for displaying values.</p>
 </li>
 </ul>
 
@@ -323,8 +322,8 @@ chart.draw(data);</code></pre>
 
 <pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;peek.css&quot; type=&quot;text/css&quot; /&gt;</code></pre>
 
-<pre><code>&lt;script src=&quot;../require/d3.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;../peek.js&quot;&gt;&lt;/script&gt;
+<pre><code>&lt;script src=&quot;require/d3.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;peek.js&quot;&gt;&lt;/script&gt;
 </code></pre>
 
 </div></div>
@@ -356,15 +355,16 @@ chart.draw(data);</code></pre>
      <li><strong>Data</strong> - a common data input handler for Cartesian charts</li>
      <li><strong>Lines</strong> - line handler for Cartesian charts</li>
      <li><strong>Areas</strong> - shaded area handler for Cartesian charts</li>
-     <li><strong>Points</strong> - point handler, including tooltips for Cartesian charts/li>        
+     <li><strong>Points</strong> - point handler, including tooltips for Cartesian charts</li>        
      <li><strong>Bars</strong> - bar handler for Cartesian charts</li>
   </ul>
 </ul>
 
 <h2>Chart topology</h2>
 
-<p>Legends, titles, and labels are rendered as HTML elements, not SVG elements (primarily because HTML elements handle
-text overflow better). The chart topology, with CSS class names, is shown below:</p>
+<p>Legends, titles, and labels (except axis tick labels) are rendered as HTML elements, not SVG elements. This is 
+primarily because HTML elements handle text overflow better. The chart topology, with CSS class names, is shown below:
+</p>
 
 <div class="topology"><span>.pk-chart</span>
   <div class="topology"><span>.pk-plot</span>

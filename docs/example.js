@@ -1,4 +1,4 @@
-/*! Peek.js (c) 2014 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
+/*! Peek.js (c) 2015 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
 
 /*
     Example input data for Peek.js
