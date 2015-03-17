@@ -143,11 +143,24 @@
   vertical-align: middle;
 }
 
-/*
-.pk-leftContainer, .pk-yLabel, .pk-xLabel, .pk-title, .pk-legend {
-  display: none;
+.topology {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
+  border: 1px solid #666;
+  padding: 30px;
+  margin: 0;
+  background-color: #eee;
 }
-*/
+
+.topology span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 2px;
+  color: white;
+  background-color: #666;
+}
 
 </style>
 
@@ -318,6 +331,63 @@ chart.draw(data);</code></pre>
 
 <div id="customisation" style="padding-top:20px;"><div class="w-fixed-width">
 <h1>Overview</h1>
+
+<p>The best way to get an overview is to look at the <a href="docs/reference.html">examples</a>.
+
+<h2>Class list</h2>
+
+<p>User classes are accessed directy. Internal classes are only accessed indirectly, as a child members of a user class.</p>
+
+<ul>
+ <li><strong>User classes:</strong></li>
+  <ul>
+   <li><strong>Cartesian</strong> - creates a Cartesian (xy), time-series chart of any type</li>
+   <li><strong>Radial</strong> - creates a radial chart, e.g. pie chart</li>
+   <li><strong>HorizontalBar</strong> - creates a horizontal bar chart</li>
+   <li><strong>Legend</strong> - draws a chart legend with color/label key</li>
+  </ul>
+  <li><strong>Internal classes:</strong></li>
+  <ul>
+     <li><strong>Plot</strong> - plot handler, including title, legends, and SVG for all charts</li>
+     <li><strong>Axes</strong></li>
+     <ul>
+      <li><strong>Axis</strong> - axis handler for all charts</li>
+     </ul>
+     <li><strong>Data</strong> - a common data input handler for Cartesian charts</li>
+     <li><strong>Lines</strong> - line handler for Cartesian charts</li>
+     <li><strong>Areas</strong> - shaded area handler for Cartesian charts</li>
+     <li><strong>Points</strong> - point handler, including tooltips for Cartesian charts/li>        
+     <li><strong>Bars</strong> - bar handler for Cartesian charts</li>
+  </ul>
+</ul>
+
+<h2>Chart topology</h2>
+
+<p>Legends, titles, and labels are rendered as HTML elements, not SVG elements (primarily because HTML elements handle
+text overflow better). The chart topology, with CSS class names, is shown below:</p>
+
+<div class="topology"><span>.pk-chart</span>
+  <div class="topology"><span>.pk-plot</span>
+    <div class="topology" style="height: 365px; vertical-align: top;"><span>.pk-leftContainer</span>
+      <div class="topology" style="width: 80px;"><span>.pk-yLabel</span>
+      </div>
+    </div>
+    <div class="topology"><span>.pk-mainContainer</span>
+      <div class="topology" style="width: 262px;"><span>.pk-title</span>
+      </div><br/><br/>
+      <div class="topology"><span>.pk-svgContainer</span>
+        <div class="topology" style="width: 200px;"><span>svg</span>
+        </div>
+      </div><br/><br/>
+      <div class="topology" style="width: 262px;"><span>.pk-xLabel</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="topology" style="height: 489px; vertical-align: top;"><span>.pk-legendContainer</span>
+  <div class="topology" style="width: 80px;"><span>.pk-legend</span>
+  </div>
+</div>
 
 </div></div>
 
