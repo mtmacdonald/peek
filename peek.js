@@ -135,6 +135,7 @@ function Axis (plot) {
 
     var plot = plot;
     this.showTicks = true;
+    this.tickCount = 5;
     this.offset = 0;
 
     this.draw = function (scale, orient, ticks) {
@@ -164,12 +165,12 @@ function Axis (plot) {
         rendered.call(axis);
     }
 
-    this.drawGrid = function (scale, orient, ticks) {
+    this.drawGrid = function (scale, orient) {
         if (this.showTicks) {
 
             var axis = d3.svg.axis()
                         .scale(scale)
-                        .orient(orient).ticks(ticks);
+                        .orient(orient).ticks(this.tickCount);
 
             if (orient === 'bottom') {
                 plot.svg.append('g')
