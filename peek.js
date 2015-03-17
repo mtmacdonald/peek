@@ -1,5 +1,19 @@
 /*! Peek.js (c) 2015 Mark Macdonald | http://mtmacdonald.github.io/peek/LICENSE */
 
+function pkEscapeHtml(string) {
+    var entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+    };
+    return String(string).replace(/[&<>"'\/]/g, function (s) {
+        return entityMap[s];
+    });
+}
+
 function Legend(container) {
 
     this.showGroups = false;
@@ -36,12 +50,12 @@ function Legend(container) {
             }
 
             var text = [], i = -1;
-            text[++i] = series.label;
+            text[++i] = pkEscapeHtml(series.label);
             if (this.showGroups === true) {
-                text[++i] = ' - '+series.group;
+                text[++i] = ' - '+pkEscapeHtml(series.group);
             }
             if (series.units) {
-                text[++i] = ' ('+series.units+')';
+                text[++i] = ' ('+pkEscapeHtml(series.units)+')';
             };
 
             row.append("span").html(text.join('')).attr('class', 'pk-keyText');
@@ -94,19 +108,19 @@ function Plot(container) {
             leftContainer.style('width', labelHeight+'px');
         }
         if (this.showYLabel === true) {
-            leftContainer.insert("div").html(this.yLabel).attr("class", "pk-yLabel")
+            leftContainer.insert("div").html(pkEscapeHtml(this.yLabel)).attr("class", "pk-yLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px')
                                 .style('width', (this.getSvgHeight()+this.margin.top+this.margin.bottom)+'px'); /*must be same as height of svg area+margins*/
         }
         //main container with xLabel and plot area
         var mainContainer = chart.insert("div").attr("class", "pk-mainContainer");
         if (this.showTitle === true) {
-            mainContainer.insert("div").html(this.title).attr("class", "pk-title")
+            mainContainer.insert("div").html(pkEscapeHtml(this.title)).attr("class", "pk-title")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px');
         }
         var svgContainer = mainContainer.insert("div").attr("class", "pk-svgContainer");
         if (this.showXLabel === true) {
-            mainContainer.insert("div").html(this.xLabel).attr("class", "pk-xLabel")
+            mainContainer.insert("div").html(pkEscapeHtml(this.xLabel)).attr("class", "pk-xLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px');
         }
 
@@ -725,7 +739,7 @@ function Compare(container) {
                     .attr('class', 'pk-label')
                     .attr("x", function(d, i) {return (dx*d.value)+5})
                     .attr("y", function(d, i) {return dy*i + self.barSpacing*i + (dy/2) + 4 + self.outlineWidth;}) //4 accounts for text height
-                    .html( function(d) {return d.label;});
+                    .html( function(d) {return pkEscapeHtml(d.label);});
 
             //text values
             var text = plot.svg.selectAll(".compare-chart-values")
