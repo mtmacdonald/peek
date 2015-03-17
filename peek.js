@@ -661,7 +661,7 @@ function Cartesian(container) {
     }
 }
 
-function Compare(container) {
+function HorizontalBar(container) {
 
     this.barHeight = 60;
     this.barSpacing = 10;
