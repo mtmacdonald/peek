@@ -213,14 +213,15 @@
    <div id="example" class="w-clear-after">
     <div id="chart"></div>
     <div id="example-code">
-<pre><code>var chart = new Cartesian("#chart");
+<pre><code>var data = getFirstGroupData();
+var chart = new Cartesian("#chart");
 chart.data.isStacked = true;
 chart.plot.width = 600;
-chart.plot.height = 340;
+chart.plot.height = 315;
 chart.lines.interpolation = 'cardinal';
 chart.areas.interpolation = 'cardinal';
-chart.lines.showArea = true;
-chart.lines.hasAreaOpacity = true;
+chart.areas.visible = true;
+chart.areas.hasOpacity = true;
 chart.draw(data);</code></pre>
    </div>
    </div>   
