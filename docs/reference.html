@@ -101,6 +101,8 @@
  <section>
  <div class="w-fixed-width">
 
+<h2>Chart Types</h2>
+
 <p>Peek supports the following chart types:</p>
 
 <ul>
@@ -126,10 +128,17 @@
  </ul>
 </ul>
 
-
 <p>See the <a href="example.js">example data</a> for the input JSON format. The time-series charts are interchangeable 
   (a common data format can be used with all chart types).
 </p>
+
+<h2>Limitations</h2>
+
+<ul>
+ <li>No automatic sample interpolation (it is expected that each input data series has an equal number of samples)</li>
+ <li>Negative values are not fully supported yet</li>
+ <li>NULL values are currently treated as 0, not as missing data (gaps)</li>
+</ul>
 
 <!-- **************************************************************************************************************- -->
 
@@ -536,11 +545,10 @@
  <footer>
   <div><p class="w-fixed-width">&nbsp;</p></div>
   <div class="w-fixed-width">
-    <p>&copy; 2014 <a href="https://github.com/mtmacdonald">Mark Macdonald</a></p>
+    <p>&copy; 2015 <a href="https://github.com/mtmacdonald">Mark Macdonald</a></p>
     <p><a href="LICENSE">MIT license</a></p>
   </div>
  </footer>
-
  
  </body>
 </html>
