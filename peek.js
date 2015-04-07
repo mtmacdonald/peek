@@ -20,6 +20,7 @@ function Legend(container) {
     this.hasOutline = true;
     this.hasOpacity = false;
     this.opacity = 0.6;
+    this.width = 300;
 
     var outlineWidth = 2;
     var keyWidth = 22;
@@ -29,6 +30,8 @@ function Legend(container) {
         var legendContainer = d3.select(container).attr('class', 'pk-legendContainer');
 
         var legend = legendContainer.append("div").attr("class", "pk-legend");
+        legend.style('width', this.width+'px');
+
         data.forEach(function(series, i) {
             var row = legend.append("div");
 

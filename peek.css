@@ -4,12 +4,6 @@
   margin: 0!important;
 }
 
-header > div > a div{
-  height: 42px; 
-  line-height: 42px; 
-  padding-left: 67px; /*width+25*/
-}
-
 /*
   make it easy to clear floats
 */
@@ -120,7 +114,6 @@ header > div > a div{
   margin: 0;
   float: left;
   padding-left: 10px;
-	width: 300px;
 }
 
 .pk-legend div {
