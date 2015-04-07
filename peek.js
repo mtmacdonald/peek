@@ -668,6 +668,8 @@ function Cartesian(container) {
 
 function HorizontalBar(container) {
 
+    var self = this;
+
     this.barHeight = 60;
     this.barSpacing = 10;
     this.hasOutline = true;
@@ -675,14 +677,14 @@ function HorizontalBar(container) {
     this.hasOpacity = false;
     this.opacity = 0.6;
 
-    var plot = new Plot(container);
-    plot.showTitle = false;
-    plot.showXLabel = false;
-    plot.showYLabel = false;
-    plot.margin.top = 0;
-    plot.margin.right = 0;
-    plot.margin.bottom = 0;
-    plot.margin.left = 0;
+    this.plot = new Plot(container);
+    this.plot.showTitle = false;
+    this.plot.showXLabel = false;
+    this.plot.showYLabel = false;
+    this.plot.margin.top = 0;
+    this.plot.margin.right = 0;
+    this.plot.margin.bottom = 0;
+    this.plot.margin.left = 0;
 
     var getMaxLabelWidth = function (data) {
         var longestLabel = 0;
@@ -693,7 +695,7 @@ function HorizontalBar(container) {
                 longestRowIndex = index;
             }
         });
-        var fakeLabel = plot.svg.append("text")
+        var fakeLabel = self.plot.svg.append("text")
             .attr("x", 0)
             .attr("y", 0)
             .style("visibility", "hidden")
@@ -707,8 +709,8 @@ function HorizontalBar(container) {
             var self = this;
 
             //dynamically set the plot height based on the length of the input data
-            plot.height = data.length*(this.barHeight+this.barSpacing);
-            plot.draw();
+            this.plot.height = data.length*(this.barHeight+this.barSpacing);
+            this.plot.draw();
 
             //dynamically find the space needed for labels, from the maximum label width
             var maxLabelWidth = getMaxLabelWidth(data);
@@ -716,11 +718,11 @@ function HorizontalBar(container) {
 
             var max = d3.max(data, function(d) { return d.value;} );
 
-            var dx = (plot.width - rightPadding) / max;
-            var dy = (plot.height / data.length) - (this.barSpacing);
+            var dx = (this.plot.width - rightPadding) / max;
+            var dy = (this.plot.height / data.length) - (this.barSpacing);
     
             //bars
-            var bars = plot.svg.selectAll(".bar")
+            var bars = this.plot.svg.selectAll(".bar")
                 .data(data)
                 .enter()
                 .append("rect")
@@ -737,7 +739,7 @@ function HorizontalBar(container) {
                     bars.style('fill-opacity', this.opacity);
                 }
             //labels
-            var text = plot.svg.selectAll("text")
+            var text = this.plot.svg.selectAll("text")
                 .data(data)
                 .enter()
                 .append("text")
@@ -747,7 +749,7 @@ function HorizontalBar(container) {
                     .html( function(d) {return pkEscapeHtml(d.label);});
 
             //text values
-            var text = plot.svg.selectAll(".compare-chart-values")
+            var text = this.plot.svg.selectAll(".compare-chart-values")
                 .data(data)
                 .enter()
                 .append("text")
