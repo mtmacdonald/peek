@@ -467,7 +467,9 @@ function Data() {
         data = dataArray;
         parseDates();
         fetchGroups();
-        stack();
+        if (this.isStacked) {
+            stack();
+        }
         fetchXExtent();
         fetchYExtent();
     }
