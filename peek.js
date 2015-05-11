@@ -392,8 +392,8 @@ function Bars(plot) {
 
     var sampleCount;
     var groupCount;
-    var outerGap = 20;
-    var innerGap = 5;
+    this.outerGap = 20;
+    this.innerGap = 5;
 
     var sampleBoxWidth;
     var groupBoxWidth;
@@ -410,14 +410,15 @@ function Bars(plot) {
             groupCount = data.countGroups();
 
             sampleBoxWidth = plot.getSvgWidth() / sampleCount;
-            groupBoxWidth = (sampleBoxWidth - (2 * outerGap));
-            barWidth = (groupBoxWidth / groupCount) - innerGap + (innerGap / groupCount); //the final bar in each groupBox should not be proceeded by a gap
+            groupBoxWidth = (sampleBoxWidth - (2 * this.outerGap));
+            barWidth = (groupBoxWidth / groupCount) - this.innerGap + (this.innerGap / groupCount); //the final bar in each groupBox should not be proceeded by a gap
 
             plot.axes.x.offset = sampleBoxWidth/2; //translate the tick to the center of sampleBox
         }
     }
 
     this.draw = function(xScale, yScale) {
+        var self = this;
         if (this.visible === true) {
             var groups = data.getGroups();
             var max = data.yExtent()[1]; //refactor
@@ -427,11 +428,11 @@ function Bars(plot) {
                         .attr("class", "pk-rect-line pk-rect-area")
                         .style("fill", series.color)
                         .attr("x", function(d) {
-                            var x = xScale(value.x)+outerGap;
+                            var x = xScale(value.x)+self.outerGap;
                             //------------------------------------------------------------------------------------------
                             //add offset for group
                             var offset = groups.indexOf(series.group);
-                            x += (barWidth+innerGap)*offset;
+                            x += (barWidth+self.innerGap)*offset;
                             return x;
                         })
                         .attr("width", barWidth)
