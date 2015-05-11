@@ -10,6 +10,14 @@
   <link rel="stylesheet" href="../require/framework.min.css" type="text/css" />
   <link rel="stylesheet" href="../peek.css" type="text/css" /> 
  
+<style>
+header > div > a div{
+  height: 42px; 
+  line-height: 42px; 
+  padding-left: 67px; /*width+25*/
+}
+</style>
+
   <!--load scripts second-->
   <script src="../require/framework.min.js"></script>
   <script src="../require/framework.icons.js"></script>
@@ -38,6 +46,10 @@
 
 <ul>
  <li>Bar chart spacing can now be set as a public property</li>
+ <li>Legend width can now be set as a public property</li>
+ <li>The plot object in horizontal bar charts is now a public property</li>
+ <li>Value stacking is only performed when stacking is enabled</li>
+ <li>Defect fix: moved some logo positioning styles out of peek.css</li>
 </ul>
 
 <h2>1.1.0 released 17/03/2015</h2>
