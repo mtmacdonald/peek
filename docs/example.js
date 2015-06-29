@@ -319,6 +319,14 @@ function getFirstGroupData() {
     return data;
 }
 
+function getFirstGroupDataWithTexture() {
+    var data = getFirstGroupData();
+    data.forEach(function (series) {
+        series.texture = true;
+    });
+    return data;
+}
+
 function getFirstGroupFirstSeriesData() {
     var data = JSON.parse(JSON.stringify(timeData)); //clone
     data.splice(1, data.length);

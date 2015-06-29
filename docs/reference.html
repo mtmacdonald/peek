@@ -24,6 +24,7 @@ header > div > a div{
   <script src="../require/framework.icons.js"></script>
   <script src="../require/highlight.min.js"></script>
   <script src="../require/d3.min.js"></script>
+  <script src="../require/textures.min.js"></script>
   <script src="../peek.js"></script>
   <script src="example.js"></script>
 
@@ -449,6 +450,29 @@ header > div > a div{
 
 <div id="stacked-bar-chart"></div>
 <div id="stacked-bar-legend"></div>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Stacked bar chart (with texture)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-stacked-bar-chart-with-pattern">
+<script>
+ $(document).ready(function() {
+    var data = getFirstGroupDataWithTexture();
+    var chart = new Cartesian("#stacked-bar-chart-with-pattern");
+    chart.data.isStacked = true;
+    chart.bars.visible = true;
+    chart.lines.visible = false;
+    chart.bars.hasOpacity = true;
+    chart.draw(data);
+    var legend = new Legend("#stacked-bar-legend-with-pattern");
+    legend.hasOpacity = true;
+    legend.draw(data);
+ });
+</script>
+
+<div id="stacked-bar-chart-with-pattern"></div>
+<div id="stacked-bar-legend-with-pattern"></div>
 </div>
 
 <!-- **************************************************************************************************************- -->

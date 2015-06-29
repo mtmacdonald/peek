@@ -42,8 +42,19 @@ function Legend(container) {
                 .attr("x", 0+outlineWidth/2)
                 .attr("y", 0+outlineWidth/2).attr("rx", 3).attr("ry", 3)
                 .attr("width", (keyWidth - outlineWidth))
-                .attr("height", (keyHeight - outlineWidth))
-                .style("fill", series.color);
+                .attr("height", (keyHeight - outlineWidth));
+
+            if (series.texture === true) {
+                key.style("fill", function(d) {
+                    //apply a hatched pattern - see http://riccardoscalco.github.io/textures/
+                    var t = textures.lines().size(8).strokeWidth(3).stroke(series.color);
+                    keyContainer.call(t);
+                    return t.url();
+                })
+            } else {
+                key.style("fill", series.color);
+            }
+
             if (this.hasOutline === true) {
                 key.attr("stroke", series.color );
                 key.style("stroke-width", outlineWidth) 
@@ -422,11 +433,11 @@ function Bars(plot) {
         if (this.visible === true) {
             var groups = data.getGroups();
             var max = data.yExtent()[1]; //refactor
+
             data.getData().forEach(function(series, i) {
                 series.values.forEach(function(value) {
                     var bar = plot.svg.append("rect")
                         .attr("class", "pk-rect-line pk-rect-area")
-                        .style("fill", series.color)
                         .attr("x", function(d) {
                             var x = xScale(value.x)+self.outerGap;
                             //------------------------------------------------------------------------------------------
@@ -440,6 +451,17 @@ function Bars(plot) {
                         //todo - account for line size / line overlap?
                         .attr("y", function(d) { return plot.getSvgHeight()-yScale(max-value.y-value.y0); })
                         .attr("height", function(d) { return yScale(max-value.y); });
+                    if (series.texture === true) {
+                        bar.style("fill", function(d) {
+                            //apply a hatched pattern - see http://riccardoscalco.github.io/textures/
+                            var t = textures.lines().size(8).strokeWidth(3).stroke(series.color);
+                            plot.svg.call(t);
+                            return t.url();
+                        })
+                    } else {
+                        bar.style("fill", series.color);
+                    }
+
                     if (this.hasOutline === true) {
                         bar.style("stroke", series.color);
                         bar.style("stroke-width", this.outlineWidth);
