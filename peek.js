@@ -44,13 +44,27 @@ function Legend(container) {
                 .attr("width", (keyWidth - outlineWidth))
                 .attr("height", (keyHeight - outlineWidth));
 
-            if (series.texture === true) {
+            //------------------------------------------------------------------
+            //apply patterns if optionally selected - see http://riccardoscalco.github.io/textures/
+            if (series.texture === 'diagonal') {
                 key.style("fill", function(d) {
-                    //apply a hatched pattern - see http://riccardoscalco.github.io/textures/
                     var t = textures.lines().size(8).strokeWidth(3).stroke(series.color);
                     keyContainer.call(t);
                     return t.url();
                 })
+            } else if (series.texture === 'horizontal') {
+                key.style("fill", function(d) {
+                    var t = textures.lines().orientation('horizontal').size(6).strokeWidth(3).stroke(series.color);
+                    keyContainer.call(t);
+                    return t.url();
+                })
+            } else if (series.texture === 'woven') {
+                key.style("fill", function(d) {
+                    var t = textures.paths().d('woven').thicker().stroke(series.color);
+                    keyContainer.call(t);
+                    return t.url();
+                })
+            //------------------------------------------------------------------
             } else {
                 key.style("fill", series.color);
             }
@@ -451,13 +465,27 @@ function Bars(plot) {
                         //todo - account for line size / line overlap?
                         .attr("y", function(d) { return plot.getSvgHeight()-yScale(max-value.y-value.y0); })
                         .attr("height", function(d) { return yScale(max-value.y); });
-                    if (series.texture === true) {
+                    //--------------------------------------------------------------------------------------------------
+                    //apply a patterns if optionally selected - see http://riccardoscalco.github.io/textures/
+                    if (series.texture === 'diagonal') {
                         bar.style("fill", function(d) {
-                            //apply a hatched pattern - see http://riccardoscalco.github.io/textures/
                             var t = textures.lines().size(8).strokeWidth(3).stroke(series.color);
                             plot.svg.call(t);
                             return t.url();
                         })
+                    } else if (series.texture === 'horizontal') {
+                        bar.style("fill", function(d) {
+                            var t = textures.lines().orientation('horizontal').size(6).strokeWidth(3).stroke(series.color);
+                            plot.svg.call(t);
+                            return t.url();
+                        })
+                    } else if (series.texture === 'woven') {
+                        bar.style("fill", function(d) {
+                            var t = textures.paths().d('woven').thicker().stroke(series.color);
+                            plot.svg.call(t);
+                            return t.url();
+                        })
+                    //--------------------------------------------------------------------------------------------------
                     } else {
                         bar.style("fill", series.color);
                     }

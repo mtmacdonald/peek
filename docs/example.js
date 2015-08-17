@@ -322,7 +322,7 @@ function getFirstGroupData() {
 function getFirstGroupDataWithTexture() {
     var data = getFirstGroupData();
     data.forEach(function (series) {
-        series.texture = true;
+        series.texture = 'diagonal';
     });
     return data;
 }
