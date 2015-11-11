@@ -44,13 +44,27 @@ function Legend(container) {
                 .attr("width", (keyWidth - outlineWidth))
                 .attr("height", (keyHeight - outlineWidth));
 
-            if (series.texture === true) {
+            //------------------------------------------------------------------
+            //apply patterns if optionally selected - see http://riccardoscalco.github.io/textures/
+            if (series.texture === 'diagonal') {
                 key.style("fill", function(d) {
-                    //apply a hatched pattern - see http://riccardoscalco.github.io/textures/
                     var t = textures.lines().size(8).strokeWidth(3).stroke(series.color);
                     keyContainer.call(t);
                     return t.url();
                 })
+            } else if (series.texture === 'horizontal') {
+                key.style("fill", function(d) {
+                    var t = textures.lines().orientation('horizontal').size(6).strokeWidth(3).stroke(series.color);
+                    keyContainer.call(t);
+                    return t.url();
+                })
+            } else if (series.texture === 'woven') {
+                key.style("fill", function(d) {
+                    var t = textures.paths().d('woven').thicker().stroke(series.color);
+                    keyContainer.call(t);
+                    return t.url();
+                })
+            //------------------------------------------------------------------
             } else {
                 key.style("fill", series.color);
             }
@@ -97,6 +111,10 @@ function Plot(container) {
     this.yLabel = 'Y Label';
 
     this.axes = new Axes(this);
+
+    this.getLabelHeight = function () {
+        return labelHeight;
+    }
 
     this.getSvgWidth = function() {
         var yLabelWidth = this.showYLabel === true ? labelHeight : 0;
@@ -451,13 +469,27 @@ function Bars(plot) {
                         //todo - account for line size / line overlap?
                         .attr("y", function(d) { return plot.getSvgHeight()-yScale(max-value.y-value.y0); })
                         .attr("height", function(d) { return yScale(max-value.y); });
-                    if (series.texture === true) {
+                    //--------------------------------------------------------------------------------------------------
+                    //apply a patterns if optionally selected - see http://riccardoscalco.github.io/textures/
+                    if (series.texture === 'diagonal') {
                         bar.style("fill", function(d) {
-                            //apply a hatched pattern - see http://riccardoscalco.github.io/textures/
                             var t = textures.lines().size(8).strokeWidth(3).stroke(series.color);
                             plot.svg.call(t);
                             return t.url();
                         })
+                    } else if (series.texture === 'horizontal') {
+                        bar.style("fill", function(d) {
+                            var t = textures.lines().orientation('horizontal').size(6).strokeWidth(3).stroke(series.color);
+                            plot.svg.call(t);
+                            return t.url();
+                        })
+                    } else if (series.texture === 'woven') {
+                        bar.style("fill", function(d) {
+                            var t = textures.paths().d('woven').thicker().stroke(series.color);
+                            plot.svg.call(t);
+                            return t.url();
+                        })
+                    //--------------------------------------------------------------------------------------------------
                     } else {
                         bar.style("fill", series.color);
                     }
@@ -808,30 +840,67 @@ function Radial(container) {
     this.hasOpacity = false;
     this.opacity = 0.6;
 
-    var plot = new Plot(container);
-    plot.isRadial = true;
-    plot.showTitle = false;
-    plot.showXLabel = false;
-    plot.showYLabel = false;
-    plot.width = this.radius*2;
-    plot.height = this.radius*2;
-    plot.radius = this.radius;
+    this.plot = new Plot(container);
+    this.plot.isRadial = true;
+    this.plot.showTitle = false;
+    this.plot.showXLabel = false;
+    this.plot.showYLabel = false;
 
     this.draw = function (data) {
 
+        //----------------------------------------------------------------
+        //decrease the radius if the title or labels are enabled
+        if (this.plot.showXLabel === true || this.plot.showYLabel === true) {
+            this.radius = this.radius - this.plot.getLabelHeight();
+        }
+        if (this.showTitle === true) {
+            this.radius = this.radius - this.plot.getLabelHeight();
+        }
+        this.plot.radius = this.radius;
+
+        //----------------------------------------------------------------
+        //adjust the plot dimensions if the title or labels are enabled
+        var xOffset = 0;
+        var yOffset = 0;
+        if (this.plot.showTitle === true) {
+            yOffset += this.plot.getLabelHeight();
+        }
+        if (this.plot.showXLabel === true) {
+            yOffset += this.plot.getLabelHeight();
+        }
+        if (this.plot.showYLabel === true) {
+            xOffset += this.plot.getLabelHeight();
+        }
+        this.plot.width = this.radius*2 + xOffset;
+        this.plot.height = this.radius*2 + yOffset;
+
+        //----------------------------------------------------------------
+        //draw plot area
         var outerRadius = this.radius;
         if (this.hasOutline === true) {
             outerRadius = this.radius - this.outlineWidth;
         }
         this.arc = d3.svg.arc().outerRadius(outerRadius).innerRadius(this.innerRadius);
-        this.pie = d3.layout.pie().value(function(d) { return d.value; });
+        this.pie = d3.layout.pie().sort(null).value(function(d) { return d.value });
 
-        plot.draw();
+        this.plot.draw();
+
+        this.plot.svg.data([data]);
+
+        //----------------------------------------------------------------
+        //explicitly check that not all data values are 0, else D3 throws an invalid value error: http://stackoverflow.com/questions/19933581
+        var total = 0;
+        data.forEach( function (segment) {
+            total += segment.value;
+        });
+        if (total !== 0 && total !== null && !isNaN(total)) {
+            this.render(data);
+        }
+    }
+
+    this.render = function (data) {
         var self = this;
-
-        plot.svg.data([data]);
-
-        var arcs = plot.svg.selectAll("g.slice")
+        var arcs = this.plot.svg.selectAll("g.slice")
             .data(self.pie)
             .enter()
                 .append("svg:g")
