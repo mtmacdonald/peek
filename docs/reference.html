@@ -171,6 +171,27 @@ header > div > a div{
 
 <!-- **************************************************************************************************************- -->
 
+<h1 class="doc-heading"><span>Line chart (with dual axis)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-line-chart-dual-axis">
+<script>
+ $(document).ready(function() {
+    var data = getFirstGroupData();
+    var chart = new Cartesian("#line-chart-dual-axis");
+    chart.plot.axes.x.showTicks = false;
+    chart.plot.axes.y.showTicks = false;
+    chart.draw(data);
+    var legend = new Legend("#line-legend-dual-axis");
+    legend.draw(data);
+ });
+</script>
+
+<div id="line-chart-dual-axis"></div>
+<div id="line-legend-dual-axis"></div>
+</div>
+
+
+<!-- **************************************************************************************************************- -->
+
 <h1 class="doc-heading"><span>Line chart (with interpolation, data points and grid)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
 <p>
   See the <a href="https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate">D3.js documentation</a> 

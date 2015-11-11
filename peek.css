@@ -32,7 +32,7 @@
   display: table; /*make left-container stretch to height of chart*/
 }
 
-.pk-leftContainer {
+.pk-yLabelContainer {
   display: table-cell; /*make left-container stretch to height of chart*/
   vertical-align: middle;
   position: relative; /*make container the closest positioned ancestor for yLabel: http://stackoverflow.com/questions/28741562*/
