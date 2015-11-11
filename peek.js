@@ -139,15 +139,16 @@ function Plot(container) {
         var chartContainer = d3.select(container).attr('class', 'pk-chart');
 
         var chart = chartContainer.insert("div").attr("class", "pk-plot pk-clear-after");
+        /**************************************************************************************************************/
         //left container with yLabel
-        var leftContainer = chart.insert("div").attr("class", "pk-yLabelContainer");
         if (this.showYLabel === true) {
+            var leftContainer = chart.insert("div").attr("class", "pk-yLabelContainer");
             leftContainer.style('width', labelHeight+'px');
             leftContainer.insert("div").html(pkEscapeHtml(this.yLabel)).attr("class", "pk-yLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px')
                                 .style('width', (this.getSvgHeight()+this.margin.top+this.margin.bottom)+'px'); /*must be same as height of svg area+margins*/
         }
-
+        /**************************************************************************************************************/
         //main container with xLabel and plot area
         var mainContainer = chart.insert("div").attr("class", "pk-mainContainer");
         if (this.showTitle === true) {
@@ -163,11 +164,10 @@ function Plot(container) {
         this.svg = svgContainer.insert("svg")
                     .attr('width', this.getSvgWidth() + this.margin.left + this.margin.right)
                     .attr('height', this.getSvgHeight() + this.margin.top + this.margin.bottom);
-
         /**************************************************************************************************************/
         //right container with second (optional) yLabel
-        var rightContainer = chart.insert("div").attr("class", "pk-yLabelContainer");
         if (this.showY2Label === true) {
+            var rightContainer = chart.insert("div").attr("class", "pk-yLabelContainer");
             rightContainer.style('width', labelHeight+'px');
             rightContainer.insert("div").html(pkEscapeHtml(this.y2Label)).attr("class", "pk-yLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px')
