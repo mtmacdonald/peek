@@ -171,13 +171,14 @@ header > div > a div{
 
 <!-- **************************************************************************************************************- -->
 
-<h1 class="doc-heading"><span>Line chart (with dual axis)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<h1 class="doc-heading"><span>Line chart (with dual axis, multiple scales)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
 <div class="code" id="code-sample-line-chart-dual-axis">
 <script>
  $(document).ready(function() {
     var data = getFirstGroupData();
     var chart = new Cartesian("#line-chart-dual-axis");
     chart.plot.showY2Label = true;
+    chart.plot.axes.y2.show = true;
     chart.plot.axes.x.showTicks = false;
     chart.plot.axes.y.showTicks = false;
     chart.draw(data);
@@ -189,7 +190,6 @@ header > div > a div{
 <div id="line-chart-dual-axis"></div>
 <div id="line-legend-dual-axis"></div>
 </div>
-
 
 <!-- **************************************************************************************************************- -->
 

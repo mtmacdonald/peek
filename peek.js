@@ -195,6 +195,7 @@ function Plot(container) {
 function Axis (plot) {
 
     var plot = plot;
+    this.show = true;
     this.showTicks = true;
     this.tickCount = 5;
     this.offset = 0;
@@ -265,11 +266,18 @@ function Axes (plot) {
     this.x = new Axis(plot);
     this.y = new Axis(plot);
     this.y2 = new Axis(plot);
+    this.y2.show = false;
 
     this.draw = function(xScale, yScale) {
-        this.x.draw(xScale, 'bottom', 5);
-        this.y.draw(yScale, 'left', 5);
-        this.y2.draw(yScale, 'right', 5);
+        if (this.x.show === true) {
+            this.x.draw(xScale, 'bottom', 5);           
+        }
+        if (this.y.show === true) {
+            this.y.draw(yScale, 'left', 5);
+        }
+        if (this.y2.show === true) {
+            this.y2.draw(yScale, 'right', 5);
+        }
     };
 
     this.drawGrid = function(xScale, yScale) {
