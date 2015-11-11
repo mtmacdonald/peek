@@ -99,7 +99,7 @@ function Plot(container) {
     this.showTitle = true;
     this.showXLabel = true;
     this.showYLabel = true;
-    this.showY2Label = true;
+    this.showY2Label = false;
 
     this.container = container;
     this.margin = {top: 14, right: 25, bottom: 35, left: 45};

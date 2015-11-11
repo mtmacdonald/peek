@@ -177,6 +177,7 @@ header > div > a div{
  $(document).ready(function() {
     var data = getFirstGroupData();
     var chart = new Cartesian("#line-chart-dual-axis");
+    chart.plot.showY2Label = true;
     chart.plot.axes.x.showTicks = false;
     chart.plot.axes.y.showTicks = false;
     chart.draw(data);
