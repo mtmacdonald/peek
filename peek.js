@@ -103,6 +103,9 @@ function Plot(container) {
 
     this.container = container;
     this.margin = {top: 14, right: 25, bottom: 35, left: 45};
+    if (this.showYLabel === true) {
+        this.margin.right = this.margin.left; //increase the right margin when second yLabel is shown
+    }
     this.width = 600;
     this.height = 400;
     this.radius = 150; //only applies to radial charts
