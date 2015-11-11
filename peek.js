@@ -99,6 +99,7 @@ function Plot(container) {
     this.showTitle = true;
     this.showXLabel = true;
     this.showYLabel = true;
+    this.showY2Label = true;
 
     this.container = container;
     this.margin = {top: 14, right: 25, bottom: 35, left: 45};
@@ -109,6 +110,7 @@ function Plot(container) {
     this.title = 'Chart Title';
     this.xLabel = 'X Label';
     this.yLabel = 'Y Label';
+    this.y2Label = 'Y Label 2';
 
     this.axes = new Axes(this);
 
@@ -135,15 +137,14 @@ function Plot(container) {
 
         var chart = chartContainer.insert("div").attr("class", "pk-plot pk-clear-after");
         //left container with yLabel
-        var leftContainer = chart.insert("div").attr("class", "pk-leftContainer");
+        var leftContainer = chart.insert("div").attr("class", "pk-yLabelContainer");
         if (this.showYLabel === true) {
             leftContainer.style('width', labelHeight+'px');
-        }
-        if (this.showYLabel === true) {
             leftContainer.insert("div").html(pkEscapeHtml(this.yLabel)).attr("class", "pk-yLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px')
                                 .style('width', (this.getSvgHeight()+this.margin.top+this.margin.bottom)+'px'); /*must be same as height of svg area+margins*/
         }
+
         //main container with xLabel and plot area
         var mainContainer = chart.insert("div").attr("class", "pk-mainContainer");
         if (this.showTitle === true) {
@@ -159,6 +160,17 @@ function Plot(container) {
         this.svg = svgContainer.insert("svg")
                     .attr('width', this.getSvgWidth() + this.margin.left + this.margin.right)
                     .attr('height', this.getSvgHeight() + this.margin.top + this.margin.bottom);
+
+        /**************************************************************************************************************/
+        //right container with second (optional) yLabel
+        var rightContainer = chart.insert("div").attr("class", "pk-yLabelContainer");
+        if (this.showY2Label === true) {
+            rightContainer.style('width', labelHeight+'px');
+            rightContainer.insert("div").html(pkEscapeHtml(this.y2Label)).attr("class", "pk-yLabel")
+                                .style('height', labelHeight+'px').style('line-height', labelHeight+'px')
+                                .style('width', (this.getSvgHeight()+this.margin.top+this.margin.bottom)+'px'); /*must be same as height of svg area+margins*/
+        }
+        /**************************************************************************************************************/
 
         svgContainer.on("mousemove", function() {
             var tooltip = d3.select(".pk-tooltip");
@@ -205,7 +217,13 @@ function Axis (plot) {
             .attr("class", "pk-axis");
 
         if (orient === 'bottom') {
-            rendered.attr('transform', 'translate('+this.offset+',' + plot.getSvgHeight() + ')');
+            var translate = this.offset+','+plot.getSvgHeight();
+            rendered.attr('transform', 'translate('+translate+')');
+        }
+
+        if (orient === 'right') {
+            var translate = plot.getSvgWidth()+',0';
+            rendered.attr('transform', 'translate('+translate+')');
         }
 
         rendered.call(axis);
@@ -243,10 +261,12 @@ function Axes (plot) {
     var plot = plot;
     this.x = new Axis(plot);
     this.y = new Axis(plot);
+    this.y2 = new Axis(plot);
 
     this.draw = function(xScale, yScale) {
         this.x.draw(xScale, 'bottom', 5);
         this.y.draw(yScale, 'left', 5);
+        this.y2.draw(yScale, 'right', 5);
     };
 
     this.drawGrid = function(xScale, yScale) {
