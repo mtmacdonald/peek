@@ -548,6 +548,7 @@ function Data() {
     this.isStacked = false;
     this.isStackedByGroup = false;
     this.stackOffset = 'zero';
+    this.dualScale = false;
 
     this.init = function(dataArray) {
         data = dataArray;
@@ -557,7 +558,7 @@ function Data() {
             stack();
         }
         fetchXExtent();
-        fetchYExtent();
+        fetchYExtents();
     }
 
     //todo - interpolate missing data points ... e.g. http://stackoverflow.com/questions/14713503
@@ -643,7 +644,8 @@ function Data() {
     //------------------------------------------------------------------------------------------------------------------
 
     var xExtent = 0;
-    var yExtent = 0;
+    var yExtent = [0, 100];
+    var y2Extent = [0, 100];
 
     this.xExtent = function () {
         return xExtent;
@@ -651,6 +653,10 @@ function Data() {
 
     this.yExtent = function () {
         return yExtent;
+    }
+
+    this.y2Extent = function () {
+        return y2Extent;
     }
 
     var fetchXExtent = function () {
@@ -669,7 +675,7 @@ function Data() {
         xExtent = [min, max];
     }
 
-    var fetchYExtent = function () {
+    var fetchYExtents = function () {
         //min is either the min value from all series, or 0, whichever is lower
         var min = d3.min(data.map(function (series) {
             return d3.min(series.values.map(function (point) {
@@ -725,7 +731,8 @@ function Cartesian(container) {
         //is this a dual scale chart?
         if (this.dualScale === true) {
             this.plot.showY2Label = true;
-            this.plot.axes.y2.show = true; 
+            this.plot.axes.y2.show = true;
+            this.data.dualScale = true;
         }
 
         if (this.bars.visible === true) {
@@ -751,7 +758,7 @@ function Cartesian(container) {
         xScale.domain(this.data.xExtent());
         yScale.domain(this.data.yExtent());
         if (this.dualScale === true) {
-            //y2Scale.domain(this.data.y2Extent());
+            y2Scale.domain(this.data.y2Extent());
         }
 
         this.plot.axes.drawGrid(xScale, yScale);
