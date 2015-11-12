@@ -317,7 +317,6 @@ function Lines (plot) {
             }
 
             data.getData().forEach(function (series) {
-                console.log(series.dualScale)     
                 var element = plot.svg.append("path")
                     .attr("class", "pk-line")
                     .style("stroke", series.color)
@@ -650,8 +649,8 @@ function Data() {
     //------------------------------------------------------------------------------------------------------------------
 
     var xExtent = 0;
-    var yExtent = [0, 100];
-    var y2Extent = [0, 100];
+    var yExtent = [0, 0];
+    var y2Extent = [0, 0];
 
     this.xExtent = function () {
         return xExtent;
@@ -682,15 +681,40 @@ function Data() {
     }
 
     var fetchYExtents = function () {
+        var min = 0;
+        var max = 0;
+        var dualMin = 0;
+        var dualMax = 0;
+
+        //Min-----------------------------------------------------------------------------------------------------------
+
         //min is either the min value from all series, or 0, whichever is lower
         var min = d3.min(data.map(function (series) {
-            return d3.min(series.values.map(function (point) {
-                return point.y;
-            }));
+            if (self.dualScale === true && series.dualScale !== true) {
+                return d3.min(series.values.map(function (point) {
+                    return point.y;
+                }));
+            } else {
+                return d3.min(series.values.map(function (point) {
+                    return point.y;
+                }));
+            }
+        }));
+        var dualMin = d3.min(data.map(function (series) {
+            if (series.dualScale === true) {
+                return d3.min(series.values.map(function (point) {
+                    return point.y;
+                }));
+            }
         }));
         if (min > 0) {
             min = 0;
         }
+        if (dualMin > 0) {
+            dualMin = 0;
+        }
+
+        //Max-----------------------------------------------------------------------------------------------------------
 
         //max depends on whether series are not stacked, stacked, or grouped and stacked
         if (self.isStacked) { //if stacked, get max of y0+y in the final data series
@@ -709,13 +733,29 @@ function Data() {
             }
         } else { //if not stacked, get the max value from all series
             var max = d3.max(data.map(function (series) {
-                return d3.max(series.values.map(function (point) {
-                    return point.y;
-                }));
+                if (self.dualScale === true && series.dualScale !== true) {
+                    return d3.max(series.values.map(function (point) {
+                        return point.y;
+                    }));
+                } else {
+                    return d3.max(series.values.map(function (point) {
+                        return point.y;
+                    }));
+                }
+            }));
+            var dualMax = d3.max(data.map(function (series) {
+                if (series.dualScale === true) {
+                    return d3.max(series.values.map(function (point) {
+                        return point.y;
+                    }));
+                }
             }));
         }
 
         yExtent = [min, max];
+        if (self.dualScale === true) {
+            y2Extent = [dualMin, dualMax];
+        }
     }
 
 }
