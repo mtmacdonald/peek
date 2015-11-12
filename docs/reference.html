@@ -177,10 +177,10 @@ header > div > a div{
  $(document).ready(function() {
     var data = getFirstGroupDataWithScale();
     var chart = new Cartesian("#line-chart-dual-axis");
-    chart.plot.showY2Label = true;
-    chart.plot.axes.y2.show = true;
     chart.plot.axes.x.showTicks = false;
     chart.plot.axes.y.showTicks = false;
+    //additional scale:
+    chart.dualScale = true;
     chart.draw(data);
     var legend = new Legend("#line-legend-dual-axis");
     legend.draw(data);

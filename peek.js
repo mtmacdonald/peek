@@ -718,8 +718,15 @@ function Cartesian(container) {
     this.points = new Points(this.plot);
     this.areas = new Areas(this.plot);
     this.bars = new Bars(this.plot);
+    this.dualScale = false;
 
     this.draw = function (dataArray) {
+
+        //is this a dual scale chart?
+        if (this.dualScale === true) {
+            this.plot.showY2Label = true;
+            this.plot.axes.y2.show = true; 
+        }
 
         if (this.bars.visible === true) {
             this.data.isStackedByGroup = true; //bar charts are always stacked by group
@@ -740,8 +747,12 @@ function Cartesian(container) {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
         }
         var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
+        var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
         xScale.domain(this.data.xExtent());
         yScale.domain(this.data.yExtent());
+        if (this.dualScale === true) {
+            //y2Scale.domain(this.data.y2Extent());
+        }
 
         this.plot.axes.drawGrid(xScale, yScale);
         this.bars.draw(xScale, yScale);
