@@ -268,7 +268,7 @@ function Axes (plot) {
     this.y2 = new Axis(plot);
     this.y2.show = false;
 
-    this.draw = function(xScale, yScale) {
+    this.draw = function(xScale, yScale, y2Scale) {
         if (this.x.show === true) {
             this.x.draw(xScale, 'bottom', 5);           
         }
@@ -276,7 +276,7 @@ function Axes (plot) {
             this.y.draw(yScale, 'left', 5);
         }
         if (this.y2.show === true) {
-            this.y2.draw(yScale, 'right', 5);
+            this.y2.draw(y2Scale, 'right', 5);
         }
     };
 
@@ -765,7 +765,7 @@ function Cartesian(container) {
         this.bars.draw(xScale, yScale);
         this.lines.draw(xScale, yScale);
         this.areas.draw(xScale, yScale);
-        this.plot.axes.draw(xScale, yScale);
+        this.plot.axes.draw(xScale, yScale, y2Scale);
         this.points.draw(xScale, yScale);
     }
 }
