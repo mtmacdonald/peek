@@ -323,11 +323,8 @@ function getFirstGroupDataWithScale() {
     var data = getFirstGroupData();
     data.forEach(function (series, i) {
         if (i === 0) {
-            series.scale = 0;
-        } else {
-            series.scale = 1;
+            series.dualScale = true;
         }
-
     });
     return data;
 }

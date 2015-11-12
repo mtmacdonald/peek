@@ -306,26 +306,23 @@ function Lines (plot) {
         if (this.visible === true) {
 
             var line = d3.svg.line().interpolate(this.interpolation).x(function(d) { return xScale(d.x); });
-            if (this.dualScale === true) {
-                if (true) {
-                    line.y(function(d) { return yScale(d.y); });
-                } else {
-                    line.y(function(d) { return y2Scale(d.y); });                    
-                }
+            var dualScaleLine = d3.svg.line().interpolate(this.interpolation).x(function(d) { return xScale(d.x); });
+            if (data.isStacked === true) {
+                line.y(function(d) { return yScale(d.y0 + d.y); });
             } else {
-                if (data.isStacked === true) {
-                    line.y(function(d) { return yScale(d.y0 + d.y); });
-                } else {
-                    line.y(function(d) { return yScale(d.y); });
-                }
+                line.y(function(d) { return yScale(d.y); });
+            }
+            if (this.dualScale === true) {
+                dualScaleLine.y(function(d) { return y2Scale(d.y); });
             }
 
-            data.getData().forEach(function (series) {     
+            data.getData().forEach(function (series) {
+                console.log(series.dualScale)     
                 var element = plot.svg.append("path")
                     .attr("class", "pk-line")
                     .style("stroke", series.color)
                     .style("stroke-width", this.lineWidth)
-                    .attr("d", line(series.values));
+                    .attr("d", (series.dualScale === true ? dualScaleLine(series.values) : line(series.values) ));
             }, this);
         }
     }
