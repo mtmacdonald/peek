@@ -294,6 +294,7 @@ function Lines (plot) {
     this.visible = true;
     this.interpolation = 'linear';
     this.lineWidth = 2;
+    this.dualScale = false;
 
     this.init = function (dataObject) {
         if (this.visible === true) {
@@ -301,14 +302,22 @@ function Lines (plot) {
         }
     }
 
-    this.draw = function(xScale, yScale) {
+    this.draw = function(xScale, yScale, y2Scale) {
         if (this.visible === true) {
 
             var line = d3.svg.line().interpolate(this.interpolation).x(function(d) { return xScale(d.x); });
-            if (data.isStacked === true) {
-                line.y(function(d) { return yScale(d.y0 + d.y); });
+            if (this.dualScale === true) {
+                if (true) {
+                    line.y(function(d) { return yScale(d.y); });
+                } else {
+                    line.y(function(d) { return y2Scale(d.y); });                    
+                }
             } else {
-                line.y(function(d) { return yScale(d.y); });
+                if (data.isStacked === true) {
+                    line.y(function(d) { return yScale(d.y0 + d.y); });
+                } else {
+                    line.y(function(d) { return yScale(d.y); });
+                }
             }
 
             data.getData().forEach(function (series) {     
@@ -733,6 +742,7 @@ function Cartesian(container) {
             this.plot.showY2Label = true;
             this.plot.axes.y2.show = true;
             this.data.dualScale = true;
+            this.lines.dualScale = true;
         }
 
         if (this.bars.visible === true) {
@@ -763,7 +773,7 @@ function Cartesian(container) {
 
         this.plot.axes.drawGrid(xScale, yScale);
         this.bars.draw(xScale, yScale);
-        this.lines.draw(xScale, yScale);
+        this.lines.draw(xScale, yScale, y2Scale);
         this.areas.draw(xScale, yScale);
         this.plot.axes.draw(xScale, yScale, y2Scale);
         this.points.draw(xScale, yScale);
