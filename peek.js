@@ -376,6 +376,7 @@ function Points (plot) {
     this.visible = false;
     this.size = 4;
     this.fill = false;
+    this.dualScale = false;
 
     this.init = function (dataObject) {
         if (this.visible === true) {
@@ -383,41 +384,43 @@ function Points (plot) {
         }
     }
 
-    this.draw = function(xScale, yScale) {
+    this.draw = function(xScale, yScale, y2Scale) {
+        var self = this;
         if (this.visible === true) {
             data.getData().forEach(function (series) {     
                 //------------------------------------------------------------------------------------------------------
                 d3.select(plot.container)
                     .append("div")
                     .attr("class", "pk-tooltip").html("<p>Tooltip</p>");
-
-                var point = plot.svg.selectAll(".chart")
-                    .data(series.values)
-                    .enter()
-                    .append("circle")
-                      .attr("transform", function(d) {
-                        if (data.isStacked === true) {
-                            return "translate(" + xScale(d.x) + ", " + yScale(d.y0+d.y) + ")";
-                        } else {
-                            return "translate(" + xScale(d.x) + ", " + yScale(d.y) + ")";
-                        }
-                    })
-                    .attr("r", function(d){ return self.size; }) 
+                var color = series.color;
+                series.values.forEach(function(value, i) {
+                    var xV = xScale(value.x);
+                    if (data.isStacked === true) {
+                        var yV = yScale(value.y0+value.y);
+                    } else if (self.dualScale && series.dualScale === true) {
+                        var yV = y2Scale(value.y);
+                    } else {
+                        var yV = yScale(value.y);
+                    }
+                    var point = plot.svg.append("circle")
+                    .datum(value)
+                    .attr("transform", "translate(" + xV + ", " + yV + ")")
+                    .attr("r", self.size) 
                     .style("stroke", series.color)
-                    .on("mouseover", this.mouseover_circle)
-                    .on("mouseout", this.mouseout_circle);
-
-                if (this.fill) {
-                    point.attr("fill", series.color);
-                } else {
-                    point.attr("fill", "white");
-                }
+                    .on("mouseover", self.mouseover_circle)
+                    .on("mouseout", self.mouseout_circle);
+                    if (self.fill) {
+                        point.attr("fill", series.color);
+                    } else {
+                        point.attr("fill", "white");
+                    }                    
+                });
                 //------------------------------------------------------------------------------------------------------
-            }, this);
+            });
         }
     }
 
-    this.mouseover_circle = function(data,i) {     
+    this.mouseover_circle = function(data, i) {     
         var formatDate = d3.time.format("%A %d. %B %Y");
         var circle = d3.select(this);
         circle.transition().duration(500).attr("r", 10);
@@ -426,7 +429,7 @@ function Points (plot) {
         .style("display", "block")
         .style('opacity', 0)
         .transition().delay(200).duration(500).style('opacity', 1);  
-          
+
         d3.select(".pk-tooltip p")
             .html("<strong>Date:</strong> " 
                 + formatDate(new Date(data.x)) 
@@ -434,6 +437,7 @@ function Points (plot) {
                 + "<strong>Value:</strong> " 
                 + data.y
                 );
+
     }
 
     this.mouseout_circle = function() {
@@ -780,6 +784,7 @@ function Cartesian(container) {
             this.plot.axes.y2.show = true;
             this.data.dualScale = true;
             this.lines.dualScale = true;
+            this.points.dualScale = true;
         }
 
         if (this.bars.visible === true) {
@@ -813,7 +818,7 @@ function Cartesian(container) {
         this.lines.draw(xScale, yScale, y2Scale);
         this.areas.draw(xScale, yScale);
         this.plot.axes.draw(xScale, yScale, y2Scale);
-        this.points.draw(xScale, yScale);
+        this.points.draw(xScale, yScale, y2Scale);
     }
 }
 
