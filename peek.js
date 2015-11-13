@@ -234,28 +234,25 @@ function Axis (plot) {
     }
 
     this.drawGrid = function (scale, orient) {
-        if (this.showTicks) {
+        var axis = d3.svg.axis()
+                    .scale(scale)
+                    .orient(orient).ticks(this.tickCount);
 
-            var axis = d3.svg.axis()
-                        .scale(scale)
-                        .orient(orient).ticks(this.tickCount);
-
-            if (orient === 'bottom') {
-                plot.svg.append('g')
-                    .attr('class', 'pk-grid pk-xGrid')
-                    .attr('transform', "translate("+this.offset+"," + plot.getSvgHeight() + ")")
-                    .call(axis
-                        .tickSize(-plot.getSvgHeight(), 0, 0)
-                        .tickFormat("")
-                    );
-            } else {
-                plot.svg.append('g')         
-                    .attr('class', 'pk-grid pk-yGrid')
-                    .call(axis
-                        .tickSize(-plot.getSvgWidth(), 0, 0)
-                        .tickFormat('')
-                    );
-            }
+        if (orient === 'bottom') {
+            plot.svg.append('g')
+                .attr('class', 'pk-grid pk-xGrid')
+                .attr('transform', "translate("+this.offset+"," + plot.getSvgHeight() + ")")
+                .call(axis
+                    .tickSize(-plot.getSvgHeight(), 0, 0)
+                    .tickFormat("")
+                );
+        } else {
+            plot.svg.append('g')         
+                .attr('class', 'pk-grid pk-yGrid')
+                .call(axis
+                    .tickSize(-plot.getSvgWidth(), 0, 0)
+                    .tickFormat('')
+                );
         }
     }
 }
@@ -267,6 +264,7 @@ function Axes (plot) {
     this.y = new Axis(plot);
     this.y2 = new Axis(plot);
     this.y2.show = false;
+    this.y2.showTicks = false;
 
     this.draw = function(xScale, yScale, y2Scale) {
         if (this.x.show === true) {
@@ -280,9 +278,16 @@ function Axes (plot) {
         }
     };
 
-    this.drawGrid = function(xScale, yScale) {
-        this.x.drawGrid(xScale, 'bottom', 5);
-        this.y.drawGrid(yScale, 'left', 5);
+    this.drawGrid = function(xScale, yScale, y2Scale) {
+        if (this.x.showTicks === true) {
+            this.x.drawGrid(xScale, 'bottom');            
+        }
+        if (this.y.showTicks === true) {
+            this.y.drawGrid(yScale, 'left');           
+        }
+        if (this.y2.show === true && this.y2.showTicks === true) {
+            this.y.drawGrid(y2Scale, 'left');
+        }
     };
 }
 
@@ -813,7 +818,7 @@ function Cartesian(container) {
             y2Scale.domain(this.data.y2Extent());
         }
 
-        this.plot.axes.drawGrid(xScale, yScale);
+        this.plot.axes.drawGrid(xScale, yScale, y2Scale);
         this.bars.draw(xScale, yScale);
         this.lines.draw(xScale, yScale, y2Scale);
         this.areas.draw(xScale, yScale);
