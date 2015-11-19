@@ -695,7 +695,7 @@ function Data() {
         var dualMin = 0;
         var dualMax = 0;
 
-        //Min-----------------------------------------------------------------------------------------------------------
+//Min-------------------------------------------------------------------------------------------------------------------
 
         //min is either the min value from all series, or 0, whichever is lower
         var min = d3.min(data.map(function (series) {
@@ -723,9 +723,10 @@ function Data() {
             dualMin = 0;
         }
 
-        //Max-----------------------------------------------------------------------------------------------------------
+//Max-------------------------------------------------------------------------------------------------------------------
 
         //max depends on whether series are not stacked, stacked, or grouped and stacked
+        //we do not handle dual y-axes for stacked charts
         if (self.isStacked) { //if stacked, get max of y0+y in the final data series
             var max = 0;
             var groups = getGroupsWithSeries();
@@ -740,16 +741,16 @@ function Data() {
                     }
                 }
             }
-        } else { //if not stacked, get the max value from all series
+        
+        //if not stacked but dual scale, get the max value by series
+        } else if (self.dualScale) {
             var max = d3.max(data.map(function (series) {
-                if (self.dualScale === true && series.dualScale !== true) {
+                if (series.dualScale !== true) {
                     return d3.max(series.values.map(function (point) {
                         return point.y;
                     }));
                 } else {
-                    return d3.max(series.values.map(function (point) {
-                        return point.y;
-                    }));
+                    return 0;
                 }
             }));
             var dualMax = d3.max(data.map(function (series) {
@@ -757,9 +758,20 @@ function Data() {
                     return d3.max(series.values.map(function (point) {
                         return point.y;
                     }));
+                } else {
+                    return 0;
                 }
             }));
+        //if not stacked and not dual scale, get the max value from all series
+        } else {
+            var max = d3.max(data.map(function (series) {
+                return d3.max(series.values.map(function (point) {
+                    return point.y;
+                }));
+            }));
         }
+
+//----------------------------------------------------------------------------------------------------------------------
 
         yExtent = [min, max];
         if (self.dualScale === true) {
