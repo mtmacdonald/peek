@@ -99,10 +99,13 @@ function Plot(container) {
     this.showTitle = true;
     this.showXLabel = true;
     this.showYLabel = true;
-    this.showY2Label = true;
+    this.showY2Label = false;
 
     this.container = container;
     this.margin = {top: 14, right: 25, bottom: 35, left: 45};
+    if (this.showYLabel === true) {
+        this.margin.right = this.margin.left; //increase the right margin when second yLabel is shown
+    }
     this.width = 600;
     this.height = 400;
     this.radius = 150; //only applies to radial charts
@@ -136,15 +139,16 @@ function Plot(container) {
         var chartContainer = d3.select(container).attr('class', 'pk-chart');
 
         var chart = chartContainer.insert("div").attr("class", "pk-plot pk-clear-after");
+        /**************************************************************************************************************/
         //left container with yLabel
-        var leftContainer = chart.insert("div").attr("class", "pk-yLabelContainer");
         if (this.showYLabel === true) {
+            var leftContainer = chart.insert("div").attr("class", "pk-yLabelContainer");
             leftContainer.style('width', labelHeight+'px');
             leftContainer.insert("div").html(pkEscapeHtml(this.yLabel)).attr("class", "pk-yLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px')
                                 .style('width', (this.getSvgHeight()+this.margin.top+this.margin.bottom)+'px'); /*must be same as height of svg area+margins*/
         }
-
+        /**************************************************************************************************************/
         //main container with xLabel and plot area
         var mainContainer = chart.insert("div").attr("class", "pk-mainContainer");
         if (this.showTitle === true) {
@@ -160,11 +164,10 @@ function Plot(container) {
         this.svg = svgContainer.insert("svg")
                     .attr('width', this.getSvgWidth() + this.margin.left + this.margin.right)
                     .attr('height', this.getSvgHeight() + this.margin.top + this.margin.bottom);
-
         /**************************************************************************************************************/
         //right container with second (optional) yLabel
-        var rightContainer = chart.insert("div").attr("class", "pk-yLabelContainer");
         if (this.showY2Label === true) {
+            var rightContainer = chart.insert("div").attr("class", "pk-yLabelContainer");
             rightContainer.style('width', labelHeight+'px');
             rightContainer.insert("div").html(pkEscapeHtml(this.y2Label)).attr("class", "pk-yLabel")
                                 .style('height', labelHeight+'px').style('line-height', labelHeight+'px')
@@ -192,6 +195,7 @@ function Plot(container) {
 function Axis (plot) {
 
     var plot = plot;
+    this.show = true;
     this.showTicks = true;
     this.tickCount = 5;
     this.offset = 0;
@@ -230,28 +234,25 @@ function Axis (plot) {
     }
 
     this.drawGrid = function (scale, orient) {
-        if (this.showTicks) {
+        var axis = d3.svg.axis()
+                    .scale(scale)
+                    .orient(orient).ticks(this.tickCount);
 
-            var axis = d3.svg.axis()
-                        .scale(scale)
-                        .orient(orient).ticks(this.tickCount);
-
-            if (orient === 'bottom') {
-                plot.svg.append('g')
-                    .attr('class', 'pk-grid pk-xGrid')
-                    .attr('transform', "translate("+this.offset+"," + plot.getSvgHeight() + ")")
-                    .call(axis
-                        .tickSize(-plot.getSvgHeight(), 0, 0)
-                        .tickFormat("")
-                    );
-            } else {
-                plot.svg.append('g')         
-                    .attr('class', 'pk-grid pk-yGrid')
-                    .call(axis
-                        .tickSize(-plot.getSvgWidth(), 0, 0)
-                        .tickFormat('')
-                    );
-            }
+        if (orient === 'bottom') {
+            plot.svg.append('g')
+                .attr('class', 'pk-grid pk-xGrid')
+                .attr('transform', "translate("+this.offset+"," + plot.getSvgHeight() + ")")
+                .call(axis
+                    .tickSize(-plot.getSvgHeight(), 0, 0)
+                    .tickFormat("")
+                );
+        } else {
+            plot.svg.append('g')         
+                .attr('class', 'pk-grid pk-yGrid')
+                .call(axis
+                    .tickSize(-plot.getSvgWidth(), 0, 0)
+                    .tickFormat('')
+                );
         }
     }
 }
@@ -262,16 +263,31 @@ function Axes (plot) {
     this.x = new Axis(plot);
     this.y = new Axis(plot);
     this.y2 = new Axis(plot);
+    this.y2.show = false;
+    this.y2.showTicks = false;
 
-    this.draw = function(xScale, yScale) {
-        this.x.draw(xScale, 'bottom', 5);
-        this.y.draw(yScale, 'left', 5);
-        this.y2.draw(yScale, 'right', 5);
+    this.draw = function(xScale, yScale, y2Scale) {
+        if (this.x.show === true) {
+            this.x.draw(xScale, 'bottom', 5);           
+        }
+        if (this.y.show === true) {
+            this.y.draw(yScale, 'left', 5);
+        }
+        if (this.y2.show === true) {
+            this.y2.draw(y2Scale, 'right', 5);
+        }
     };
 
-    this.drawGrid = function(xScale, yScale) {
-        this.x.drawGrid(xScale, 'bottom', 5);
-        this.y.drawGrid(yScale, 'left', 5);
+    this.drawGrid = function(xScale, yScale, y2Scale) {
+        if (this.x.showTicks === true) {
+            this.x.drawGrid(xScale, 'bottom');            
+        }
+        if (this.y.showTicks === true) {
+            this.y.drawGrid(yScale, 'left');           
+        }
+        if (this.y2.show === true && this.y2.showTicks === true) {
+            this.y.drawGrid(y2Scale, 'left');
+        }
     };
 }
 
@@ -283,6 +299,7 @@ function Lines (plot) {
     this.visible = true;
     this.interpolation = 'linear';
     this.lineWidth = 2;
+    this.dualScale = false;
 
     this.init = function (dataObject) {
         if (this.visible === true) {
@@ -290,22 +307,26 @@ function Lines (plot) {
         }
     }
 
-    this.draw = function(xScale, yScale) {
+    this.draw = function(xScale, yScale, y2Scale) {
         if (this.visible === true) {
 
             var line = d3.svg.line().interpolate(this.interpolation).x(function(d) { return xScale(d.x); });
+            var dualScaleLine = d3.svg.line().interpolate(this.interpolation).x(function(d) { return xScale(d.x); });
             if (data.isStacked === true) {
                 line.y(function(d) { return yScale(d.y0 + d.y); });
             } else {
                 line.y(function(d) { return yScale(d.y); });
             }
+            if (this.dualScale === true) {
+                dualScaleLine.y(function(d) { return y2Scale(d.y); });
+            }
 
-            data.getData().forEach(function (series) {     
+            data.getData().forEach(function (series) {
                 var element = plot.svg.append("path")
                     .attr("class", "pk-line")
                     .style("stroke", series.color)
                     .style("stroke-width", this.lineWidth)
-                    .attr("d", line(series.values));
+                    .attr("d", (series.dualScale === true ? dualScaleLine(series.values) : line(series.values) ));
             }, this);
         }
     }
@@ -360,6 +381,7 @@ function Points (plot) {
     this.visible = false;
     this.size = 4;
     this.fill = false;
+    this.dualScale = false;
 
     this.init = function (dataObject) {
         if (this.visible === true) {
@@ -367,41 +389,43 @@ function Points (plot) {
         }
     }
 
-    this.draw = function(xScale, yScale) {
+    this.draw = function(xScale, yScale, y2Scale) {
+        var self = this;
         if (this.visible === true) {
             data.getData().forEach(function (series) {     
                 //------------------------------------------------------------------------------------------------------
                 d3.select(plot.container)
                     .append("div")
                     .attr("class", "pk-tooltip").html("<p>Tooltip</p>");
-
-                var point = plot.svg.selectAll(".chart")
-                    .data(series.values)
-                    .enter()
-                    .append("circle")
-                      .attr("transform", function(d) {
-                        if (data.isStacked === true) {
-                            return "translate(" + xScale(d.x) + ", " + yScale(d.y0+d.y) + ")";
-                        } else {
-                            return "translate(" + xScale(d.x) + ", " + yScale(d.y) + ")";
-                        }
-                    })
-                    .attr("r", function(d){ return self.size; }) 
+                var color = series.color;
+                series.values.forEach(function(value, i) {
+                    var xV = xScale(value.x);
+                    if (data.isStacked === true) {
+                        var yV = yScale(value.y0+value.y);
+                    } else if (self.dualScale && series.dualScale === true) {
+                        var yV = y2Scale(value.y);
+                    } else {
+                        var yV = yScale(value.y);
+                    }
+                    var point = plot.svg.append("circle")
+                    .datum(value)
+                    .attr("transform", "translate(" + xV + ", " + yV + ")")
+                    .attr("r", self.size) 
                     .style("stroke", series.color)
-                    .on("mouseover", this.mouseover_circle)
-                    .on("mouseout", this.mouseout_circle);
-
-                if (this.fill) {
-                    point.attr("fill", series.color);
-                } else {
-                    point.attr("fill", "white");
-                }
+                    .on("mouseover", self.mouseover_circle)
+                    .on("mouseout", self.mouseout_circle);
+                    if (self.fill) {
+                        point.attr("fill", series.color);
+                    } else {
+                        point.attr("fill", "white");
+                    }                    
+                });
                 //------------------------------------------------------------------------------------------------------
-            }, this);
+            });
         }
     }
 
-    this.mouseover_circle = function(data,i) {     
+    this.mouseover_circle = function(data, i) {     
         var formatDate = d3.time.format("%A %d. %B %Y");
         var circle = d3.select(this);
         circle.transition().duration(500).attr("r", 10);
@@ -410,7 +434,7 @@ function Points (plot) {
         .style("display", "block")
         .style('opacity', 0)
         .transition().delay(200).duration(500).style('opacity', 1);  
-          
+
         d3.select(".pk-tooltip p")
             .html("<strong>Date:</strong> " 
                 + formatDate(new Date(data.x)) 
@@ -418,6 +442,7 @@ function Points (plot) {
                 + "<strong>Value:</strong> " 
                 + data.y
                 );
+
     }
 
     this.mouseout_circle = function() {
@@ -537,6 +562,7 @@ function Data() {
     this.isStacked = false;
     this.isStackedByGroup = false;
     this.stackOffset = 'zero';
+    this.dualScale = false;
 
     this.init = function(dataArray) {
         data = dataArray;
@@ -546,7 +572,7 @@ function Data() {
             stack();
         }
         fetchXExtent();
-        fetchYExtent();
+        fetchYExtents();
     }
 
     //todo - interpolate missing data points ... e.g. http://stackoverflow.com/questions/14713503
@@ -632,7 +658,8 @@ function Data() {
     //------------------------------------------------------------------------------------------------------------------
 
     var xExtent = 0;
-    var yExtent = 0;
+    var yExtent = [0, 0];
+    var y2Extent = [0, 0];
 
     this.xExtent = function () {
         return xExtent;
@@ -640,6 +667,10 @@ function Data() {
 
     this.yExtent = function () {
         return yExtent;
+    }
+
+    this.y2Extent = function () {
+        return y2Extent;
     }
 
     var fetchXExtent = function () {
@@ -658,16 +689,41 @@ function Data() {
         xExtent = [min, max];
     }
 
-    var fetchYExtent = function () {
+    var fetchYExtents = function () {
+        var min = 0;
+        var max = 0;
+        var dualMin = 0;
+        var dualMax = 0;
+
+        //Min-----------------------------------------------------------------------------------------------------------
+
         //min is either the min value from all series, or 0, whichever is lower
         var min = d3.min(data.map(function (series) {
-            return d3.min(series.values.map(function (point) {
-                return point.y;
-            }));
+            if (self.dualScale === true && series.dualScale !== true) {
+                return d3.min(series.values.map(function (point) {
+                    return point.y;
+                }));
+            } else {
+                return d3.min(series.values.map(function (point) {
+                    return point.y;
+                }));
+            }
+        }));
+        var dualMin = d3.min(data.map(function (series) {
+            if (series.dualScale === true) {
+                return d3.min(series.values.map(function (point) {
+                    return point.y;
+                }));
+            }
         }));
         if (min > 0) {
             min = 0;
         }
+        if (dualMin > 0) {
+            dualMin = 0;
+        }
+
+        //Max-----------------------------------------------------------------------------------------------------------
 
         //max depends on whether series are not stacked, stacked, or grouped and stacked
         if (self.isStacked) { //if stacked, get max of y0+y in the final data series
@@ -686,13 +742,29 @@ function Data() {
             }
         } else { //if not stacked, get the max value from all series
             var max = d3.max(data.map(function (series) {
-                return d3.max(series.values.map(function (point) {
-                    return point.y;
-                }));
+                if (self.dualScale === true && series.dualScale !== true) {
+                    return d3.max(series.values.map(function (point) {
+                        return point.y;
+                    }));
+                } else {
+                    return d3.max(series.values.map(function (point) {
+                        return point.y;
+                    }));
+                }
+            }));
+            var dualMax = d3.max(data.map(function (series) {
+                if (series.dualScale === true) {
+                    return d3.max(series.values.map(function (point) {
+                        return point.y;
+                    }));
+                }
             }));
         }
 
         yExtent = [min, max];
+        if (self.dualScale === true) {
+            y2Extent = [dualMin, dualMax];
+        }
     }
 
 }
@@ -707,8 +779,18 @@ function Cartesian(container) {
     this.points = new Points(this.plot);
     this.areas = new Areas(this.plot);
     this.bars = new Bars(this.plot);
+    this.dualScale = false;
 
     this.draw = function (dataArray) {
+
+        //is this a dual scale chart?
+        if (this.dualScale === true) {
+            this.plot.showY2Label = true;
+            this.plot.axes.y2.show = true;
+            this.data.dualScale = true;
+            this.lines.dualScale = true;
+            this.points.dualScale = true;
+        }
 
         if (this.bars.visible === true) {
             this.data.isStackedByGroup = true; //bar charts are always stacked by group
@@ -729,15 +811,19 @@ function Cartesian(container) {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
         }
         var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
+        var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
         xScale.domain(this.data.xExtent());
         yScale.domain(this.data.yExtent());
+        if (this.dualScale === true) {
+            y2Scale.domain(this.data.y2Extent());
+        }
 
-        this.plot.axes.drawGrid(xScale, yScale);
+        this.plot.axes.drawGrid(xScale, yScale, y2Scale);
         this.bars.draw(xScale, yScale);
-        this.lines.draw(xScale, yScale);
+        this.lines.draw(xScale, yScale, y2Scale);
         this.areas.draw(xScale, yScale);
-        this.plot.axes.draw(xScale, yScale);
-        this.points.draw(xScale, yScale);
+        this.plot.axes.draw(xScale, yScale, y2Scale);
+        this.points.draw(xScale, yScale, y2Scale);
     }
 }
 

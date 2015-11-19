@@ -13,7 +13,7 @@ var timeData = [
         "values": [
             {
                 x : "2014-03-01 00:00:00",
-                y : 6
+                y : 3
             },
             {
                 x : "2014-03-02 00:00:00",
@@ -21,15 +21,15 @@ var timeData = [
             },
             {
                 x : "2014-03-03 00:00:00",
-                y : 1.38
+                y : 0.38
             },
             {
                 x : "2014-03-04 00:00:00",
-                y : 4.14
+                y : 3.5
             },
             {
                 x : "2014-03-05 00:00:00",
-                y : 7.14
+                y : 2.0
             }
         ]
     },
@@ -109,11 +109,11 @@ var timeData = [
             },
             {
                 x : "2014-03-04 00:00:00",
-                y : 7.24
+                y : 2.24
             },
             {
                 x : "2014-03-05 00:00:00",
-                y : 6.0
+                y : 2.0
             }
         ]
     },
@@ -185,7 +185,7 @@ var timeData = [
             },
             {
                 x : "2014-03-02 00:00:00",
-                y : 8.2
+                y : 3.2
             },
             {
                 x : "2014-03-03 00:00:00",
@@ -193,11 +193,11 @@ var timeData = [
             },
             {
                 x : "2014-03-04 00:00:00",
-                y : 3.1
+                y : 1.9
             },
             {
                 x : "2014-03-05 00:00:00",
-                y : 1.1
+                y : 3.1
             }
         ]
     },
@@ -316,6 +316,16 @@ function getFirstGroupData() {
             data.splice(i, 1);
         }          
     }
+    return data;
+}
+
+function getFirstGroupDataWithScale() {
+    var data = getFirstGroupData();
+    data.forEach(function (series, i) {
+        if (i === 0) {
+            series.dualScale = true;
+        }
+    });
     return data;
 }
 
