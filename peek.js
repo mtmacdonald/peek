@@ -855,7 +855,7 @@ function Histogram(container) {
 
     this.draw = function (dataArray) {
 
-        this.data.isStackedByGroup = true; //bar charts are always stacked by group
+        //this.data.isStackedByGroup = true; //bar charts are always stacked by group
 
         //this.data.init(dataArray);
 
@@ -868,14 +868,11 @@ function Histogram(container) {
         } else {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
         }
-        xScale.domain(this.data.xExtent());
+        xScale.domain([0, 10]/*this.data.xExtent()*/);
 
         var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
         var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
-        yScale.domain(this.data.yExtent());
-        if (this.dualScale === true) {
-            y2Scale.domain(this.data.y2Extent());
-        }
+        yScale.domain([0, 10]/*this.data.yExtent()*/);
 
         this.plot.axes.drawGrid(xScale, yScale);
         this.bars.draw(xScale, yScale);
