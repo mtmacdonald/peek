@@ -866,11 +866,7 @@ function Histogram(container) {
 
         this.bars.init(this.data);
 
-        if (this.bars.visible === true) {
-            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
-        } else {
-            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
-        }
+        var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
 
         xScale.domain(this.data.xExtent());
 
