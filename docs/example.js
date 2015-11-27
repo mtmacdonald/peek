@@ -356,3 +356,18 @@ function getAllGroupsLastSeriesData() {
     }
     return data;
 }
+
+function getHistogramData() {
+    var data = getFirstGroupData();
+    //instead of a time scale, return an ordinal x-scale with values 1-5
+    data.forEach(function (series, i) {
+        var xVal = 1;
+        for (var point in series.values) {
+            if (series.values.hasOwnProperty(point)) {
+                series.values[point].x = xVal;
+                ++xVal;
+            }
+        }
+    });
+    return data;
+}
