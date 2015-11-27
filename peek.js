@@ -865,10 +865,14 @@ function Histogram(container) {
         this.plot.draw();
 
         this.bars.init(this.data);
-
+        
+        //linear scale
         var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
-
         xScale.domain(this.data.xExtent());
+
+        //ordinal scale (not working yet)
+        //var xScale = d3.scale.ordinal().range([1, 2, 3, 4, 5]);
+        //xScale.domain(['A', 'B', 'C', 'D', 'E']);
 
         var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
         var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
@@ -877,12 +881,7 @@ function Histogram(container) {
         this.plot.axes.drawGrid(xScale, yScale);
         this.bars.draw(xScale, yScale);
         this.plot.axes.draw(xScale, yScale);
-
     }
-
-
-    //var xScale = d3.scale.ordinal().range(['A', 'B', 'C', 'D', 'E', 'F']);
-    //xScale.domain(['0', '100', '200', '300', '400', '500']);
 }
 
 function HorizontalBar(container) {
