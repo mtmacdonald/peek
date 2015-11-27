@@ -864,18 +864,19 @@ function Histogram(container) {
 
         this.plot.draw();
 
-        //this.bars.init(this.data);
+        this.bars.init(this.data);
 
         if (this.bars.visible === true) {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
         } else {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
         }
-        xScale.domain([0, 10]/*this.data.xExtent()*/);
+
+        xScale.domain(this.data.xExtent());
 
         var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
         var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
-        yScale.domain([0, 10]/*this.data.yExtent()*/);
+        yScale.domain(this.data.yExtent());
 
         this.plot.axes.drawGrid(xScale, yScale);
         this.bars.draw(xScale, yScale);
