@@ -563,13 +563,16 @@ function Data() {
     this.isStackedByGroup = false;
     this.stackOffset = 'zero';
     this.dualScale = false;
+    this.isOrdinal = false;
 
     this.init = function(dataArray) {
         data = dataArray;
-        parseDates();
+        if (!this.isOrdinal) {
+            parseDates();
+        }
         fetchGroups();
         if (this.isStacked) {
-            stack();
+             stack();
         }
         fetchXExtent();
         fetchYExtents();
@@ -847,7 +850,7 @@ function Cartesian(container) {
 function Histogram(container) {
     var self = this;
 
-    //this.data = new Data();
+    this.data = new Data();
     this.plot = new Plot(container);
     this.bars = new Bars(this.plot);
     this.ordinalScale = [];
@@ -855,13 +858,13 @@ function Histogram(container) {
 
     this.draw = function (dataArray) {
 
-        //this.data.isStackedByGroup = true; //bar charts are always stacked by group
-
-        //this.data.init(dataArray);
+        this.data.isStackedByGroup = true; //bar charts are always stacked by group
+        this.data.isOrdinal = true;
+        this.data.init(dataArray);
 
         this.plot.draw();
 
-        this.bars.init(this.data);
+        //this.bars.init(this.data);
 
         if (this.bars.visible === true) {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
