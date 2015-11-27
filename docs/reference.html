@@ -535,11 +535,13 @@ header > div > a div{
     var data = getHistogramData();
     var chart = new Histogram("#histogram-chart");
     chart.ordinalRange = [1, 2, 3, 4, 5];
+    chart.data.isStacked = true;
     chart.bars.hasOpacity = true;
+    chart.bars.visible = true;
     chart.draw(data);
     var legend = new Legend("#histogram-legend");
     legend.hasOpacity = true;
-    //legend.showGroups = true;
+    legend.showGroups = true;
     legend.draw(data);
  });
 </script>
