@@ -808,6 +808,10 @@ function Cartesian(container) {
             this.data.isStackedByGroup = true; //bar charts are always stacked by group
         }
 
+        if (this.isOrdinalScale === true) {
+            this.data.isOrdinalScale = true;
+        }
+
         this.data.init(dataArray);
 
         this.plot.draw();
@@ -822,9 +826,10 @@ function Cartesian(container) {
         } else {
             var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
         }
+        xScale.domain(this.data.xExtent());
+
         var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
         var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
-        xScale.domain(this.data.xExtent());
         yScale.domain(this.data.yExtent());
         if (this.dualScale === true) {
             y2Scale.domain(this.data.y2Extent());
@@ -837,6 +842,50 @@ function Cartesian(container) {
         this.plot.axes.draw(xScale, yScale, y2Scale);
         this.points.draw(xScale, yScale, y2Scale);
     }
+}
+
+function Histogram(container) {
+    var self = this;
+
+    //this.data = new Data();
+    this.plot = new Plot(container);
+    this.bars = new Bars(this.plot);
+    this.ordinalScale = [];
+    this.ordinalRange = [];
+
+    this.draw = function (dataArray) {
+
+        this.data.isStackedByGroup = true; //bar charts are always stacked by group
+
+        //this.data.init(dataArray);
+
+        this.plot.draw();
+
+        this.bars.init(this.data);
+
+        if (this.bars.visible === true) {
+            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
+        } else {
+            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
+        }
+        xScale.domain(this.data.xExtent());
+
+        var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
+        var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
+        yScale.domain(this.data.yExtent());
+        if (this.dualScale === true) {
+            y2Scale.domain(this.data.y2Extent());
+        }
+
+        this.plot.axes.drawGrid(xScale, yScale);
+        this.bars.draw(xScale, yScale);
+        this.plot.axes.draw(xScale, yScale);
+
+    }
+
+
+    //var xScale = d3.scale.ordinal().range(['A', 'B', 'C', 'D', 'E', 'F']);
+    //xScale.domain(['0', '100', '200', '300', '400', '500']);
 }
 
 function HorizontalBar(container) {

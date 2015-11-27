@@ -528,6 +528,28 @@ header > div > a div{
 
 <!-- **************************************************************************************************************- -->
 
+<h1 class="doc-heading"><span>Histogram (ordinal scale)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-histogram-chart">
+<script>
+ $(document).ready(function() {
+    var data = getHistogramData();
+    var chart = new Histogram("#histogram-chart");
+    chart.ordinalRange = [1, 2, 3, 4, 5];
+    chart.bars.hasOpacity = true;
+    chart.draw(data);
+    var legend = new Legend("#histogram-legend");
+    legend.hasOpacity = true;
+    //legend.showGroups = true;
+    legend.draw(data);
+ });
+</script>
+
+<div id="histogram-chart"></div>
+<div id="histogram-legend"></div>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
 <h1 class="doc-heading"><span>Horizontal bar chart</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
 
 <p>The horizontal bar chart features a flexible height, which expands automatically as more rows are added to the data input.</p>
