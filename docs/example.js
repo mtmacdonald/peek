@@ -364,7 +364,18 @@ function getHistogramData() {
         var xVal = 1;
         for (var point in series.values) {
             if (series.values.hasOwnProperty(point)) {
-                series.values[point].x = xVal;
+                if (xVal === 1) {
+                    series.values[point].x = 'A';
+                } else if (xVal === 2) {
+                    series.values[point].x = 'B';
+                } else if (xVal === 3) {
+                    series.values[point].x = 'C';
+                } else if (xVal === 4) {
+                    series.values[point].x = 'D';
+                } else if (xVal === 5) {
+                    series.values[point].x = 'E';
+                }            
+                //series.values[point].x = xVal;
                 ++xVal;
             }
         }
