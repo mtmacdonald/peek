@@ -825,7 +825,9 @@ function Cartesian(container) {
 
         this.plot.draw();
 
-        this.bars.init(this.data);
+        if (this.bars.visible === true) {
+            this.bars.init(this.data);            
+        }
         this.lines.init(this.data);
         this.points.init(this.data);
         this.areas.init(this.data);
