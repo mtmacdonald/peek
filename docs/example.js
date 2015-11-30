@@ -357,9 +357,39 @@ function getAllGroupsLastSeriesData() {
     return data;
 }
 
-function getHistogramData() {
+function getLinearData() {
     var data = getFirstGroupData();
-    //instead of a time scale, return an ordinal x-scale with values 1-5
+    //instead of a time scale, return a linear x-scale with values 1-5
+    data.forEach(function (series, i) {
+        var xVal = 1;
+        for (var point in series.values) {
+            if (series.values.hasOwnProperty(point)) {
+                series.values[point].x = xVal;
+                ++xVal;
+            }
+        }
+    });
+    return data;
+}
+
+function getExponentData() {
+    var data = getFirstGroupData();
+    //instead of a time scale, return an exponential x-scale
+    data.forEach(function (series, i) {
+        var xVal = 1;
+        for (var point in series.values) {
+            if (series.values.hasOwnProperty(point)) {
+                series.values[point].x = Math.pow(xVal, 2);
+                ++xVal;
+            }
+        }
+    });
+    return data;
+}
+
+function getOrdinalData() {
+    var data = getFirstGroupData();
+    //instead of a time scale, return an ordinal x-scale with values A-E
     data.forEach(function (series, i) {
         var xVal = 1;
         for (var point in series.values) {
@@ -374,8 +404,7 @@ function getHistogramData() {
                     series.values[point].x = 'D';
                 } else if (xVal === 5) {
                     series.values[point].x = 'E';
-                }            
-                //series.values[point].x = xVal;
+                }
                 ++xVal;
             }
         }

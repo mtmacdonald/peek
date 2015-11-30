@@ -873,7 +873,6 @@ function Histogram(container) {
         //ordinal scale (not working yet)
         //console.log(this.bars.getSampleBoxWidth());
         var foo = this.bars.getSampleBoxWidth();//this.plot.getSvgWidth()-this.bars.getSampleBoxWidth();
-        console.log(foo);
         var xScale = d3.scale.ordinal().range([0, foo, 2*foo, 3*foo, 4*foo]);//.range([1, 2, 3, 4, 5]);
         xScale.domain(['A', 'B', 'C', 'D', 'E']);
 

@@ -532,7 +532,7 @@ header > div > a div{
 <div class="code" id="code-sample-histogram-chart">
 <script>
  $(document).ready(function() {
-    var data = getHistogramData();
+    var data = getOrdinalData();
     var chart = new Histogram("#histogram-chart");
     chart.ordinalRange = [1, 2, 3, 4, 5];
     chart.data.isStacked = true;
