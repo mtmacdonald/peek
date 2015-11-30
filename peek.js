@@ -834,10 +834,10 @@ function Cartesian(container) {
             var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
             xScale.domain(this.data.xExtent());
         } else if (this.isLogX === true) {
-
+            //var xScale = d3.scale.log().base(2).range([height, 0]);
+            //xScale.domain([Math.exp(0), Math.exp(9)]);     
         } else if (this.isOrdinalX === true) {
             var w = this.bars.getSampleBoxWidth();
-
             var xScale = d3.scale.ordinal().range([0, w, 2*w, 3*w, 4*w]);
             xScale.domain(['A', 'B', 'C', 'D', 'E']);
         } else if (this.isTimeSeriesX === true) {
