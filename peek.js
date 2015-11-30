@@ -865,42 +865,6 @@ function Cartesian(container) {
     }
 }
 
-function Histogram(container) {
-    var self = this;
-
-    this.data = new Data();
-    this.plot = new Plot(container);
-    this.bars = new Bars(this.plot);
-
-    this.draw = function (dataArray) {
-
-        this.data.isStackedByGroup = true; //bar charts are always stacked by group
-        this.data.isTimeSeriesX = false;
-        this.data.init(dataArray);
-
-        this.plot.draw();
-
-        this.bars.init(this.data);
-        
-        //linear scale
-        //var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
-        //xScale.domain(this.data.xExtent());
-
-        //ordinal scale
-        var w = this.bars.getSampleBoxWidth();
-        var xScale = d3.scale.ordinal().range([0, w, 2*w, 3*w, 4*w]);
-        xScale.domain(['A', 'B', 'C', 'D', 'E']);
-
-        var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
-        var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
-        yScale.domain(this.data.yExtent());
-
-        this.plot.axes.drawGrid(xScale, yScale);
-        this.bars.draw(xScale, yScale);
-        this.plot.axes.draw(xScale, yScale);
-    }
-}
-
 function HorizontalBar(container) {
 
     var self = this;
