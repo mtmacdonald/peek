@@ -564,11 +564,14 @@ function Data() {
     this.stackOffset = 'zero';
     this.dualScale = false;
     this.isTimeSeriesX = false;
+    this.isOrdinalX = false;
 
     this.init = function(dataArray) {
         data = dataArray;
         if (this.isTimeSeriesX) {
             parseDates();
+        } else if (this.isOrdinalX) {
+            parseOrdinalValues();
         }
         fetchGroups();
         if (this.isStacked) {
@@ -587,8 +590,35 @@ function Data() {
     //------------------------------------------------------------------------------------------------------------------
 
     this.countSamples = function () {
-        
         return data[0].values.length; //todo: don't assume each series is the same length
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    var ordinalDomain = [];
+
+    var parseOrdinalValues = function () {
+        data.forEach(function (series, i) {
+            for (var point in series.values) {
+                if (series.values.hasOwnProperty(point)) {
+                    if (!(ordinalDomain.indexOf(series.values[point].x) > -1)) {
+                        ordinalDomain.push(series.values[point].x);
+                    }
+                }
+            }
+        });
+    }
+
+    this.getOrdinalDomain = function () {
+        return ordinalDomain;
+    }
+
+    this.getOrdinalRange = function (barWidth) {
+        var ordinalRange = [];
+        for (var x = 0; x < ordinalDomain.length; x++) {
+            ordinalRange.push(x*barWidth);
+        }
+        return ordinalRange;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -819,6 +849,8 @@ function Cartesian(container) {
 
         if (this.isTimeSeriesX === true) {
             this.data.isTimeSeriesX = true;            
+        } else if (this.isOrdinalX === true) {
+            this.data.isOrdinalX = true;
         }
 
         this.data.init(dataArray);
@@ -826,7 +858,7 @@ function Cartesian(container) {
         this.plot.draw();
 
         if (this.bars.visible === true) {
-            this.bars.init(this.data);            
+            this.bars.init(this.data);        
         }
         this.lines.init(this.data);
         this.points.init(this.data);
@@ -839,9 +871,9 @@ function Cartesian(container) {
             //var xScale = d3.scale.log().base(2).range([height, 0]);
             //xScale.domain([Math.exp(0), Math.exp(9)]);     
         } else if (this.isOrdinalX === true) {
-            var w = this.bars.getSampleBoxWidth();
-            var xScale = d3.scale.ordinal().range([0, w, 2*w, 3*w, 4*w]);
-            xScale.domain(['A', 'B', 'C', 'D', 'E']);
+            var barWidth = this.bars.getSampleBoxWidth();
+            var xScale = d3.scale.ordinal().range(this.data.getOrdinalRange(barWidth));
+            xScale.domain(this.data.getOrdinalDomain());
         } else if (this.isTimeSeriesX === true) {
             if (this.bars.visible === true) {
                 var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
