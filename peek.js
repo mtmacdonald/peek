@@ -563,11 +563,11 @@ function Data() {
     this.isStackedByGroup = false;
     this.stackOffset = 'zero';
     this.dualScale = false;
-    this.isOrdinal = false;
+    this.isTimeSeriesX = false;
 
     this.init = function(dataArray) {
         data = dataArray;
-        if (!this.isOrdinal) {
+        if (this.isTimeSeriesX) {
             parseDates();
         }
         fetchGroups();
@@ -796,6 +796,12 @@ function Cartesian(container) {
     this.bars = new Bars(this.plot);
     this.dualScale = false;
 
+    //x-axis scale type
+    this.isTimeSeriesX = true;
+    this.isLinearX = false;
+    this.isLogX = false;
+    this.isOrdinalX = false;
+
     this.draw = function (dataArray) {
 
         //is this a dual scale chart?
@@ -805,6 +811,10 @@ function Cartesian(container) {
             this.data.dualScale = true;
             this.lines.dualScale = true;
             this.points.dualScale = true;
+        }
+
+        if (this.isTimeSeriesX === true) {
+            this.data.isTimeSeriesX = true;            
         }
 
         if (this.bars.visible === true) {
@@ -824,12 +834,23 @@ function Cartesian(container) {
         this.points.init(this.data);
         this.areas.init(this.data);
 
-        if (this.bars.visible === true) {
-            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
-        } else {
-            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
+        if (this.isLinearX === true) {
+            var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
+            xScale.domain(this.data.xExtent());
+        } else if (this.isLogX === true) {
+
+        } else if (this.isOrdinalX === true) {
+            var w = this.bars.getSampleBoxWidth();
+            var xScale = d3.scale.ordinal().range([0, w, 2*w, 3*w, 4*w]);
+            xScale.domain(['A', 'B', 'C', 'D', 'E']);
+        } else if (this.isTimeSeriesX === true) {
+            if (this.bars.visible === true) {
+                var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
+            } else {
+                var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
+            }
+            xScale.domain(this.data.xExtent());
         }
-        xScale.domain(this.data.xExtent());
 
         var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
         var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
@@ -859,7 +880,7 @@ function Histogram(container) {
     this.draw = function (dataArray) {
 
         this.data.isStackedByGroup = true; //bar charts are always stacked by group
-        this.data.isOrdinal = true;
+        this.data.isTimeSeriesX = false;
         this.data.init(dataArray);
 
         this.plot.draw();
