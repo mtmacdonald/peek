@@ -874,8 +874,6 @@ function Histogram(container) {
     this.data = new Data();
     this.plot = new Plot(container);
     this.bars = new Bars(this.plot);
-    this.ordinalScale = [];
-    this.ordinalRange = [];
 
     this.draw = function (dataArray) {
 
@@ -891,10 +889,9 @@ function Histogram(container) {
         //var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
         //xScale.domain(this.data.xExtent());
 
-        //ordinal scale (not working yet)
-        //console.log(this.bars.getSampleBoxWidth());
-        var foo = this.bars.getSampleBoxWidth();//this.plot.getSvgWidth()-this.bars.getSampleBoxWidth();
-        var xScale = d3.scale.ordinal().range([0, foo, 2*foo, 3*foo, 4*foo]);//.range([1, 2, 3, 4, 5]);
+        //ordinal scale
+        var w = this.bars.getSampleBoxWidth();
+        var xScale = d3.scale.ordinal().range([0, w, 2*w, 3*w, 4*w]);
         xScale.domain(['A', 'B', 'C', 'D', 'E']);
 
         var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);

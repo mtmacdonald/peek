@@ -534,7 +534,7 @@ header > div > a div{
  $(document).ready(function() {
     var data = getOrdinalData();
     var chart = new Histogram("#histogram-chart");
-    chart.ordinalRange = [1, 2, 3, 4, 5];
+    chart.isOrdinalX = true;
     chart.data.isStacked = true;
     chart.bars.hasOpacity = true;
     chart.bars.visible = true;
