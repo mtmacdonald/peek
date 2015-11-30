@@ -860,9 +860,15 @@ function Cartesian(container) {
         if (this.bars.visible === true) {
             this.bars.init(this.data);        
         }
-        this.lines.init(this.data);
-        this.points.init(this.data);
-        this.areas.init(this.data);
+        if (this.lines.visible === true) {
+            this.lines.init(this.data);
+        }
+        if (this.points.visible === true) {
+            this.points.init(this.data);
+        }
+        if (this.areas.visible === true) {
+            this.areas.init(this.data);
+        }
 
         if (this.isLinearX === true) {
             var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
@@ -884,18 +890,26 @@ function Cartesian(container) {
         }
 
         var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
-        var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
         yScale.domain(this.data.yExtent());
         if (this.dualScale === true) {
+            var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
             y2Scale.domain(this.data.y2Extent());
         }
 
         this.plot.axes.drawGrid(xScale, yScale, y2Scale);
-        this.bars.draw(xScale, yScale);
-        this.lines.draw(xScale, yScale, y2Scale);
-        this.areas.draw(xScale, yScale);
+        if (this.bars.visible === true) {
+            this.bars.draw(xScale, yScale);            
+        }
+        if (this.lines.visible === true) {
+            this.lines.draw(xScale, yScale, y2Scale);
+        }
+        if (this.areas.visible === true) {
+            this.areas.draw(xScale, yScale);
+        }
         this.plot.axes.draw(xScale, yScale, y2Scale);
-        this.points.draw(xScale, yScale, y2Scale);
+        if (this.points.visible === true) {
+            this.points.draw(xScale, yScale, y2Scale);
+        }
     }
 }
 
