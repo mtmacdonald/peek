@@ -533,11 +533,13 @@ header > div > a div{
 <script>
  $(document).ready(function() {
     var data = getOrdinalData();
-    var chart = new Histogram("#histogram-chart");
+    var chart = new Cartesian("#histogram-chart");
+    chart.isTimeSeriesX = false;
     chart.isOrdinalX = true;
     chart.data.isStacked = true;
     chart.bars.hasOpacity = true;
     chart.bars.visible = true;
+    chart.lines.visible = false;
     chart.draw(data);
     var legend = new Legend("#histogram-legend");
     legend.hasOpacity = true;

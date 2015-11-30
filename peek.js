@@ -813,16 +813,12 @@ function Cartesian(container) {
             this.points.dualScale = true;
         }
 
-        if (this.isTimeSeriesX === true) {
-            this.data.isTimeSeriesX = true;            
-        }
-
         if (this.bars.visible === true) {
             this.data.isStackedByGroup = true; //bar charts are always stacked by group
         }
 
-        if (this.isOrdinalScale === true) {
-            this.data.isOrdinalScale = true;
+        if (this.isTimeSeriesX === true) {
+            this.data.isTimeSeriesX = true;            
         }
 
         this.data.init(dataArray);
@@ -841,6 +837,7 @@ function Cartesian(container) {
 
         } else if (this.isOrdinalX === true) {
             var w = this.bars.getSampleBoxWidth();
+
             var xScale = d3.scale.ordinal().range([0, w, 2*w, 3*w, 4*w]);
             xScale.domain(['A', 'B', 'C', 'D', 'E']);
         } else if (this.isTimeSeriesX === true) {
