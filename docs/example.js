@@ -372,21 +372,6 @@ function getLinearData() {
     return data;
 }
 
-function getExponentData() {
-    var data = getFirstGroupData();
-    //instead of a time scale, return an exponential x-scale
-    data.forEach(function (series, i) {
-        var xVal = 1;
-        for (var point in series.values) {
-            if (series.values.hasOwnProperty(point)) {
-                series.values[point].x = Math.pow(xVal, 2);
-                ++xVal;
-            }
-        }
-    });
-    return data;
-}
-
 function getOrdinalData() {
     var data = getFirstGroupData();
     //instead of a time scale, return an ordinal x-scale with values A-E
