@@ -563,14 +563,13 @@ function Data() {
     this.isStackedByGroup = false;
     this.stackOffset = 'zero';
     this.dualScale = false;
-    this.isTimeSeriesX = false;
-    this.isOrdinalX = false;
+    this.xAxisType = 'time';
 
     this.init = function(dataArray) {
         data = dataArray;
-        if (this.isTimeSeriesX) {
+        if (this.xAxisType === 'time') {
             parseDates();
-        } else if (this.isOrdinalX) {
+        } else if (this.xAxisType === 'ordinal') {
             parseOrdinalValues();
         }
         fetchGroups();
@@ -844,12 +843,7 @@ function Cartesian(container) {
             this.data.isStackedByGroup = true; //bar charts are always stacked by group
         }
 
-        if (this.xAxisType === 'time') {
-            this.data.isTimeSeriesX = true;            
-        } else if (this.xAxisType === 'ordinal') {
-            this.data.isOrdinalX = true;
-        }
-
+        this.data.xAxisType = this.xAxisType;
         this.data.init(dataArray);
 
         this.plot.draw();
