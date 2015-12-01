@@ -115,7 +115,7 @@ header > div > a div{
 <p>Peek supports the following chart types:</p>
 
 <ul>
- <li><strong>Cartesian (wtih time-series, linear, logarithmic, or ordinal x-axis scales)</strong></li>
+ <li><strong>Cartesian (with linear and time-series, x-axis scales. Bar charts also support ordinal x-axis scales)</strong></li>
   <ul>
    <li>Line charts</li>
    <li>Scatter charts</li>
@@ -218,6 +218,33 @@ header > div > a div{
 
 <div id="line-chart-interpolation"></div>
 <div id="line-legend-interpolation"></div>
+</div>
+
+<!-- **************************************************************************************************************- -->
+
+<h1 class="doc-heading"><span>Line chart (linear x-axis scale)</span><button class="w-small w-dark code-toggle" type="button">Show Code</button></h1>
+<div class="code" id="code-sample-line-chart-linear">
+<script>
+ $(document).ready(function() {
+    var data = getLinearData();
+    var chart = new Cartesian("#line-chart-linear");
+    chart.xAxisType = 'linear';
+    chart.bars.visible = true;
+    chart.lines.interpolation = 'cardinal';
+    //****
+    chart.bars.visible = false;
+    chart.data.isStacked = true;
+    chart.lines.visible = true;
+    //chart.points.visible = true;
+    chart.draw(data);
+    var legend = new Legend("#line-chart-linear-legend");
+    legend.hasOpacity = true;
+    legend.draw(data);
+ });
+</script>
+
+<div id="line-chart-linear"></div>
+<div id="line-chart-linear-legend"></div>
 </div>
 
 <!-- **************************************************************************************************************- -->
@@ -534,8 +561,7 @@ header > div > a div{
  $(document).ready(function() {
     var data = getLinearData();
     var chart = new Cartesian("#bar-chart-linear");
-    chart.isTimeSeriesX = false;
-    chart.isLinearX = true;
+    chart.xAxisType = 'linear';
     chart.data.isStacked = true;
     chart.bars.hasOpacity = true;
     chart.bars.visible = true;
@@ -543,7 +569,6 @@ header > div > a div{
     chart.draw(data);
     var legend = new Legend("#bar-chart-linear-legend");
     legend.hasOpacity = true;
-    legend.showGroups = true;
     legend.draw(data);
  });
 </script>
@@ -560,8 +585,7 @@ header > div > a div{
  $(document).ready(function() {
     var data = getOrdinalData();
     var chart = new Cartesian("#bar-chart-ordinal");
-    chart.isTimeSeriesX = false;
-    chart.isOrdinalX = true;
+    chart.xAxisType = 'ordinal';
     chart.data.isStacked = true;
     chart.bars.hasOpacity = true;
     chart.bars.visible = true;
@@ -569,7 +593,6 @@ header > div > a div{
     chart.draw(data);
     var legend = new Legend("#bar-chart-ordinal");
     legend.hasOpacity = true;
-    legend.showGroups = true;
     legend.draw(data);
  });
 </script>
