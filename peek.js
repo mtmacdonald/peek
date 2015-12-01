@@ -563,13 +563,18 @@ function Data() {
     this.isStackedByGroup = false;
     this.stackOffset = 'zero';
     this.dualScale = false;
+    this.xAxisType = 'time';
 
     this.init = function(dataArray) {
         data = dataArray;
-        parseDates();
+        if (this.xAxisType === 'time') {
+            parseDates();
+        } else if (this.xAxisType === 'ordinal') {
+            parseOrdinalValues();
+        }
         fetchGroups();
         if (this.isStacked) {
-            stack();
+             stack();
         }
         fetchXExtent();
         fetchYExtents();
@@ -584,8 +589,35 @@ function Data() {
     //------------------------------------------------------------------------------------------------------------------
 
     this.countSamples = function () {
-        
         return data[0].values.length; //todo: don't assume each series is the same length
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    var ordinalDomain = [];
+
+    var parseOrdinalValues = function () {
+        data.forEach(function (series, i) {
+            for (var point in series.values) {
+                if (series.values.hasOwnProperty(point)) {
+                    if (!(ordinalDomain.indexOf(series.values[point].x) > -1)) {
+                        ordinalDomain.push(series.values[point].x);
+                    }
+                }
+            }
+        });
+    }
+
+    this.getOrdinalDomain = function () {
+        return ordinalDomain;
+    }
+
+    this.getOrdinalRange = function (barWidth) {
+        var ordinalRange = [];
+        for (var x = 0; x < ordinalDomain.length; x++) {
+            ordinalRange.push(x*barWidth);
+        }
+        return ordinalRange;
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -793,6 +825,9 @@ function Cartesian(container) {
     this.bars = new Bars(this.plot);
     this.dualScale = false;
 
+    //x-axis scale type
+    this.xAxisType = 'time';
+
     this.draw = function (dataArray) {
 
         //is this a dual scale chart?
@@ -808,34 +843,65 @@ function Cartesian(container) {
             this.data.isStackedByGroup = true; //bar charts are always stacked by group
         }
 
+        this.data.xAxisType = this.xAxisType;
         this.data.init(dataArray);
 
         this.plot.draw();
 
-        this.bars.init(this.data);
-        this.lines.init(this.data);
-        this.points.init(this.data);
-        this.areas.init(this.data);
-
         if (this.bars.visible === true) {
-            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
-        } else {
-            var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
+            this.bars.init(this.data);        
         }
+        if (this.lines.visible === true) {
+            this.lines.init(this.data);
+        }
+        if (this.points.visible === true) {
+            this.points.init(this.data);
+        }
+        if (this.areas.visible === true) {
+            this.areas.init(this.data);
+        }
+
+        if (this.xAxisType === 'linear') {
+            if (this.bars.visible === true) {
+                var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
+            } else {
+                var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()]);
+            }
+            xScale.domain(this.data.xExtent());
+        } else if (this.xAxisType === 'ordinal') {
+            var barWidth = this.bars.getSampleBoxWidth();
+            var xScale = d3.scale.ordinal().range(this.data.getOrdinalRange(barWidth));
+            xScale.domain(this.data.getOrdinalDomain());
+        } else if (this.xAxisType === 'time') {
+            if (this.bars.visible === true) {
+                var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
+            } else {
+                var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()]);
+            }
+            xScale.domain(this.data.xExtent());
+        }
+
         var yScale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
-        var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
-        xScale.domain(this.data.xExtent());
         yScale.domain(this.data.yExtent());
         if (this.dualScale === true) {
+            var y2Scale = d3.scale.linear().range([this.plot.getSvgHeight(), 0]);
             y2Scale.domain(this.data.y2Extent());
         }
 
         this.plot.axes.drawGrid(xScale, yScale, y2Scale);
-        this.bars.draw(xScale, yScale);
-        this.lines.draw(xScale, yScale, y2Scale);
-        this.areas.draw(xScale, yScale);
+        if (this.bars.visible === true) {
+            this.bars.draw(xScale, yScale);            
+        }
+        if (this.lines.visible === true) {
+            this.lines.draw(xScale, yScale, y2Scale);
+        }
+        if (this.areas.visible === true) {
+            this.areas.draw(xScale, yScale);
+        }
         this.plot.axes.draw(xScale, yScale, y2Scale);
-        this.points.draw(xScale, yScale, y2Scale);
+        if (this.points.visible === true) {
+            this.points.draw(xScale, yScale, y2Scale);
+        }
     }
 }
 

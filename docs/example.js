@@ -356,3 +356,43 @@ function getAllGroupsLastSeriesData() {
     }
     return data;
 }
+
+function getLinearData() {
+    var data = getFirstGroupData();
+    //instead of a time scale, return a linear x-scale with values 1-5
+    data.forEach(function (series, i) {
+        var xVal = 1;
+        for (var point in series.values) {
+            if (series.values.hasOwnProperty(point)) {
+                series.values[point].x = xVal;
+                ++xVal;
+            }
+        }
+    });
+    return data;
+}
+
+function getOrdinalData() {
+    var data = getFirstGroupData();
+    //instead of a time scale, return an ordinal x-scale with values A-E
+    data.forEach(function (series, i) {
+        var xVal = 1;
+        for (var point in series.values) {
+            if (series.values.hasOwnProperty(point)) {
+                if (xVal === 1) {
+                    series.values[point].x = 'A';
+                } else if (xVal === 2) {
+                    series.values[point].x = 'B';
+                } else if (xVal === 3) {
+                    series.values[point].x = 'C';
+                } else if (xVal === 4) {
+                    series.values[point].x = 'D';
+                } else if (xVal === 5) {
+                    series.values[point].x = 'E';
+                }
+                ++xVal;
+            }
+        }
+    });
+    return data;
+}
