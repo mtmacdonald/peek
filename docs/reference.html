@@ -229,13 +229,7 @@ header > div > a div{
     var data = getLinearData();
     var chart = new Cartesian("#line-chart-linear");
     chart.xAxisType = 'linear';
-    chart.bars.visible = true;
     chart.lines.interpolation = 'cardinal';
-    //****
-    chart.bars.visible = false;
-    chart.data.isStacked = true;
-    chart.lines.visible = true;
-    //chart.points.visible = true;
     chart.draw(data);
     var legend = new Legend("#line-chart-linear-legend");
     legend.hasOpacity = true;

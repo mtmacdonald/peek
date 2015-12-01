@@ -862,7 +862,11 @@ function Cartesian(container) {
         }
 
         if (this.xAxisType === 'linear') {
-            var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
+            if (this.bars.visible === true) {
+                var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
+            } else {
+                var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()]);
+            }
             xScale.domain(this.data.xExtent());
         } else if (this.xAxisType === 'ordinal') {
             var barWidth = this.bars.getSampleBoxWidth();
