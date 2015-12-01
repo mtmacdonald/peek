@@ -827,10 +827,7 @@ function Cartesian(container) {
     this.dualScale = false;
 
     //x-axis scale type
-    this.isTimeSeriesX = true;
-    this.isLinearX = false;
-    this.isLogX = false;
-    this.isOrdinalX = false;
+    this.xAxisType = 'time';
 
     this.draw = function (dataArray) {
 
@@ -847,9 +844,9 @@ function Cartesian(container) {
             this.data.isStackedByGroup = true; //bar charts are always stacked by group
         }
 
-        if (this.isTimeSeriesX === true) {
+        if (this.xAxisType === 'time') {
             this.data.isTimeSeriesX = true;            
-        } else if (this.isOrdinalX === true) {
+        } else if (this.xAxisType === 'ordinal') {
             this.data.isOrdinalX = true;
         }
 
@@ -870,17 +867,14 @@ function Cartesian(container) {
             this.areas.init(this.data);
         }
 
-        if (this.isLinearX === true) {
+        if (this.xAxisType === 'linear') {
             var xScale = d3.scale.linear().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
             xScale.domain(this.data.xExtent());
-        } else if (this.isLogX === true) {
-            //var xScale = d3.scale.log().base(2).range([height, 0]);
-            //xScale.domain([Math.exp(0), Math.exp(9)]);     
-        } else if (this.isOrdinalX === true) {
+        } else if (this.xAxisType === 'ordinal') {
             var barWidth = this.bars.getSampleBoxWidth();
             var xScale = d3.scale.ordinal().range(this.data.getOrdinalRange(barWidth));
             xScale.domain(this.data.getOrdinalDomain());
-        } else if (this.isTimeSeriesX === true) {
+        } else if (this.xAxisType === 'time') {
             if (this.bars.visible === true) {
                 var xScale = d3.time.scale().range([0, this.plot.getSvgWidth()-this.bars.getSampleBoxWidth()]);
             } else {
