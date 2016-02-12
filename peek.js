@@ -985,7 +985,7 @@ function HorizontalBar(container) {
                     .attr('class', 'pk-label')
                     .attr("x", function(d, i) {return (dx*d.value)+5})
                     .attr("y", function(d, i) {return dy*i + self.barSpacing*i + (dy/2) + 4 + self.outlineWidth;}) //4 accounts for text height
-                    .html( function(d) {return pkEscapeHtml(d.label);});
+                    .text( function(d) {return pkEscapeHtml(d.label);});
 
             //text values
             var text = this.plot.svg.selectAll(".compare-chart-values")
